@@ -1,0 +1,1124 @@
+#### name  (127 hits)
+   core/effect_telemetry.py:78: __slots__ = ("name", "n")
+   core/effect_telemetry.py:169: names_in_registry = {str(e.get("name")) for e in entries}
+   core/effect_telemetry.py:171: str(e.get("name"))
+   core/effect_telemetry.py:174: and str(e.get("name")) not in constructed
+   core/effect_telemetry.py:178: str(e.get("name"))
+   core/effect_telemetry.py:180: if str(e.get("state")) == "expected-absent" and str(e.get("name")) in constructed
+   core/effect_telemetry.py:244: name = str(e.get("name"))
+   core/effect_telemetry.py:289: names_in_registry = {str(e.get("name")) for e in entries}
+   core/logger.py:61: "levelname", "levelno", "lineno", "module", "msecs", "msg", "name",
+   core/state_store.py:599: return [row["name"] for row in rows]
+   core/strategy_direction.py:70: out[cfg.name] = cfg.direction
+   ops_dashboard/backend/api/analytics.py:176: files.append({"name": name, "size_bytes": st.st_size, "mtime": st.st_mtime})
+   ops_dashboard/backend/readers/config_reader.py:66: name = s.get("name") or os.path.splitext(os.path.basename(path))[0]
+   ops_dashboard/backend/readers/config_reader.py:68: "name": name,
+   ops_dashboard/backend/readers/db_reader.py:3927: {"key": "signal", "name": "Signal", "count": total,
+   ops_dashboard/backend/readers/db_reader.py:3929: {"key": "validation", "name": "Validation", "count": validated,
+   ops_dashboard/backend/readers/db_reader.py:3931: {"key": "risk", "name": "Risk", "count": risk_ok,
+   ops_dashboard/backend/readers/db_reader.py:3933: {"key": "capital", "name": "Capital", "count": cap_ok,
+   ops_dashboard/backend/readers/db_reader.py:3935: {"key": "order", "name": "Order", "count": int(t.get("created") or 0),
+   ops_dashboard/backend/readers/db_reader.py:3937: {"key": "fill", "name": "Fill", "count": int(t.get("filled") or 0),
+   ops_dashboard/backend/readers/host_reader.py:228: best = {"name": name, "mtime": st.st_mtime,
+   ops_dashboard/backend/readers/host_reader.py:365: out.append({"name": name,
+   ops_dashboard/backend/readers/log_reader.py:41: out.append({"name": name, "size_bytes": st.st_size, "mtime": st.st_mtime})
+   ops_dashboard/backend/readers/log_reader.py:170: m = _syslog_re().match(f["name"])
+   ops_dashboard/backend/readers/log_reader.py:193: path = resolve_log_path(cfg, meta["name"])
+   ops_dashboard/backend/readers/log_reader.py:223: "ref_id": "LOG-%s#%d" % (meta["name"], idx),
+   ops_dashboard/backend/readers/log_reader.py:224: "source_file": meta["name"],
+   ops_dashboard/backend/services/analytics_period.py:586: "strategy": r["basic"]["name"], "display_name": r["basic"]["display_name"],
+   ops_dashboard/backend/services/analytics_period.py:596: "signals_period": int(period_signals.get(r["basic"]["name"], 0)),
+   ops_dashboard/backend/services/capacity.py:311: {"name": "Orders", "rows": [daily_trades, burst_row, qty_row, gap_row,
+   ops_dashboard/backend/services/capacity.py:313: {"name": "Positions", "rows": [open_pos, deliv_open, deliv_daily]},
+   ops_dashboard/backend/services/capacity.py:314: {"name": "Capital", "rows": [intraday_cap, daily_loss, conc_row, sector_row, posval_row]},
+   ops_dashboard/backend/services/capacity.py:315: {"name": "Risk", "rows": [consec, kill_row, drift_row, scb_row, cb_row, recon_row]},
+   ops_dashboard/backend/services/capacity.py:316: {"name": "Strategy", "rows": [tiers_row, per_strategy_row]},
+   ops_dashboard/backend/services/capacity.py:317: {"name": "System-guards", "rows": [queue_row, ip_row, dedup_row, clock_row,
+   ops_dashboard/backend/services/config_view.py:155: "groups": [{"name": g, "data": groups[g]} for g in GROUPS],
+   ops_dashboard/backend/services/controls.py:86: "name": name,
+   ops_dashboard/backend/services/controls.py:105: out.append({"name": "Broker", "state": "UNKNOWN",
+   ops_dashboard/backend/services/controls.py:111: out.append({"name": "Database", "state": "READY", "detail": "read-only connection OK"})
+   ops_dashboard/backend/services/controls.py:113: out.append({"name": "Database", "state": "NOT READY",
+   ops_dashboard/backend/services/controls.py:118: out.append({"name": "Services", "state": "READY",
+   ops_dashboard/backend/services/controls.py:122: out.append({"name": "Services", "state": "NOT READY", "detail": reason})
+   ops_dashboard/backend/services/controls.py:128: out.append({"name": "Capital", "state": "READY",
+   ops_dashboard/backend/services/controls.py:131: out.append({"name": "Capital", "state": "UNKNOWN",
+   ops_dashboard/backend/services/controls.py:137: "name": "Risk",
+   ops_dashboard/backend/services/controls.py:386: ready = [[r.get("name"), r.get("state"), r.get("detail")]
+   ops_dashboard/backend/services/pipeline_state.py:135: "key": key, "name": name, "kind": kind, "semantic": semantic,
+   ops_dashboard/backend/services/scanner_attribution.py:313: name = r["basic"]["name"]
+   ops_dashboard/backend/services/strategy_health.py:224: name = r["basic"]["name"]
+   ops_dashboard/backend/services/strategy_meta.py:74: "name": name,
+   ops_dashboard/backend/services/strategy_tower.py:226: "name": name,
+   ops_dashboard/backend/services/strategy_tower.py:310: r["basic"]["name"],
+   ops_dashboard/backend/services/strategy_tower.py:313: rankings[key] = [r["basic"]["name"] for r in ordered]
+   ops_dashboard/backend/services/strategy_tower.py:318: r["basic"]["rank"] = default_order[r["basic"]["name"]]
+   ops_dashboard/backend/services/strategy_tower.py:479: if r["basic"]["name"] == name:
+   ops_dashboard/backend/services/system_health.py:424: {"name": "Chartink", "status": webhook,
+   ops_dashboard/backend/services/system_health.py:428: {"name": "Broker API", "status": _chk("kite_profile_call_ok"),
+   ops_dashboard/backend/services/system_health.py:431: {"name": "Database", "status": HEALTHY if dbh.get("reachable") else FAILED,
+   ops_dashboard/backend/services/system_health.py:434: {"name": "Tailscale",
+   ops_dashboard/backend/services/system_health.py:440: {"name": "Internet", "status": UNKNOWN,
+   ops_dashboard/backend/services/system_health.py:732: "title": "Critical sentinel flag present: %s" % s["name"],
+   ops_dashboard/backend/services/system_health.py:1091: ("Last backup", (db.get("last_backup") or {}).get("name") or "NONE FOUND"),
+   ops_dashboard/backend/services/system_health.py:1108: [[d["name"], d["status"], d["measured"], d["source"]]
+   ops_dashboard/backend/services/system_logs.py:454: if not any(d.get("name") == "VM" for d in deps):
+   ops_dashboard/backend/services/system_logs.py:456: "name": "VM",
+   ops_dashboard/frontend/static/alpine.min.js:5: `:""}`,t),setTimeout(()=>{throw e},0)}var Me=!0;function De(e){let t=Me;Me=!1;let r=e();return Me=t,r}function M(e,t,r={}){let n;return x(e,t)(i=>n=i,r),n}function x(...e
+   ops_dashboard/frontend/static/htmx.min.js:1: (function(e,t){if(typeof define==="function"&&define.amd){define([],t)}else if(typeof module==="object"&&module.exports){module.exports=t()}else{e.htmx=e.htmx||t()}})(typ
+   ops_dashboard/frontend/templates/components.html:200: <span class="pcard-name" x-text="s.name"></span>
+   ops_dashboard/frontend/templates/dashboard.html:50: <span class="pl-name" x-text="st.name"></span>
+   ops_dashboard/frontend/templates/live_activity.html:188: <span class="lav-pname" x-text="s.name"></span>
+   ops_dashboard/frontend/templates/scanner_attribution.html:495: { key: "best", label: "BEST SCANNER", tone: "pos", kind: "name", metric: "money", pre: "Net P&L: ",
+   ops_dashboard/frontend/templates/scanner_attribution.html:497: { key: "worst", label: "WORST SCANNER", tone: "neg", kind: "name", metric: "money", pre: "Net P&L: ",
+   ops_dashboard/frontend/templates/scanner_attribution.html:499: { key: "highest_win_rate", label: "HIGHEST WIN RATE", tone: "info", kind: "name", metric: "pct", pre: "",
+   ops_dashboard/frontend/templates/scanner_attribution.html:501: { key: "highest_profit_factor", label: "HIGHEST PROFIT FACTOR", tone: "purple", kind: "name", metric: "num", pre: "",
+   ops_dashboard/frontend/templates/strategies.html:182: <template x-if="c.kind === 'name'">
+   ops_dashboard/frontend/templates/strategies.html:201: <template x-if="c.kind !== 'name' && c.kind !== 'usage' && c.kind !== 'status'">
+   ops_dashboard/frontend/templates/strategies.html:298: { key: "strategy", label: "Strategy", kind: "name" },
+   ops_dashboard/frontend/templates/strategies.html:464: if (c.kind === "name") return "st-name";
+   reports/daily_report.py:327: name = cfg.get("name", "")
+   reports/daily_trade_review.py:1016: "name": "1 · SIGNAL-STORAGE", "identity": "stored = qualified + rejected + skipped + other",
+   reports/daily_trade_review.py:1034: "name": "2 · TRADE", "identity": "placed = entered + cancelled + rejected/failed + pending",
+   reports/daily_trade_review.py:1072: "name": "3 · CAPITAL", "identity": "opening + realized_pnl = closing  (ledger == trades)",
+   reports/daily_trade_review.py:1079: "name": "4 · BROKER", "identity": "system P&L = broker P&L · positions · margin",
+   reports/daily_trade_review.py:1118: vals = [b["name"], b["identity"], b["lhs"], b["rhs"], b["status"], b["verified_at"], b["detail"]]
+   screening/secondary_screener.py:163: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:182: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:195: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:231: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:262: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:285: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:299: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:336: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at, eligible_score=effe
+   screening/secondary_screener.py:353: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at, eligible_score=effe
+   screening/secondary_screener.py:369: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at, eligible_score=effe
+   screening/secondary_screener.py:458: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:483: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:493: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at)
+   screening/secondary_screener.py:513: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at, eligible_score=eff_
+   screening/secondary_screener.py:523: self._persist(signal_id, result, symbol=symbol, strategy_name=getattr(strategy, "name", None), trigger_price=trigger_price, triggered_at=triggered_at, eligible_score=eff_
+   scripts/backfill_closure_source_w8.py:176: cols = {r["name"] for r in store.fetch_all("PRAGMA table_info(trades)")}
+   scripts/backup_evidence.py:95: tmp = dst.with_name(dst.name + f".tmp-{os.getpid()}")
+   scripts/backup_retention.py:158: bname = _base_db_name(sc.name)
+   scripts/backup_retention.py:166: if sc.name.endswith("-wal") and _safe_size(sc) > 0:
+   scripts/check_cron_drift.py:108: reg_names = {j["name"] for j in jobs}
+   scripts/check_cron_drift.py:126: out.absent_warn.append(job["name"])
+   scripts/check_cron_drift.py:128: out.absent_critical.append(job["name"])
+   scripts/generate_crontab.py:76: raise ValueError(f"{_value(job,'name')!r}: bad env_wrapper {env!r}")
+   scripts/generate_crontab.py:80: raise ValueError(f"{_value(job,'name')!r}: missing cron_expression/command")
+   scripts/generate_crontab.py:318: j = dict(job); j["name"] = name
+   scripts/generate_crontab.py:329: lines.append(f"# {j['name']}  [{j.get('schedule','')}]")
+   scripts/generate_crontab.py:337: gen = {compose(j): j["name"] for j in jobs if j.get("enabled", True)}
+   scripts/strategy_status.py:90: strategy=cfg.name,
+   scripts/system_manager.py:515: if raw.get("enabled", True) and raw.get("name"):
+   scripts/system_manager.py:516: names.append(str(raw["name"]))
+   signals/signal_processor.py:1120: perf_weight=self._perf_weights.get(strategy_obj.name, 1.0),  # FIX-132 Item 9
+   signals/signal_processor.py:1830: f"(strategy={strategy.name}, direction={direction}). "
+   signals/signal_processor.py:1890: f"sl_gap_buffer applied: strategy={strategy.name} "
+   signals/signal_processor.py:2116: perf_weight=self._perf_weights.get(strategy_obj.name, 1.0),  # FIX-132 Item 9
+   signals/signal_processor.py:2458: perf_weight=self._perf_weights.get(strategy_obj.name, 1.0),
+   strategies/loader.py:147: cfg.name, cfg.intent,
+   strategies/loader.py:149: strategies[cfg.name] = cfg
+   strategies/taxonomy.py:35: out[cfg.name] = (cfg.pipeline, cfg.horizon)
+   utils/holiday_guard.py:130: return entry.get("name")
+   utils/startup_checks.py:1130: if os.name != 'nt':  # Unix/Linux only
+   utils/startup_checks.py:1137: if os.name != 'nt':
+   utils/startup_checks.py:1156: if os.name != 'nt':
+   utils/startup_checks.py:1164: if os.name != 'nt':
+
+#### display_name  (54 hits)
+   ops_dashboard/backend/readers/config_reader.py:69: "display_name": s.get("display_name", name),
+   ops_dashboard/backend/services/analytics_period.py:586: "strategy": r["basic"]["name"], "display_name": r["basic"]["display_name"],
+   ops_dashboard/backend/services/controls.py:62: disp = str(v.get("display_name") or nm)
+   ops_dashboard/backend/services/controls.py:72: # ⛔ THE AUTHORITATIVE LABEL IS `display_name`, ⛔ NOT a title-cased key.
+   ops_dashboard/backend/services/controls.py:78: label = str(s.get("display_name") or name.replace("_", " ").title())
+   ops_dashboard/backend/services/holdings.py:332: "display_name": info.get("display_name") or s.get("strategy"),
+   ops_dashboard/backend/services/holdings.py:371: "strategy": None, "display_name": None, "trade_type": None,
+   ops_dashboard/backend/services/holdings.py:405: or q in (r["display_name"] or "").upper()
+   ops_dashboard/backend/services/holdings.py:738: _cell(r.get("display_name") or r.get("strategy")),
+   ops_dashboard/backend/services/scanner_attribution.py:326: "display_name": r["basic"]["display_name"],
+   ops_dashboard/backend/services/scanner_attribution.py:515: return {"strategy": pick["strategy"], "display_name": pick["display_name"],
+   ops_dashboard/backend/services/scanner_attribution.py:620: "display_name": r["display_name"], "net": r["net"],
+   ops_dashboard/backend/services/scanner_attribution.py:676: "display_name": info.get("display_name") or strat,
+   ops_dashboard/backend/services/scanner_attribution.py:721: r.get("display_name") or r.get("strategy"),
+   ops_dashboard/backend/services/strategy_health.py:243: "display_name": r["basic"]["display_name"],
+   ops_dashboard/backend/services/strategy_health.py:602: r.get("display_name") or r.get("strategy"),
+   ops_dashboard/backend/services/strategy_meta.py:64: """{strategy_name: {name, display_name, trade_type, direction, enabled}}.
+   ops_dashboard/backend/services/strategy_meta.py:75: "display_name": conf.get("display_name") or name,
+   ops_dashboard/backend/services/strategy_ranking.py:236: "display_name": info.get("display_name") or name,
+   ops_dashboard/backend/services/strategy_ranking.py:320: return {"strategy": pick["strategy"], "display_name": pick["display_name"],
+   ops_dashboard/backend/services/strategy_ranking.py:354: fmt = lambda r: {"strategy": r["strategy"], "display_name": r["display_name"],  # noqa: E731
+   ops_dashboard/backend/services/strategy_ranking.py:426: cell(r.get("rank")), r.get("display_name") or r.get("strategy"),
+   ops_dashboard/backend/services/strategy_tower.py:227: "display_name": conf.get("display_name", name),
+   ops_dashboard/backend/services/strategy_tower.py:443: if strategy and basic.get("display_name") != strategy:
+   ops_dashboard/backend/services/strategy_tower.py:456: basic.get("display_name"),
+   ops_dashboard/frontend/templates/dashboard.html:187: <span class="ss-bw-name" x-text="bestWorst() ? bestWorst().best.basic.display_name : ''"></span>
+   ops_dashboard/frontend/templates/dashboard.html:194: <span class="ss-bw-name" x-text="bestWorst() ? bestWorst().worst.basic.display_name : ''"></span>
+   ops_dashboard/frontend/templates/holdings.html:192: <template x-if="c.key === 'display_name'">
+   ops_dashboard/frontend/templates/holdings.html:194: <span x-show="r.display_name" class="hld-nm"
+   ops_dashboard/frontend/templates/holdings.html:195: :title="r.display_name" x-text="r.display_name"></span>
+   ops_dashboard/frontend/templates/holdings.html:196: <span x-show="!r.display_name" class="hld-ni"
+   ops_dashboard/frontend/templates/holdings.html:545: { key: "display_name",   label: "Strategy",                w: "140px" },
+   ops_dashboard/frontend/templates/holdings.html:562: "delta_qty", "recon_status", "source", "display_name", "product"],
+   ops_dashboard/frontend/templates/scanner_attribution.html:130: <template x-if="c.key === 'display_name'">
+   ops_dashboard/frontend/templates/scanner_attribution.html:132: x-text="r.display_name"></span>
+   ops_dashboard/frontend/templates/scanner_attribution.html:208: class="sca-nm" :title="r.display_name"
+   ops_dashboard/frontend/templates/scanner_attribution.html:209: x-text="r.display_name"></span></td>
+   ops_dashboard/frontend/templates/scanner_attribution.html:247: <td><span class="sca-nm" x-text="r.display_name"></span></td>
+   ops_dashboard/frontend/templates/scanner_attribution.html:448: x-text="m.display_name || '—'"></span>
+   ops_dashboard/frontend/templates/scanner_attribution.html:524: { key: "display_name",  label: "Strategy (Primary)",       w: "184px" },
+   ops_dashboard/frontend/templates/scanner_attribution.html:538: SPECIAL: ["serial", "scanner", "display_name", "trade_type", "health",
+   ops_dashboard/frontend/templates/scanner_attribution.html:618: return sc ? (r.display_name + " · scanner: " + sc) : r.display_name;
+   ops_dashboard/frontend/templates/scanner_attribution.html:626: return c ? (c.display_name || c.strategy) : "—";
+   ops_dashboard/frontend/templates/strategies.html:346: name: r.basic.name, strategy: r.basic.display_name,
+   ops_dashboard/frontend/templates/strategy_health.html:143: <template x-if="c.key === 'display_name'">
+   ops_dashboard/frontend/templates/strategy_health.html:145: <span class="sh-nm" :title="r.display_name"
+   ops_dashboard/frontend/templates/strategy_health.html:146: x-text="r.display_name"></span>
+   ops_dashboard/frontend/templates/strategy_health.html:528: { key: "display_name",     label: "Strategy",                    w: "132px" },
+   ops_dashboard/frontend/templates/strategy_health.html:540: SPECIAL: ["serial", "display_name", "trade_type", "state", "last_signal",
+   ops_dashboard/frontend/templates/strategy_ranking.html:271: class="sr-wl-n" x-text="w.display_name"></span><span
+   ops_dashboard/frontend/templates/strategy_ranking.html:282: class="sr-wl-n" x-text="l.display_name"></span><span
+   ops_dashboard/frontend/templates/strategy_ranking.html:344: { key: "display_name",  label: "Strategy",                 w: "168px" },
+   ops_dashboard/frontend/templates/strategy_ranking.html:443: return c ? (c.display_name || c.strategy) : "—";
+   strategies/schema.py:54: display_name: str
+
+#### description  (9 hits)
+   ops_dashboard/backend/services/system_logs.py:223: r.get("description") or r.get("action_taken") or "Recovery action",
+   ops_dashboard/backend/services/trade_logs.py:602: "description": r.get("description"),
+   scripts/revert_temp_config.py:43: "description": "Consecutive losses before kill switch",
+   scripts/revert_temp_config.py:52: "description": "Daily loss limit as % of capital (5%)",
+   scripts/revert_temp_config.py:61: "description": "Capital drift tolerance (Rs 50)",
+   scripts/revert_temp_config.py:70: "description": "Drift log threshold (Rs 250)",
+   scripts/revert_temp_config.py:79: "description": "Drift soft kill threshold (Rs 1000)",
+   scripts/revert_temp_config.py:88: "description": "Drift hard kill threshold (Rs 2500)",
+   scripts/revert_temp_config.py:97: "description": "Minimum quality score for gap_fade_long",
+
+#### direction  (200 hits)
+   capital/kill_switch.py:1774: co_side = "SELL" if trade["direction"] == "LONG" else "BUY"
+   capital/kill_switch.py:1853: fallback_side = "SELL" if trade["direction"] == "LONG" else "BUY"
+   capital/shadow_engine.py:35: "direction", "entry_price", "qty", "sys_sl", "sys_tgt",
+   capital/shadow_engine.py:135: "direction": direction,
+   capital/shadow_engine.py:192: if st.direction == "LONG":
+   capital/shadow_engine.py:215: if st.direction == "LONG":
+   capital/shadow_engine.py:244: st.symbol, st.strategy, st.direction,
+   core/state_store.py:970: return row["direction"] if row else None
+   core/state_store.py:1971: "signal_id", "symbol", "ts", "mode", "strategy", "direction", "score",
+   core/state_store.py:2148: direction = trade["direction"]
+   core/state_store.py:2955: "signal_id", "symbol", "direction", "trigger_price",
+   core/state_store.py:3021: "signal_id", "symbol", "direction", "zone_band_low", "zone_band_high",
+   core/strategy_direction.py:69: if cfg.direction in VALID_DIRECTIONS:
+   core/strategy_direction.py:70: out[cfg.name] = cfg.direction
+   core/strategy_direction.py:141: d = row.get("direction")
+   main.py:914: direction = r["direction"]
+   ops_dashboard/backend/api/analytics.py:145: "direction": r["direction"], "closed": int(r["closed"]),
+   ops_dashboard/backend/api/analytics.py:152: if not any(d["direction"] == side for d in per_dir):
+   ops_dashboard/backend/api/analytics.py:153: per_dir.append({"direction": side, "closed": 0, "wins": 0, "losses": 0,
+   ops_dashboard/backend/api/analytics.py:155: per_dir.sort(key=lambda d: d["direction"])
+   ops_dashboard/backend/api/analytics2.py:112: direction=(request.args.get("direction") or "").strip().upper() or None,
+   ops_dashboard/backend/api/analytics2.py:145: direction=_arg("direction", upper=True),
+   ops_dashboard/backend/api/analytics2.py:169: "direction": _arg("direction", upper=True),
+   ops_dashboard/backend/api/analytics2.py:224: "direction": _arg("direction", upper=True),
+   ops_dashboard/backend/api/analytics2.py:374: "trade_type": _arg("trade_type"), "direction": _arg("direction"),
+   ops_dashboard/backend/api/analytics2.py:535: "trade_type": _arg("trade_type"), "direction": _arg("direction"),
+   ops_dashboard/backend/api/strategies.py:55: trade_type=_arg("trade_type"), direction=_arg("direction"))
+   ops_dashboard/backend/api/trading.py:198: "direction": g("direction").upper(),
+   ops_dashboard/backend/api/trading.py:215: if f.get("direction"):
+   ops_dashboard/backend/api/trading.py:217: if str(r.get("direction") or "").upper() == f["direction"]]
+   ops_dashboard/backend/api/trading.py:309: ("Trade Type", "trade_type"), ("Direction", "direction"),
+   ops_dashboard/backend/api/trading.py:411: "direction": g("direction").upper(),
+   ops_dashboard/backend/api/trading.py:427: if f.get("direction"):
+   ops_dashboard/backend/api/trading.py:429: if str(r.get("direction") or "").upper() == f["direction"]]
+   ops_dashboard/backend/api/trading.py:550: ("Direction", "direction"),
+   ops_dashboard/backend/readers/config_reader.py:71: "direction": s.get("direction"),
+   ops_dashboard/backend/readers/db_reader.py:1164: "per_direction": [{"direction": r["direction"], "net": round(float(r["net"]), 2),
+   ops_dashboard/backend/readers/db_reader.py:1696: by = {r["direction"]: (float(r["v"] or 0.0), int(r["n"])) for r in rows}
+   ops_dashboard/backend/readers/db_reader.py:2620: direction = r.get("direction")
+   ops_dashboard/backend/readers/db_reader.py:2787: if str(r.get("direction") or "").upper() == d)
+   ops_dashboard/backend/readers/db_reader.py:2839: longs = sum(1 for r in open_rows if str(r.get("direction") or "").upper() == "LONG")
+   ops_dashboard/backend/readers/db_reader.py:2840: shorts = sum(1 for r in open_rows if str(r.get("direction") or "").upper() == "SHORT")
+   ops_dashboard/backend/readers/db_reader.py:3127: direction = r.get("direction")
+   ops_dashboard/backend/readers/db_reader.py:3242: sub = [r for r in rows if str(r.get("direction") or "").upper() == side]
+   ops_dashboard/backend/services/analytics_period.py:147: _PNL_FILTERS = ("strategy", "symbol", "trade_type", "direction")
+   ops_dashboard/backend/services/analytics_period.py:225: if f.get("direction"):
+   ops_dashboard/backend/services/analytics_period.py:226: out = [r for r in out if (r.get("direction") or "").upper() == f["direction"].upper()]
+   ops_dashboard/backend/services/analytics_period.py:318: "trade_type": _trade_type, "direction": lambda r: r.get("direction")}.get(dim)
+   ops_dashboard/backend/services/analytics_period.py:348: (r.get("direction") or "—").upper())
+   ops_dashboard/backend/services/analytics_period.py:353: "trade_type": k[3], "direction": k[4], "first_entry": None})
+   ops_dashboard/backend/services/analytics_period.py:400: "direction": sorted({(r["direction"] or "").upper() for r in all_rows if r.get("direction")}),
+   ops_dashboard/backend/services/analytics_period.py:403: "trade_type": trade_type, "direction": direction}
+   ops_dashboard/backend/services/analytics_period.py:442: "per_direction": sorted(_aggregate(rows, lambda r: r.get("direction"), "direction"),
+   ops_dashboard/backend/services/analytics_period.py:443: key=lambda m: m["direction"]),
+   ops_dashboard/backend/services/analytics_period.py:659: "symbol": t["symbol"], "direction": t["direction"], "status": t["status"],
+   ops_dashboard/backend/services/controls.py:89: "direction": s.get("direction"),
+   ops_dashboard/backend/services/controls.py:375: strat = [[r.get("label"), r.get("trade_type"), r.get("direction"),
+   ops_dashboard/backend/services/execution_analytics.py:116: _EXEC_FILTERS = ("strategy", "symbol", "trade_type", "direction", "status",
+   ops_dashboard/backend/services/execution_analytics.py:303: "direction": (r.get("direction") or "").upper() or None,
+   ops_dashboard/backend/services/execution_analytics.py:388: if f.get("direction"):
+   ops_dashboard/backend/services/execution_analytics.py:389: out = [r for r in out if (r.get("direction") or "") == f["direction"].upper()]
+   ops_dashboard/backend/services/execution_analytics.py:696: "direction": sorted({r["direction"] for r in all_rows if r.get("direction")}),
+   ops_dashboard/backend/services/execution_analytics.py:704: "direction": direction, "status": status, "trade_state": trade_state}
+   ops_dashboard/backend/services/execution_analytics.py:846: ("Trade Type", "trade_type"), ("Direction", "direction"),
+   ops_dashboard/backend/services/holdings.py:337: "direction": s.get("direction"),
+   ops_dashboard/backend/services/holdings.py:373: "direction": None, "quantity": None, "qty_planned": None,
+   ops_dashboard/backend/services/live_activity.py:234: side = "BUY" if str(r.get("direction") or "").upper() == "LONG" else "SELL"
+   ops_dashboard/backend/services/live_activity.py:922: "direction": r.get("direction"),
+   ops_dashboard/backend/services/operations.py:95: "direction": t["direction"], "status": t["status"],
+   ops_dashboard/backend/services/slippage_analytics.py:101: _SLIP_FILTERS = ("strategy", "symbol", "trade_type", "direction",
+   ops_dashboard/backend/services/slippage_analytics.py:216: "direction": (r.get("side") or "").upper() or None,
+   ops_dashboard/backend/services/slippage_analytics.py:248: if f.get("direction"):
+   ops_dashboard/backend/services/slippage_analytics.py:249: out = [r for r in out if (r.get("direction") or "") == f["direction"].upper()]
+   ops_dashboard/backend/services/slippage_analytics.py:443: "direction": sorted({r["direction"] for r in all_rows if r.get("direction")}),
+   ops_dashboard/backend/services/slippage_analytics.py:448: "direction": direction, "price_bucket": price_bucket, "status": status}
+   ops_dashboard/backend/services/slippage_analytics.py:543: ("Trade Type", "trade_type"), ("Direction", "direction"),
+   ops_dashboard/backend/services/strategy_meta.py:78: "direction": conf.get("direction"),
+   ops_dashboard/backend/services/strategy_ranking.py:167: out = [r for r in out if str(r.get("direction") or "").upper() == want_d]
+   ops_dashboard/backend/services/strategy_ranking.py:267: "active": {"trade_type": trade_type or None, "direction": direction or None},
+   ops_dashboard/backend/services/strategy_ranking.py:277: "direction": list(DIRECTIONS),
+   ops_dashboard/backend/services/strategy_tower.py:229: "direction": conf.get("direction"),
+   ops_dashboard/backend/services/strategy_tower.py:298: "family": _family_of(name, conf.get("direction")),  # G5b: UI grouping (canonical direction, not name-parse)
+   ops_dashboard/backend/services/strategy_tower.py:441: row_dir = (basic.get("direction") or "").upper()
+   ops_dashboard/backend/services/trade_logs.py:130: "symbol": symbol, "strategy": strategy, "direction": direction,
+   ops_dashboard/backend/services/trade_logs.py:204: direction=r.get("direction"), trade_type=ttype.get(tid))
+   ops_dashboard/backend/services/trade_logs.py:247: strategy=r.get("strategy"), direction=r.get("direction"),
+   ops_dashboard/backend/services/trade_logs.py:298: if not eq("direction", f.get("direction")):
+   ops_dashboard/backend/services/trade_logs.py:419: "direction": opts("direction"), "trade_type": opts("trade_type"),
+   ops_dashboard/backend/services/trade_logs.py:730: "direction": (trade or {}).get("direction"),
+   ops_dashboard/frontend/templates/execution.html:129: <template x-for="o in opt('direction')" :key="o"><option :value="o" x-text="o"></option></template>
+   ops_dashboard/frontend/templates/execution.html:499: { key:"direction", label:"Direction", group:"Common info" },
+   ops_dashboard/frontend/templates/execution.html:681: if (k === "direction") {
+   ops_dashboard/frontend/templates/orders.html:382: { key: "direction",   label: "Direction",       kind: "dir",  hc: true },
+   ops_dashboard/frontend/templates/pnl_analytics.html:121: <template x-for="o in opt('direction')" :key="o"><option :value="o" x-text="o"></option></template>
+   ops_dashboard/frontend/templates/pnl_analytics.html:351: <option value="direction">By Direction</option>
+   ops_dashboard/frontend/templates/positions.html:647: { key: "direction",    label: "Direction",    kind: "dir" , hc: true },
+   ops_dashboard/frontend/templates/positions.html:975: ["strategy", "symbol", "trade_type", "direction", "position_status"]
+   ops_dashboard/frontend/templates/signals.html:339: { key: "direction",        label: "Direction",      kind: "dir",    hc: true },
+   ops_dashboard/frontend/templates/slippage.html:121: <template x-for="o in opt('direction')" :key="o"><option :value="o" x-text="o"></option></template>
+   ops_dashboard/frontend/templates/slippage.html:480: if (c.key === "direction") cls += " " + this.dirCls(r.direction);
+   ops_dashboard/frontend/templates/slippage.html:504: { key:"direction",           label:"Direction" },
+   ops_dashboard/frontend/templates/strategies.html:385: if (this.af.direction) p.set("direction", this.af.direction);
+   ops_dashboard/frontend/templates/strategy_ranking.html:376: if (this.f.direction) p.set("direction", this.f.direction);
+   ops_dashboard/frontend/templates/trade_explorer.html:692: { key: "direction",       label: "Direction",       kind: "dir",  ctr: true },
+   ops_dashboard/frontend/templates/trade_explorer.html:1110: ["strategy", "symbol", "trade_type", "direction", "result"]
+   ops_dashboard/frontend/templates/trade_logs.html:538: { key: "direction",  label: "Direction",  all: "All Directions" },
+   orders/breakeven_manager.py:151: "direction": direction,
+   orders/breakeven_manager.py:329: "direction": info.direction,
+   orders/cnc_gtt_monitor.py:562: direction = (trade["direction"] if trade else "LONG") or "LONG"
+   orders/eod_squareoff.py:599: trades.direction is NOT NULL (LONG|SHORT) for real rows; we still
+   orders/eod_squareoff.py:601: d = str(trade.get("direction") or "").upper()
+   orders/eod_squareoff.py:1155: direction = row["direction"]
+   orders/order_manager.py:267: "symbol": symbol, "direction": direction,
+   orders/order_placer.py:500: "order_protocol", "direction",
+   orders/order_placer.py:831: direction=row["direction"] or "",
+   orders/order_placer.py:2324: direction = trade_row.get("direction") or fill_entry.direction
+   orders/order_placer.py:2465: "intent": intent, "direction": direction,
+   orders/order_placer.py:2703: direction = trade["direction"] or "LONG"
+   orders/order_reconciler.py:1286: direction = trade["direction"] or "LONG"
+   orders/order_reconciler.py:1923: direction = str(row["direction"] or "").upper()
+   orders/order_reconciler.py:2439: direction = trade["direction"] or "LONG"
+   orders/order_reconciler.py:3031: direction = trade["direction"] or "LONG"
+   orders/order_reconciler.py:3185: direction = trade["direction"]   # "LONG" | "SHORT"
+   orders/order_reconciler.py:3675: sign = 1.0 if (t["direction"] or "").upper() == "LONG" else -1.0
+   orders/order_reconciler.py:4276: direction = trade_row["direction"] or ""
+   orders/order_reconciler.py:4581: direction = trade_row["direction"] or "LONG"
+   orders/shadow_tracker.py:292: direction: str = trade["direction"]              # LONG | SHORT
+   orders/sl_breach_monitor.py:109: direction = trade["direction"]
+   orders/slippage_recorder.py:197: side = t.get("direction") or ""
+   orders/smart_tgt_manager.py:185: "direction":            row["direction"],
+   orders/smart_tgt_manager.py:269: "direction":            direction,
+   orders/smart_tgt_manager.py:405: direction = info["direction"]
+   orders/smart_tgt_manager.py:519: direction = info["direction"]
+   orders/smart_tgt_manager.py:568: direction = info["direction"]
+   orders/smart_tgt_manager.py:800: direction = info["direction"]
+   orders/smart_tgt_manager.py:852: direction = info["direction"]
+   orders/structure_exit_manager.py:195: direction = str(trade["direction"] or "").upper()
+   orders/structure_exit_manager.py:309: "direction": "LONG" if is_long else "SHORT",
+   orders/structure_exit_manager.py:586: "direction": "LONG" if is_long else "SHORT",
+   regime/engine.py:120: direction = self._safe_axis(self._direction, daily, default=DIR_SIDEWAYS, label="direction")
+   regime/models.py:104: "direction": self.direction.to_dict(),
+   reports/daily_report.py:351: direction = (trade.get("direction") or "LONG").upper()
+   reports/daily_report.py:543: direction = t.get("direction", "LONG")
+   reports/daily_report.py:629: direction = t.get("direction", "LONG")
+   reports/daily_report.py:985: trade.get("direction", ""),                                      # 4
+   reports/daily_report.py:1107: direction = trade.get("direction", "LONG")
+   reports/daily_report.py:1123: direction = trade.get("direction", "LONG")
+   reports/daily_report.py:1304: direction = trade.get("direction", "LONG")
+   reports/daily_report.py:1474: f"{trade.get('direction', '')} {trade.get('symbol', '')} @ {entry_price:.2f}",
+   reports/daily_trade_review.py:146: ("A", "Trade Type", "trade_type", "text", 10), ("A", "Dir", "direction", "text", 6),
+   reports/daily_trade_review.py:500: "trade_type": trade_type, "direction": t.get("direction"),
+   reports/daily_trade_review.py:759: ("Trade Type", "trade_type", "text", 10), ("Dir", "direction", "text", 6),
+   reports/daily_trade_review.py:856: "trade_type": trade_type, "direction": (tr.get("direction") if tr else "—"),
+   reports/daily_trade_review.py:1588: dr = (r.get("direction") or "").upper()
+   reports/daily_trade_review.py:1606: "direction": dr, "signals": d["trades"], "trades": d["trades"],
+   reports/daily_trade_review.py:1721: ["direction", "signals", "trades", "wins", "losses", "win_pct", "profit", "roi_pct"],
+   reports/daily_trade_review.py:2137: t3 = {r["direction"]: r for r in sdata["t3"]}
+   reports/daily_trade_review.py:2430: direction = (trade.get("direction") or "LONG").upper()
+   reports/daily_trade_review.py:2463: "direction": direction,
+   reports/daily_trade_review.py:2486: ("Stock", "symbol", "text", 14), ("Direction", "direction", "text", 10),
+   reports/daily_trade_review.py:2582: direction = (trade.get("direction") or "LONG").upper()
+   reports/daily_trade_review.py:2745: "message": (f"{trade.get('direction', '')} "
+   screening/entry_gate.py:212: direction=row["direction"],
+   screening/entry_gate.py:335: "direction":     entry.direction,
+   screening/retest_monitor.py:233: "signal_id": p.signal_id, "symbol": p.symbol, "direction": p.direction,
+   screening/retest_monitor.py:245: signal_id=row["signal_id"], symbol=row["symbol"], direction=row["direction"],
+   screening/retest_monitor.py:416: "direction": parked.direction,
+   screening/secondary_screener.py:247: "direction": direction,
+   screening/secondary_screener.py:469: "direction": direction, "intent": intent,
+   screening/step_executor.py:132: direction = signal.get("direction", "LONG").upper()
+   scripts/eod_broker_reconcile.py:259: signed = qty if (t["direction"] or "").upper() == "LONG" else -qty
+   scripts/gemini_premarket_brief.py:211: f"{pos['symbol']} {pos['direction']} qty={pos['qty_filled']} "
+   scripts/gemini_trade_coach.py:149: f"### {t['symbol']} ({t['direction']}, {t['strategy']})\n"
+   scripts/preflight/checks/config_integrity.py:176: longs = sorted(n for n, c in strats.items() if getattr(c, "direction", "") == "LONG")
+   scripts/reconcile_positions.py:195: direction = row["direction"]
+   scripts/replay_signals.py:137: direction = strategy_obj.direction
+   scripts/strategy_registry_officer.py:82: """{strategy: {realized trades.direction, ...}} over FILLED trades — the CONFLICT input."""
+   scripts/strategy_registry_officer.py:138: "direction": direction,
+   scripts/strategy_registry_officer.py:156: declared = row.get("direction")
+   scripts/strategy_registry_officer.py:185: lines.append(f"  • {n}  direction={row.get('direction','?')}  "
+   scripts/strategy_registry_officer.py:191: lines.append(f"  • {n}  declared={registry.get(n,{}).get('direction','?')} "
+   scripts/strategy_status.py:100: direction=cfg.direction,
+   scripts/system_manager.py:321: sym, dirn, strat = t["symbol"], t["direction"], t["strategy"] or "(none)"
+   scripts/system_manager.py:556: longs = [r for r in rows if r["direction"] == "LONG"]
+   scripts/system_manager.py:557: shorts = [r for r in rows if r["direction"] == "SHORT"]
+   scripts/trade_journal.py:122: direction = t["direction"]
+   scripts/trade_journal.py:135: (date_iso, trade_id, t["strategy"], t["symbol"], t["direction"],
+   signals/signal_processor.py:836: # `side` is BUY/SELL here; `trades.direction` is LONG/SHORT. The forward mapping
+   signals/signal_processor.py:1000: direction=strategy_obj.direction,
+   signals/signal_processor.py:1034: _dir = strategy_obj.direction
+   signals/signal_processor.py:1045: direction=strategy_obj.direction, entry_price=entry_price,
+   signals/signal_processor.py:1379: direction=strategy_obj.direction,
+   signals/signal_processor.py:1558: direction=strategy_obj.direction,
+   signals/signal_processor.py:1775: direction = strategy.direction  # "LONG" or "SHORT"
+   signals/signal_processor.py:1855: f"adjusting for {strategy.direction}"
+   signals/signal_processor.py:1865: f"adjusting for {strategy.direction}"
+   signals/signal_processor.py:1910: direction = strategy.direction
+   sr_detector/detector.py:275: "direction": candidate.direction,
+   strategies/loader.py:44: the offending field(s) — e.g. ``missing required field 'direction'`` or
+   strategies/schema.py:143: @field_validator("direction")
+
+#### intent  (67 hits)
+   broker/zerodha_adapter.py:552: "intent": intent},
+   broker/zerodha_adapter.py:626: "price": price, "intent": intent, "broker_code": broker_code,
+   broker/zerodha_adapter.py:1581: extra={"method": "get_live_margin_pct", "symbol": symbol, "intent": intent},
+   broker/zerodha_adapter.py:1610: exc, {"symbol": symbol, "intent": intent}, "order_margins"
+   broker/zerodha_adapter.py:1660: "intent": intent,
+   broker/zerodha_adapter.py:1685: extra={"symbol": symbol, "intent": intent},
+   capital/fund_manager.py:749: intent=res.intent,
+   capital/fund_manager.py:863: intent=res.intent,
+   capital/fund_manager.py:942: actual_qty, actual_fill_price, res.intent, self._leverage_map
+   capital/fund_manager.py:2277: # commit math uses res.margin (from the ledger) + res.intent.
+   capital/position_sizer.py:406: "intent": intent,
+   capital/position_sizer.py:419: "intent": intent,
+   core/config_auditor.py:702: metrics={"intent": intent, "leverage": value}))
+   core/state_store.py:2958: "strategy_name", "tier", "scanner_name", "intent",
+   core/state_store.py:3022: "entry_price", "sl_price", "strategy", "intent", "tier", "state",
+   main.py:4149: lambda name: getattr(strategies.get(name), "intent", None)
+   ops_dashboard/backend/readers/config_reader.py:78: "intent": s.get("intent"),          # INTRADAY | DELIVERY (→ Trade Type)
+   ops_dashboard/backend/services/controls.py:61: tt = str(v.get("intent") or v.get("trade_type") or "INTRADAY").upper()
+   ops_dashboard/backend/services/controls.py:88: "trade_type": (s.get("intent") or s.get("trade_type") or "INTRADAY"),
+   ops_dashboard/backend/services/strategy_meta.py:76: "trade_type": trade_type_of_intent(conf.get("intent")),
+   ops_dashboard/backend/services/strategy_meta.py:77: "intent": conf.get("intent"),          # kept verbatim for audit
+   ops_dashboard/backend/services/strategy_tower.py:230: "trade_type": _trade_type(conf.get("intent")),   # Intraday | Delivery (read-only)
+   orders/full_entry_engine.py:194: "intent": intent, "protocol": order_protocol,
+   orders/order_placer.py:501: "side", "sl_price", "tgt_price", "intent",
+   orders/order_placer.py:1369: "intent": intent,
+   orders/order_placer.py:1386: "intent": intent,
+   orders/order_placer.py:2465: "intent": intent, "direction": direction,
+   orders/order_placer.py:2933: "intent": fill_entry.intent,
+   orders/order_placer.py:3213: "intent": fill_entry.intent,
+   orders/order_protocol_limit.py:402: "intent": intent,
+   orders/order_protocol_limit.py:424: "intent": intent,
+   screening/entry_gate.py:222: intent=row["intent"],
+   screening/entry_gate.py:345: "intent":        entry.intent,
+   screening/retest_monitor.py:236: "strategy": p.strategy, "intent": p.intent, "tier": p.tier,
+   screening/retest_monitor.py:248: strategy=row["strategy"], intent=row["intent"], tier=row.get("tier") or "",
+   screening/retest_monitor.py:365: "side": side, "intent": intent, "tier": tier,
+   screening/secondary_screener.py:248: "intent": intent,
+   screening/secondary_screener.py:469: "direction": direction, "intent": intent,
+   scripts/strategy_status.py:91: type=cfg.intent,
+   signals/signal_processor.py:1001: intent=strategy_obj.intent,
+   signals/signal_processor.py:1047: intent=strategy_obj.intent, tier=screen_result.tier,
+   signals/signal_processor.py:1117: strategy_obj.intent,
+   signals/signal_processor.py:1313: symbol, side, intent=getattr(strategy_obj, "intent", None))
+   signals/signal_processor.py:1316: symbol, side, strategy_obj.intent, sizing, signal_id,
+   signals/signal_processor.py:1329: symbol, sizing.qty, entry_price, strategy_obj.intent, signal_id,
+   signals/signal_processor.py:1452: intent=strategy_obj.intent,
+   signals/signal_processor.py:1560: intent=strategy_obj.intent,
+   signals/signal_processor.py:1593: strategy_name=strategy_name, side=side, intent=strategy_obj.intent,
+   signals/signal_processor.py:1641: intent=strategy_obj.intent, score=float(getattr(screen_result, "score", 0.0)),
+   signals/signal_processor.py:2113: strategy_obj.intent,
+   signals/signal_processor.py:2143: symbol, side, intent=getattr(strategy_obj, "intent", None))
+   signals/signal_processor.py:2146: symbol, side, strategy_obj.intent, sizing, signal_id,
+   signals/signal_processor.py:2159: symbol, sizing.qty, entry_price, strategy_obj.intent, signal_id,
+   signals/signal_processor.py:2257: intent=strategy_obj.intent,
+   signals/signal_processor.py:2306: intent=strategy_obj.intent,
+   signals/signal_processor.py:2456: symbol, side, entry_est, structure_sl, strategy_obj.intent,
+   signals/signal_processor.py:2479: symbol, side, intent=getattr(strategy_obj, "intent", None))
+   signals/signal_processor.py:2482: symbol, side, strategy_obj.intent, sizing, signal_id,
+   signals/signal_processor.py:2492: symbol, sizing.qty, entry_est, strategy_obj.intent, signal_id,
+   signals/signal_processor.py:2556: intent=strategy_obj.intent, signal_id=signal_id,
+   signals/signal_processor.py:2592: signal_id=signal_id, intent=strategy_obj.intent)
+   strategies/control.py:20: LAYER 2  ``strategy.intent``  INTRADAY | DELIVERY — the strategy's product type.
+   strategies/control.py:76: intent = getattr(strategy, "intent", None)
+   strategies/loader.py:142: if force_intraday_only and cfg.intent != "INTRADAY":
+   strategies/loader.py:147: cfg.name, cfg.intent,
+   strategies/schema.py:152: @field_validator("intent")
+   v3_chain/models.py:101: "intent": self.intent,
+
+#### order_protocol  (87 hits)
+   core/schema.sql:101: -- Decision refs: G2a (trade_id), P7a (capital), P8/P13 (order_protocol),
+   core/schema.sql:166: order_protocol      TEXT NOT NULL,               -- CO_PLUS_TGT | LIMIT_TRIPLE
+   core/state_store.py:1048: price, placed_at, symbol, trade_id, leg, order_protocol,
+   core/state_store.py:1051: B.1 (2026-04-25): leg/trade_id/order_protocol/direction added so
+   core/state_store.py:1069: t.order_protocol,
+   core/state_store.py:1212: order_protocol, entry_broker_order_id, entry_variety
+   core/state_store.py:1237: t.order_protocol,
+   ops_dashboard/backend/readers/config_reader.py:79: "order_protocol": s.get("order_protocol"),
+   ops_dashboard/backend/services/system_logs.py:83: "order_protocol", "tgt_retry_manager",
+   orders/entry_engine.py:54: order_protocol:        "CO_PLUS_TGT" | "LIMIT_TRIPLE"
+   orders/entry_engine.py:64: order_protocol: str = ""
+   orders/entry_engine.py:70: if self.success and not self.order_protocol:
+   orders/entry_engine.py:71: raise ValueError("success=True requires non-empty order_protocol")
+   orders/eod_squareoff.py:651: rough Smart TGT split derived from order_protocol.
+   orders/eod_squareoff.py:809: trail_n = sum(1 for t in closed if t.get("order_protocol") == "CO_PLUS_TGT")
+   orders/eod_squareoff.py:1157: order_protocol = (row["order_protocol"] or "").upper()
+   orders/eod_squareoff.py:1166: is_co = (order_protocol == "CO_PLUS_TGT") and (entry_variety == "co")
+   orders/full_entry_engine.py:6: CoPlusTgtProtocol or LimitTripleProtocol based on the order_protocol
+   orders/full_entry_engine.py:52: order_protocol="LIMIT_TRIPLE",
+   orders/full_entry_engine.py:84: order_protocol: str = "",  # overrides default_protocol when provided
+   orders/full_entry_engine.py:91: order_protocol: "CO_PLUS_TGT" | "LIMIT_TRIPLE" | "" (uses default)
+   orders/full_entry_engine.py:93: protocol = order_protocol or self._default_protocol
+   orders/full_entry_engine.py:101: f"Unknown order_protocol {protocol!r}; "
+   orders/full_entry_engine.py:124: order_protocol: str,
+   orders/full_entry_engine.py:143: ValueError if order_protocol is not LIMIT_TRIPLE or CO_PLUS_TGT.
+   orders/full_entry_engine.py:179: if order_protocol == "LIMIT_TRIPLE":
+   orders/full_entry_engine.py:181: elif order_protocol == "CO_PLUS_TGT":
+   orders/full_entry_engine.py:186: f"got {order_protocol!r}"
+   orders/full_entry_engine.py:194: "intent": intent, "protocol": order_protocol,
+   orders/full_entry_engine.py:199: if order_protocol == "CO_PLUS_TGT":
+   orders/order_manager.py:187: order_protocol: str,    # "CO_PLUS_TGT" | "LIMIT_TRIPLE"
+   orders/order_manager.py:221: status, entry_mode, order_protocol, recovered_flag,
+   orders/order_manager.py:253: order_protocol,
+   orders/order_placer.py:31: OP9  -- order_protocol determined by intent: "INTRADAY" → default_protocol
+   orders/order_placer.py:421: # BL-10a: order_protocol → broker product code, used to derive product for
+   orders/order_placer.py:484: `order_protocol` / `direction` are cached here so entry-fill handling
+   orders/order_placer.py:500: "order_protocol", "direction",
+   orders/order_placer.py:512: order_protocol: str,
+   orders/order_placer.py:530: self.order_protocol = order_protocol
+   orders/order_placer.py:830: order_protocol=(row["order_protocol"] or "").upper(),
+   orders/order_placer.py:961: order_protocol = self._default_protocol
+   orders/order_placer.py:1006: order_protocol=order_protocol,
+   orders/order_placer.py:1045: "tgt_price": tgt_price, "protocol": order_protocol,
+   orders/order_placer.py:1354: order_protocol=order_protocol,
+   orders/order_placer.py:1596: order_protocol=order_protocol,
+   orders/order_placer.py:1625: result.order_protocol != "CO_PLUS_TGT"
+   orders/order_placer.py:1636: order_protocol=order_protocol,
+   orders/order_placer.py:1661: order_protocol=order_protocol,
+   orders/order_placer.py:1738: "protocol": result.order_protocol,
+   orders/order_placer.py:1881: if fill_entry.order_protocol == "LIMIT_TRIPLE":
+   orders/order_placer.py:1889: elif fill_entry.order_protocol == "CO_PLUS_TGT":
+   orders/order_placer.py:2071: if fill_entry.order_protocol == "LIMIT_TRIPLE":
+   orders/order_placer.py:2079: elif fill_entry.order_protocol == "CO_PLUS_TGT":
+   orders/order_placer.py:2156: if fill_entry.order_protocol == "LIMIT_TRIPLE":
+   orders/order_placer.py:2164: elif fill_entry.order_protocol == "CO_PLUS_TGT":
+   orders/order_placer.py:2175: fill_entry.order_protocol == "LIMIT_TRIPLE"
+   orders/order_placer.py:2205: fill_entry.order_protocol == "CO_PLUS_TGT"
+   orders/order_placer.py:2326: # Derive product/intent from the cached order_protocol. The trades table
+   orders/order_placer.py:2328: product = _PROTOCOL_TO_PRODUCT.get(fill_entry.order_protocol, "")
+   orders/order_placer.py:2334: "order_protocol": fill_entry.order_protocol,
+   orders/order_placer.py:2437: order_protocol=fill_entry.order_protocol,
+   orders/order_placer.py:2490: fill_entry.order_protocol == "CO_PLUS_TGT"
+   orders/order_placer.py:2640: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:2792: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:2898: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3056: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3077: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3192: order_protocol="CO_PLUS_TGT",
+   orders/order_placer.py:3284: order_protocol="CO_PLUS_TGT",
+   orders/order_placer.py:3576: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3714: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3735: order_protocol="LIMIT_TRIPLE",
+   orders/order_placer.py:3983: order_protocol=fill_entry.order_protocol,
+   orders/order_placer.py:4472: order_protocol: str,
+   orders/order_placer.py:4522: if order_protocol != "CO_PLUS_TGT" or variety != "co":
+   orders/order_placer.py:4662: co_variety = "co" if result.order_protocol == "CO_PLUS_TGT" else "regular"
+   orders/order_placer.py:4671: order_type="SL" if result.order_protocol == "CO_PLUS_TGT" else "LIMIT",
+   orders/order_protocol_co.py:38: OPC7 -- order_protocol = "CO_PLUS_TGT".
+   orders/order_protocol_co.py:164: order_protocol="CO_PLUS_TGT",
+   orders/order_protocol_limit.py:38: OPL6 -- order_protocol = "LIMIT_TRIPLE" on the EntryResult.
+   orders/order_protocol_limit.py:247: order_protocol="LIMIT_TRIPLE",
+   orders/structure_exit_manager.py:233: filtering order_protocol == 'LIMIT_TRIPLE' drops CO_PLUS_TGT (CO) and
+   orders/structure_exit_manager.py:245: and str(r["order_protocol"] or "").upper() == "LIMIT_TRIPLE"
+   scripts/t2_cnc_gtt_realtest.py:237: " risk_amount, created_at, status, order_protocol, updated_at) "
+   strategies/schema.py:60: order_protocol: str
+   strategies/schema.py:161: @field_validator("order_protocol")
+   strategies/schema.py:166: "order_protocol must be CO_PLUS_TGT or LIMIT_TRIPLE, got %r" % v
+
+#### pipeline  (12 hits)
+   main.py:1224: "pipeline": pipeline,
+   main.py:1419: key = (n.get("trade_id"), n.get("pipeline"))
+   main.py:1423: pipeline = n.get("pipeline")
+   ops/control_tower/freshness.py:78: location="pipeline",
+   ops_dashboard/backend/services/execution_analytics.py:772: "pipeline", "pipeline"),
+   ops_dashboard/backend/services/execution_analytics.py:892: tt_h, tt_r = _rank(payload.get("per_trade_type") or [], "Trade Type", "pipeline")
+   ops_dashboard/backend/services/live_activity.py:580: "pipeline": _pipeline(cfg, today),
+   ops_dashboard/frontend/templates/dashboard.html:221: this.pipeline = p || { stages: [], halt: {} };
+   ops_dashboard/frontend/templates/dashboard.html:231: st(key) { const r = (this.pipeline.stages || []).find(s => s.key === key); return r ? Number(r.count) : 0; },
+   scripts/strategy_status.py:101: category=taxonomy_label(getattr(cfg, "pipeline", None), getattr(cfg, "horizon", None)),
+   strategies/schema.py:170: @field_validator("pipeline")
+   strategies/taxonomy.py:35: out[cfg.name] = (cfg.pipeline, cfg.horizon)
+
+#### horizon  (3 hits)
+   scripts/strategy_status.py:101: category=taxonomy_label(getattr(cfg, "pipeline", None), getattr(cfg, "horizon", None)),
+   strategies/schema.py:179: @field_validator("horizon")
+   strategies/taxonomy.py:35: out[cfg.name] = (cfg.pipeline, cfg.horizon)
+
+#### enabled  (80 hits)
+   alerts/telegram_notifier.py:98: .get("enabled", True)
+   alerts/telegram_notifier.py:802: if cfg is None or not getattr(cfg, "enabled", False):
+   capital/strategy_governor.py:35: self._enabled: bool = bool(getattr(config, "enabled", True))
+   core/account_registry.py:113: "paper_capital", "capital_share_pct", "enabled",
+   core/account_registry.py:135: enabled = raw["enabled"].strip().lower() in ("true", "1", "yes")
+   core/config_auditor.py:228: if getattr(s, "enabled", True) and getattr(s, "trailing_sl_enabled", False) is True
+   core/config_auditor.py:552: enabled = bool(getattr(ov, "enabled", False))
+   core/config_auditor.py:560: state = "enabled" if enabled else "DISABLED (maps ignored)"
+   core/config_auditor.py:564: metrics={"active": active, "enabled": enabled}))
+   main.py:2636: enabled=tg_cfg.enabled,                                # TASK-10: master ON/OFF switch
+   main.py:2855: enabled=ps_cfg.enabled,                # Diary #4: tier-multiplier ON/OFF switch
+   main.py:2865: if ps_cfg.enabled:
+   main.py:2956: enabled=sh_cfg.enabled,
+   main.py:3153: enabled=tgt_cfg.enabled,
+   main.py:3422: _v1_on = _sr_cfg.enabled
+   main.py:3469: _regime_on = bool(getattr(_regime_cfg, "enabled", False))
+   main.py:3478: _watchlist_on = bool(_watchlist_cfg is not None and getattr(_watchlist_cfg, "enabled", False))
+   main.py:3705: # watchlist.enabled=false (default): NOTHING constructed → the EOD route keeps
+   main.py:3762: _log.info("V3 Step 10b PB-01 watchlist: DISABLED (watchlist.enabled=false) — "
+   ops_dashboard/backend/api/system.py:36: if not meta["enabled"]:
+   ops_dashboard/backend/readers/config_reader.py:70: "enabled": bool(s.get("enabled", True)),
+   ops_dashboard/backend/readers/config_reader.py:172: "enabled": bool(entry.get("enabled", True)),
+   ops_dashboard/backend/readers/config_reader.py:212: for flag in ("is_primary", "enabled"):
+   ops_dashboard/backend/services/analytics_period.py:582: enabled = r["basic"]["enabled"]
+   ops_dashboard/backend/services/capacity.py:259: "enabled": bool(scb.get("enabled", False))})
+   ops_dashboard/backend/services/capacity.py:284: "enabled": bool(wh.get("per_ip_rate_limit_enabled", True))},
+   ops_dashboard/backend/services/capacity.py:304: {"enabled": bool(stg.get("enabled", False)),
+   ops_dashboard/backend/services/config_view.py:512: "enabled": bool(slc.get("enabled")) if slc else None,
+   ops_dashboard/backend/services/config_view.py:823: _row("Tiered Sizing", _yesno(sizing.get("enabled")),
+   ops_dashboard/backend/services/controls.py:70: cfg_enabled = bool(s.get("enabled", True))
+   ops_dashboard/backend/services/operations.py:34: enabled = sorted(n for n, s in strategies.items() if s.get("enabled"))
+   ops_dashboard/backend/services/operations.py:51: "enabled": enabled},
+   ops_dashboard/backend/services/scanner_attribution.py:330: "health": analytics_period.health_state(r["basic"]["enabled"], badge, sil),
+   ops_dashboard/backend/services/scanner_attribution.py:331: "enabled": r["basic"]["enabled"],
+   ops_dashboard/backend/services/slippage_analytics.py:144: "enabled": bool(slc.get("enabled", True)),
+   ops_dashboard/backend/services/strategy_health.py:127: if row["basic"]["enabled"] is False:
+   ops_dashboard/backend/services/strategy_health.py:228: st = analytics_period.health_state(r["basic"]["enabled"], badge, sil)
+   ops_dashboard/backend/services/strategy_health.py:247: "enabled": r["basic"]["enabled"],
+   ops_dashboard/backend/services/strategy_health.py:549: if r["enabled"] is not False and r["trades_today"] == 0),
+   ops_dashboard/backend/services/strategy_health.py:551: if r["enabled"] is not False and r["scanners"]
+   ops_dashboard/backend/services/strategy_meta.py:79: "enabled": conf.get("enabled"),
+   ops_dashboard/backend/services/strategy_score.py:69: if inputs.get("enabled") is False:
+   ops_dashboard/backend/services/strategy_tower.py:181: enabled_flag = bool(conf.get("enabled", True)) if name in strategies else None
+   ops_dashboard/backend/services/strategy_tower.py:185: "enabled": enabled_flag,
+   ops_dashboard/backend/services/strategy_tower.py:228: "enabled": bool(conf.get("enabled", True)) if name in strategies else None,
+   ops_dashboard/backend/services/strategy_tower.py:336: "enabled_count": sum(1 for r in rows if r["basic"]["enabled"]),
+   orders/order_placer.py:266: if ov is not None and getattr(ov, "enabled", False):
+   orders/order_placer.py:295: if overrides is None or not getattr(overrides, "enabled", False):
+   orders/order_placer.py:984: if (_scfg0 is not None and getattr(_scfg0, "enabled", False)
+   orders/order_placer.py:1113: if _scfg is not None and getattr(_scfg, "enabled", False):
+   orders/order_placer.py:1749: and getattr(self._smart_tgt_config, "enabled", False)
+   regime/engine.py:77: self._enabled = bool(_attr(config, "enabled", False))
+   regime/runner.py:47: if not getattr(self._engine, "enabled", False) or self._thread is not None:
+   scripts/check_cron_drift.py:107: enabled = [j for j in jobs if j.get("enabled", True)]
+   scripts/copy_gate.py:88: "enabled", "token_ttl_minutes", "time_lock_start",
+   scripts/copy_gate.py:219: if not cfg.enabled:
+   scripts/copy_gate.py:331: print(f"protection enabled : {cfg.enabled}")
+   scripts/cron_officer.py:509: if ps.get("enabled", True):
+   scripts/generate_crontab.py:261: job["enabled"] = True                      # reconciliation: declarative, no behaviour change
+   scripts/generate_crontab.py:294: "enabled": True, "personal_tooling": True,
+   scripts/generate_crontab.py:327: if not j.get("enabled", True):
+   scripts/generate_crontab.py:337: gen = {compose(j): j["name"] for j in jobs if j.get("enabled", True)}
+   scripts/preflight/checks/config_integrity.py:226: if ps.get("enabled", True):
+   scripts/preflight/checks/security.py:80: if cp.get("enabled") is True:
+   scripts/preflight/checks/security.py:83: enabled=cp.get("enabled"))
+   scripts/request_copy.py:66: if not cfg.enabled:
+   scripts/security_monitor.py:158: "enabled", "max_active_sessions", "failed_login_spike_threshold",
+   scripts/security_monitor.py:173: if cp.get("enabled") is not None:
+   scripts/security_monitor.py:174: cfg.copy_protection_enabled = bool(cp["enabled"])
+   scripts/security_monitor.py:1354: if not cfg.enabled and not args.report:
+   scripts/sr_level_export.py:153: "enabled": True, "intraday_anchors_enabled": True,
+   scripts/strategy_status.py:93: switch="ENABLED" if cfg.enabled else "DISABLED",
+   scripts/system_manager.py:515: if raw.get("enabled", True) and raw.get("name"):
+   scripts/system_manager.py:984: enabled = bool(getattr(ov, "enabled", False)) if ov else False
+   scripts/v3_shadow_soak_report.py:323: print("  (no pb01_watchlist rows — enable watchlist.enabled + capture a PB-01 EOD alert)")
+   sr_detector/detector.py:78: self._enabled = bool(_attr(config, "enabled", False))
+   strategies/control.py:21: LAYER 3  ``strategy.enabled``  — per-strategy ON/OFF switch.
+   strategies/control.py:77: enabled = bool(getattr(strategy, "enabled", True))
+   v3_chain/pb01_runner.py:59: path). Constructed only when `watchlist.enabled`."""
+   v3_chain/watchlist_capture.py:54: watchlist row. Constructed ONLY when `watchlist.enabled` (else the EOD route drops
+
+#### entry_method  (5 hits)
+   signals/signal_processor.py:1779: if strategy.entry_method == "LIMIT":
+   signals/signal_processor.py:1795: f"method={strategy.entry_method}). "
+   strategies/schema.py:81: entry_method: str
+   strategies/schema.py:188: @field_validator("entry_method")
+   strategies/schema.py:193: "entry_method must be MARKET or LIMIT, got %r" % v
+
+#### entry_offset_pct  (15 hits)
+   capital/position_sizer.py:263: entry_offset_pct: float = 0.0,  # FIX-066
+   capital/position_sizer.py:277: effective_entry_price  = entry_price * (1 + entry_offset_pct)  # FIX-066
+   capital/position_sizer.py:295: entry_offset_pct: FIX-066 - Buffer applied to entry_price for margin calc.
+   capital/position_sizer.py:296: order_placer places at entry_price * (1 + entry_offset_pct),
+   capital/position_sizer.py:489: # FIX-066: Apply entry_offset_pct to margin calculation.
+   capital/position_sizer.py:490: # order_placer places at entry_price * (1 + entry_offset_pct), so broker
+   capital/position_sizer.py:492: effective_entry_price = entry_price * (1.0 + entry_offset_pct)
+   signals/signal_processor.py:1759: LIMIT:  LONG  -> entry = trigger * (1 - entry_offset_pct)
+   signals/signal_processor.py:1760: SHORT -> entry = trigger * (1 + entry_offset_pct)
+   signals/signal_processor.py:1780: offset = float(strategy.entry_offset_pct)
+   signals/signal_processor.py:1794: f"offset={strategy.entry_offset_pct}, "
+   signals/signal_processor.py:1796: f"Check strategy.entry_offset_pct < 1.0."
+   strategies/schema.py:82: entry_offset_pct: float = 0.0
+   strategies/schema.py:244: @field_validator("entry_offset_pct")
+   strategies/schema.py:248: raise ValueError("entry_offset_pct must be >= 0 and < 1")
+
+#### sl_method  (22 hits)
+   orders/shadow_tracker.py:661: apply sl_method and tgt_method (FIXED_PCT / RISK_REWARD).
+   orders/shadow_tracker.py:819: Apply strategy sl_method and tgt_method to new entry_price (SH4).
+   orders/shadow_tracker.py:825: sl_method = strategy.sl_method
+   orders/shadow_tracker.py:826: if sl_method == "ATR":
+   orders/shadow_tracker.py:827: sl_method = "FIXED_PCT"  # ATR not implemented; fallback
+   orders/shadow_tracker.py:829: if sl_method == "FIXED_PCT":
+   signals/signal_processor.py:1801: sl_method = strategy.sl_method  # "FIXED_PCT" or "ATR"
+   signals/signal_processor.py:1802: if sl_method == "ATR":
+   signals/signal_processor.py:1806: "sl_method=ATR not implemented and atr_fallback_mode=HALT",
+   signals/signal_processor.py:1809: "sl_method=ATR not yet implemented; falling back to FIXED_PCT"
+   signals/signal_processor.py:1811: sl_method = "FIXED_PCT"
+   signals/signal_processor.py:1813: if sl_method == "FIXED_PCT":
+   signals/signal_processor.py:1817: # when sl_method=FIXED_PCT in the YAML; ATR strategies declare
+   signals/signal_processor.py:1831: f"Likely cause: sl_method=ATR with sl_pct=0.0 fell "
+   signals/signal_processor.py:1841: # M-4: unknown sl_method is a configuration error, not a broker
+   signals/signal_processor.py:1845: f"Unknown sl_method: {sl_method!r}",
+   strategies/schema.py:85: sl_method: str
+   strategies/schema.py:86: sl_pct: float = 0.0          # > 0 required when sl_method=FIXED_PCT (model_validator)
+   strategies/schema.py:197: @field_validator("sl_method")
+   strategies/schema.py:202: "sl_method must be FIXED_PCT or ATR, got %r" % v
+   strategies/schema.py:303: if self.sl_method == "FIXED_PCT":
+   strategies/schema.py:306: "sl_pct must be > 0 when sl_method=FIXED_PCT"
+
+#### sl_pct  (46 hits)
+   orders/price_math.py:87: sl_pct: float,
+   orders/price_math.py:92: LONG:  entry * (1 - sl_pct)
+   orders/price_math.py:93: SHORT: entry * (1 + sl_pct)
+   orders/price_math.py:96: return entry_price * (1.0 - sl_pct)
+   orders/price_math.py:97: return entry_price * (1.0 + sl_pct)
+   orders/shadow_tracker.py:672: sl_pct = abs(trade_entry - trade_sl) / trade_entry
+   orders/shadow_tracker.py:675: sl_pct = 0.01
+   orders/shadow_tracker.py:679: sl = entry_price * (1.0 - sl_pct)
+   orders/shadow_tracker.py:682: sl = entry_price * (1.0 + sl_pct)
+   orders/shadow_tracker.py:830: sl = calc_sl_price(direction, entry_price, float(strategy.sl_pct))
+   reports/daily_trade_review.py:152: ("B", "Planned RR", "planned_rr", "num2", 9), ("B", "SL %", "sl_pct", "num2", 8),
+   reports/daily_trade_review.py:431: sl_pct = round(abs(entry - sl) / entry * 100, 2) if entry and sl is not None else None
+   reports/daily_trade_review.py:505: "sl_pct": sl_pct, "tgt_pct": tgt_pct, "capital_consumed": margin,
+   reports/daily_trade_review.py:1618: if _f(r.get("sl_pct")) is not None:
+   reports/daily_trade_review.py:1619: a["psl"].append(_f(r.get("sl_pct")))
+   scripts/replay_signals.py:138: sl_pct = getattr(strategy_obj, "sl_pct", 0.015)
+   scripts/replay_signals.py:140: trigger_price * (1 - sl_pct)
+   scripts/replay_signals.py:142: else trigger_price * (1 + sl_pct)
+   scripts/strategy_status.py:46: sl_pct: str
+   scripts/strategy_status.py:72: start="—", end="—", sl_pct="—", rr="—", direction="—", category="—",
+   scripts/strategy_status.py:98: sl_pct=(f"{cfg.sl_pct * 100:.2f}%" if cfg.sl_pct else "—"),
+   scripts/strategy_status.py:164: r.start, r.end, r.sl_pct, r.rr, r.direction, r.category]
+   signals/signal_processor.py:1763: FIXED_PCT: LONG  -> sl = entry * (1 - sl_pct)
+   signals/signal_processor.py:1764: SHORT -> sl = entry * (1 + sl_pct)
+   signals/signal_processor.py:1814: sl_pct = float(strategy.sl_pct)
+   signals/signal_processor.py:1815: # E.1 (2026-04-25): explicit reject when sl_pct == 0 in the
+   signals/signal_processor.py:1816: # FIXED_PCT branch. Strategy schema validates sl_pct > 0 only
+   signals/signal_processor.py:1818: # sl_pct=0.0 (legitimately, since ATR computes the SL). When
+   signals/signal_processor.py:1819: # ATR is unavailable and we fall back to FIXED_PCT, sl_pct is
+   signals/signal_processor.py:1823: # is incomplete (e.g. add a non-zero sl_pct fallback for
+   signals/signal_processor.py:1825: if sl_pct <= 0.0:
+   signals/signal_processor.py:1829: f"sl_pct={sl_pct} in FIXED_PCT branch "
+   signals/signal_processor.py:1831: f"Likely cause: sl_method=ATR with sl_pct=0.0 fell "
+   signals/signal_processor.py:1833: f"Set a positive sl_pct fallback in the strategy YAML."
+   signals/signal_processor.py:1837: sl_price = entry_price * (1.0 - sl_pct)
+   signals/signal_processor.py:1839: sl_price = entry_price * (1.0 + sl_pct)
+   signals/webhook_receiver.py:431: Non-critical fields: trigger_price, sl_pct, target_pct (set to None on failure)
+   signals/webhook_receiver.py:434: float_fields = ["trigger_price", "sl_pct", "target_pct"]
+   strategies/schema.py:86: sl_pct: float = 0.0          # > 0 required when sl_method=FIXED_PCT (model_validator)
+   strategies/schema.py:304: if self.sl_pct <= 0:
+   strategies/schema.py:306: "sl_pct must be > 0 when sl_method=FIXED_PCT"
+   strategies/schema.py:308: if not (self.sl_min_pct <= self.sl_pct <= self.sl_max_pct):
+   strategies/schema.py:310: "sl_pct (%.4f) must be between sl_min_pct (%.4f) and sl_max_pct (%.4f)"
+   strategies/schema.py:311: % (self.sl_pct, self.sl_min_pct, self.sl_max_pct)
+   v3_chain/forward_shadow.py:77: *, sl_pct: float = 0.01, tgt_r: float = 1.5,
+   v3_chain/forward_shadow.py:88: sld = entry * sl_pct
+
+#### sl_atr_multiplier  (2 hits)
+   strategies/schema.py:87: sl_atr_multiplier: float = 1.5
+   strategies/schema.py:222: @field_validator("sl_atr_multiplier", "tgt_atr_multiplier")
+
+#### sl_min_pct  (16 hits)
+   orders/shadow_tracker.py:836: if sl_dist_pct < strategy.sl_min_pct:
+   orders/shadow_tracker.py:837: adj = entry_price * strategy.sl_min_pct
+   signals/signal_processor.py:1768: If sl_distance_pct < sl_min_pct: adjust sl + WARNING
+   signals/signal_processor.py:1821: # widen sl_distance to sl_min_pct, masking the missing ATR
+   signals/signal_processor.py:1852: if sl_distance_pct < strategy.sl_min_pct:
+   signals/signal_processor.py:1854: f"SL distance {sl_distance_pct:.4f} < sl_min_pct {strategy.sl_min_pct:.4f}; "
+   signals/signal_processor.py:1857: adj_dist = entry_price * strategy.sl_min_pct
+   strategies/schema.py:88: sl_min_pct: float = 0.003
+   strategies/schema.py:215: @field_validator("sl_min_pct", "sl_max_pct")
+   strategies/schema.py:219: raise ValueError("sl_min_pct and sl_max_pct must be > 0 and < 1")
+   strategies/schema.py:308: if not (self.sl_min_pct <= self.sl_pct <= self.sl_max_pct):
+   strategies/schema.py:310: "sl_pct (%.4f) must be between sl_min_pct (%.4f) and sl_max_pct (%.4f)"
+   strategies/schema.py:311: % (self.sl_pct, self.sl_min_pct, self.sl_max_pct)
+   strategies/schema.py:315: if self.sl_min_pct > self.sl_max_pct:
+   strategies/schema.py:317: "sl_min_pct (%.4f) must be <= sl_max_pct (%.4f)"
+   strategies/schema.py:318: % (self.sl_min_pct, self.sl_max_pct)
+
+#### sl_max_pct  (15 hits)
+   orders/shadow_tracker.py:839: elif sl_dist_pct > strategy.sl_max_pct:
+   orders/shadow_tracker.py:840: adj = entry_price * strategy.sl_max_pct
+   signals/signal_processor.py:1769: If sl_distance_pct > sl_max_pct: adjust sl + WARNING
+   signals/signal_processor.py:1862: elif sl_distance_pct > strategy.sl_max_pct:
+   signals/signal_processor.py:1864: f"SL distance {sl_distance_pct:.4f} > sl_max_pct {strategy.sl_max_pct:.4f}; "
+   signals/signal_processor.py:1867: adj_dist = entry_price * strategy.sl_max_pct
+   strategies/schema.py:89: sl_max_pct: float = 0.05
+   strategies/schema.py:215: @field_validator("sl_min_pct", "sl_max_pct")
+   strategies/schema.py:219: raise ValueError("sl_min_pct and sl_max_pct must be > 0 and < 1")
+   strategies/schema.py:308: if not (self.sl_min_pct <= self.sl_pct <= self.sl_max_pct):
+   strategies/schema.py:310: "sl_pct (%.4f) must be between sl_min_pct (%.4f) and sl_max_pct (%.4f)"
+   strategies/schema.py:311: % (self.sl_pct, self.sl_min_pct, self.sl_max_pct)
+   strategies/schema.py:315: if self.sl_min_pct > self.sl_max_pct:
+   strategies/schema.py:317: "sl_min_pct (%.4f) must be <= sl_max_pct (%.4f)"
+   strategies/schema.py:318: % (self.sl_min_pct, self.sl_max_pct)
+
+#### sl_gap_buffer_pct  (6 hits)
+   signals/signal_processor.py:1744: # Gap-window constants for sl_gap_buffer_pct (FIX-130 Item 4)
+   signals/signal_processor.py:1771: FIX-130 (Item 4): if strategy.sl_gap_buffer_pct > 0 and now_time is within
+   signals/signal_processor.py:1772: 09:15-09:30 gap window, widen SL by sl_gap_buffer_pct after bounds enforcement.
+   signals/signal_processor.py:1874: # Only active when strategy.sl_gap_buffer_pct > 0 AND now_time is provided
+   signals/signal_processor.py:1877: gap_buffer = float(getattr(strategy, "sl_gap_buffer_pct", 0.0))
+   strategies/schema.py:90: sl_gap_buffer_pct: float = 0.0  # FIX-130: extra SL buffer during 09:15-09:30 gap window (0=disabled)
+
+#### tgt_method  (23 hits)
+   orders/shadow_tracker.py:329: if strategy.tgt_method == "RISK_REWARD":
+   orders/shadow_tracker.py:661: apply sl_method and tgt_method (FIXED_PCT / RISK_REWARD).
+   orders/shadow_tracker.py:819: Apply strategy sl_method and tgt_method to new entry_price (SH4).
+   orders/shadow_tracker.py:844: tgt_method = strategy.tgt_method
+   orders/shadow_tracker.py:845: if tgt_method == "ATR":
+   orders/shadow_tracker.py:846: tgt_method = "FIXED_PCT"  # fallback
+   orders/shadow_tracker.py:848: if tgt_method == "FIXED_PCT":
+   orders/shadow_tracker.py:854: elif tgt_method == "RISK_REWARD":
+   signals/signal_processor.py:1911: tgt_method = strategy.tgt_method  # "FIXED_PCT" | "RISK_REWARD" | "ATR"
+   signals/signal_processor.py:1913: if tgt_method == "ATR":
+   signals/signal_processor.py:1917: "tgt_method=ATR not implemented and atr_fallback_mode=HALT",
+   signals/signal_processor.py:1920: "tgt_method=ATR not yet implemented; falling back to FIXED_PCT"
+   signals/signal_processor.py:1922: tgt_method = "FIXED_PCT"
+   signals/signal_processor.py:1924: if tgt_method == "FIXED_PCT":
+   signals/signal_processor.py:1930: elif tgt_method == "RISK_REWARD":
+   signals/signal_processor.py:1940: f"Unknown tgt_method: {tgt_method!r}",
+   signals/signal_processor.py:1950: f"(method={tgt_method}, entry={entry}, tgt={tgt_price})",
+   strategies/schema.py:93: tgt_method: str
+   strategies/schema.py:94: tgt_pct: float = 0.0         # > 0 required when tgt_method=FIXED_PCT (model_validator)
+   strategies/schema.py:206: @field_validator("tgt_method")
+   strategies/schema.py:211: "tgt_method must be FIXED_PCT, RISK_REWARD, or ATR, got %r" % v
+   strategies/schema.py:322: if self.tgt_method == "FIXED_PCT":
+   strategies/schema.py:325: "tgt_pct must be > 0 when tgt_method=FIXED_PCT"
+
+#### tgt_pct  (21 hits)
+   orders/shadow_tracker.py:673: tgt_pct = abs(trade_tgt - trade_entry) / trade_entry
+   orders/shadow_tracker.py:676: tgt_pct = 0.02
+   orders/shadow_tracker.py:680: tgt = entry_price * (1.0 + tgt_pct)
+   orders/shadow_tracker.py:683: tgt = entry_price * (1.0 - tgt_pct)
+   orders/shadow_tracker.py:849: tgt_pct = float(strategy.tgt_pct)
+   orders/shadow_tracker.py:851: tgt = entry_price * (1.0 + tgt_pct)
+   orders/shadow_tracker.py:853: tgt = entry_price * (1.0 - tgt_pct)
+   reports/daily_trade_review.py:153: ("B", "TGT %", "tgt_pct", "num2", 8), ("B", "Capital Consumed", "capital_consumed", "money", 12),
+   reports/daily_trade_review.py:432: tgt_pct = round(abs(tgt - entry) / entry * 100, 2) if entry and tgt is not None else None
+   reports/daily_trade_review.py:505: "sl_pct": sl_pct, "tgt_pct": tgt_pct, "capital_consumed": margin,
+   reports/daily_trade_review.py:1620: if _f(r.get("tgt_pct")) is not None:
+   reports/daily_trade_review.py:1621: a["ptgt"].append(_f(r.get("tgt_pct")))
+   signals/signal_processor.py:1905: FIXED_PCT:    LONG  -> tgt = entry * (1 + tgt_pct)
+   signals/signal_processor.py:1906: SHORT -> tgt = entry * (1 - tgt_pct)
+   signals/signal_processor.py:1925: tgt_pct = float(strategy.tgt_pct)
+   signals/signal_processor.py:1927: tgt_price = entry * (1.0 + tgt_pct)
+   signals/signal_processor.py:1929: tgt_price = entry * (1.0 - tgt_pct)
+   signals/signal_processor.py:1943: # BL-16: guard against degenerate target (e.g. FIXED_PCT with tgt_pct=0.0
+   strategies/schema.py:94: tgt_pct: float = 0.0         # > 0 required when tgt_method=FIXED_PCT (model_validator)
+   strategies/schema.py:323: if self.tgt_pct <= 0:
+   strategies/schema.py:325: "tgt_pct must be > 0 when tgt_method=FIXED_PCT"
+
+#### tgt_risk_reward  (26 hits)
+   core/schema.sql:227: -- R:R fix (Slice 1, v35). The originating strategy's tgt_risk_reward, FROZEN
+   ops_dashboard/backend/api/trading.py:243: # config/strategies/*.yaml → `tgt_risk_reward`. ⛔ A strategy without one
+   ops_dashboard/backend/api/trading.py:266: rr = (strategies.get(r.get("strategy")) or {}).get("tgt_risk_reward")
+   ops_dashboard/backend/readers/config_reader.py:87: "tgt_risk_reward": s.get("tgt_risk_reward"),
+   ops_dashboard/frontend/templates/positions.html:660: config/strategies/<name>.yaml `tgt_risk_reward`. ⛔ NOT derived from
+   orders/order_placer.py:502: "tgt_risk_reward",
+   orders/order_placer.py:518: tgt_risk_reward: float = 0.0,   # Slice 1: strategy R:R; 0.0/falsy -> fill uses _rr_ratio fallback
+   orders/order_placer.py:536: self.tgt_risk_reward = tgt_risk_reward
+   orders/order_placer.py:887: tgt_risk_reward: Optional[float] = None,  # Slice 1: originating strategy's R:R, frozen for the fill-time TGT recalc
+   orders/order_placer.py:1014: tgt_risk_reward_applied=tgt_risk_reward, # Slice 1: strategy R:R frozen at placement
+   orders/order_placer.py:1606: tgt_risk_reward=(tgt_risk_reward or 0.0),
+   orders/order_placer.py:2878: fill_entry.tgt_risk_reward, fill_entry.trade_id, fill_entry.symbol),
+   orders/order_placer.py:3172: fill_entry.tgt_risk_reward, fill_entry.trade_id, fill_entry.symbol),
+   orders/order_placer.py:3571: fill_entry.tgt_risk_reward, fill_entry.trade_id, fill_entry.symbol),
+   orders/order_placer.py:4159: the fill entry as tgt_risk_reward, or persisted on
+   orders/order_placer.py:4175: "reason": "no strategy tgt_risk_reward (recovered / pre-v35 trade)",
+   orders/shadow_tracker.py:334: rr_ratio=float(strategy.tgt_risk_reward),
+   orders/shadow_tracker.py:855: tgt = calc_tgt_price(direction, entry_price, sl, float(strategy.tgt_risk_reward))
+   scripts/strategy_status.py:99: rr=f"{cfg.tgt_risk_reward:g}",
+   signals/signal_processor.py:1459: tgt_risk_reward=getattr(strategy_obj, "tgt_risk_reward", None),  # Slice 1: freeze strategy R:R for fill-time TGT recalc (None -> fill falls back to default + WARN)
+   signals/signal_processor.py:1932: ratio = float(strategy.tgt_risk_reward)
+   signals/signal_processor.py:2265: tgt_risk_reward=getattr(strategy_obj, "tgt_risk_reward", None),  # Slice 1: freeze strategy R:R for fill-time TGT recalc (None -> fill falls back to default + WARN)
+   signals/signal_processor.py:2560: tgt_risk_reward=getattr(strategy_obj, "tgt_risk_reward", None),
+   strategies/schema.py:95: tgt_risk_reward: float = 2.0
+   strategies/schema.py:229: @field_validator("tgt_risk_reward")
+   strategies/schema.py:233: raise ValueError("tgt_risk_reward must be > 0")
+
+#### tgt_atr_multiplier  (2 hits)
+   strategies/schema.py:96: tgt_atr_multiplier: float = 2.5
+   strategies/schema.py:222: @field_validator("sl_atr_multiplier", "tgt_atr_multiplier")
+
+#### smart_tgt_enabled  (2 hits)
+   orders/cnc_gtt.py:11: strategies have smart_tgt_enabled=false, so no trailing. (Trailing would need
+   strategies/schema.py:99: smart_tgt_enabled: bool
+
+#### smart_tgt_trail_trigger_pct  (3 hits)
+   core/schema.sql:722: trigger_pct         REAL NOT NULL,            -- from strategy.smart_tgt_trail_trigger_pct
+   strategies/schema.py:100: smart_tgt_trail_trigger_pct: float = 0.005
+   strategies/schema.py:236: @field_validator("smart_tgt_trail_trigger_pct", "smart_tgt_trail_step_pct",
+
+#### smart_tgt_trail_step_pct  (3 hits)
+   core/schema.sql:723: step_pct            REAL NOT NULL,            -- from strategy.smart_tgt_trail_step_pct
+   strategies/schema.py:101: smart_tgt_trail_step_pct: float = 0.003
+   strategies/schema.py:236: @field_validator("smart_tgt_trail_trigger_pct", "smart_tgt_trail_step_pct",
+
+#### trailing_sl_enabled  (10 hits)
+   core/config_auditor.py:217: # trailing_sl_enabled=true would ALSO advance that leg for its own trades → two SL
+   core/config_auditor.py:228: if getattr(s, "enabled", True) and getattr(s, "trailing_sl_enabled", False) is True
+   core/config_auditor.py:235: f"also trail their SL (trailing_sl_enabled=true): {', '.join(_trailers)}. "
+   core/config_auditor.py:237: "trailing_sl_enabled=false on those strategies.",
+   core/config_loader.py:1585: Single SL owner: do NOT co-enable any strategy.trailing_sl_enabled.
+   main.py:3429: # the SINGLE SL owner; a strategy that also trails its SL (trailing_sl_enabled) would
+   main.py:3806: # structure_exit_enabled. Single SL owner — do NOT co-enable trailing_sl_enabled.
+   orders/order_placer.py:2178: and getattr(fill_entry.strategy_obj, "trailing_sl_enabled", False)
+   orders/structure_exit_manager.py:35: the SL leg. Do NOT co-enable strategy.trailing_sl_enabled.
+   strategies/schema.py:105: trailing_sl_enabled: bool = False
+
+#### trailing_sl_breakeven_trigger_pct  (2 hits)
+   orders/order_placer.py:2190: breakeven_trigger_pct=float(s.trailing_sl_breakeven_trigger_pct),
+   strategies/schema.py:106: trailing_sl_breakeven_trigger_pct: float = 60.0  # advance SL to breakeven
+
+#### trailing_sl_partial_lock_trigger_pct  (2 hits)
+   orders/order_placer.py:2191: partial_lock_trigger_pct=float(s.trailing_sl_partial_lock_trigger_pct),
+   strategies/schema.py:107: trailing_sl_partial_lock_trigger_pct: float = 80.0  # advance SL to partial lock
+
+#### trailing_sl_partial_lock_sl_pct  (2 hits)
+   orders/order_placer.py:2192: partial_lock_sl_pct=float(s.trailing_sl_partial_lock_sl_pct),
+   strategies/schema.py:108: trailing_sl_partial_lock_sl_pct: float = 40.0  # SL moves to this % of target distance
+
+#### pullback_wait_enabled  (3 hits)
+   signals/signal_processor.py:1060: # Momentum strategies (pullback_wait_enabled=false) place immediately;
+   signals/signal_processor.py:1082: if not strategy_obj.pullback_wait_enabled and self._quote_fn is not None:
+   strategies/schema.py:111: pullback_wait_enabled: bool
+
+#### pullback_wait_tolerance_pct  (3 hits)
+   screening/entry_gate.py:69: tolerance_pct: float    # strategy.pullback_wait_tolerance_pct
+   strategies/schema.py:112: pullback_wait_tolerance_pct: float = 0.005
+   strategies/schema.py:237: "pullback_wait_tolerance_pct")
+
+#### pullback_wait_timeout_sec  (4 hits)
+   screening/entry_gate.py:70: timeout_sec: int        # strategy.pullback_wait_timeout_sec
+   strategies/schema.py:113: pullback_wait_timeout_sec: int = 180
+   strategies/schema.py:272: @field_validator("pullback_wait_timeout_sec")
+   strategies/schema.py:276: raise ValueError("pullback_wait_timeout_sec must be >= 1")
+
+#### min_score  (35 hits)
+   core/schema.sql:691: eligible_score          INTEGER,             -- v14: per-strategy min_score threshold
+   core/state_store.py:1947: v14: eligible_score is the per-strategy min_score threshold.
+   ops_dashboard/backend/readers/db_reader.py:2129: signal had to reach (v14: per-strategy min_score threshold).
+   reports/daily_report.py:314: """Read all strategy YAMLs and return effective min_score per strategy name.
+   reports/daily_report.py:328: min_score = cfg.get("min_score", 0)
+   reports/daily_report.py:329: effective = min_score if min_score > 0 else global_min
+   reports/daily_trade_review.py:147: ("A", "Score", "signal_score", "int", 7), ("A", "Min Score", "min_score", "text", 9),
+   reports/daily_trade_review.py:404: min_score = _load_min_score(store, date_iso)
+   reports/daily_trade_review.py:501: "signal_score": score_by_sig.get(sid), "min_score": min_score if min_score is not None else NA_NO_SNAP,
+   reports/daily_trade_review.py:561: "min_score": min_score, "has_config_snapshot": min_score is not None}
+   reports/daily_trade_review.py:760: ("Score", "score", "int", 7), ("Min Score", "min_score", "text", 9),
+   reports/daily_trade_review.py:793: min_score = _load_min_score(store, date_iso)
+   reports/daily_trade_review.py:831: score_delta = (round(score - min_score, 2)
+   reports/daily_trade_review.py:832: if score is not None and min_score is not None else None)
+   reports/daily_trade_review.py:858: "min_score": min_score if min_score is not None else NA_NO_SNAP,
+   reports/daily_trade_review.py:872: "date": date_iso, "n": stored, "min_score": min_score,
+   reports/daily_trade_review.py:873: "has_config_snapshot": min_score is not None,
+   screening/hard_gate.py:11: # total + tier + min_score re-scale) so the live v3 path and the offline parity
+   screening/hard_gate.py:207: """Re-scale a per-strategy min_score override to the 8-step scale (A7,
+   screening/secondary_screener.py:5: # min_score override, persists result per P18.
+   screening/secondary_screener.py:138: -> score -> apply min_score override -> final status.
+   screening/secondary_screener.py:316: # ── 6. Apply per-strategy min_score override (SS4 step 6) ────────────
+   screening/secondary_screener.py:318: strategy.min_score
+   screening/secondary_screener.py:319: if strategy.min_score > 0
+   screening/secondary_screener.py:500: # 4. Per-strategy min_score override (re-scaled, A7) else the v3 min_pass.
+   screening/secondary_screener.py:502: rescale_min_score(strategy.min_score)
+   screening/secondary_screener.py:503: if getattr(strategy, "min_score", 0) and strategy.min_score > 0
+   scripts/replay_signals.py:105: # Replay screening: check min_score threshold
+   scripts/replay_signals.py:123: current_min_score = getattr(strategy_obj, "min_score", 0)
+   scripts/replay_signals.py:127: f"Score {score} < current min_score {current_min_score}"
+   scripts/revert_temp_config.py:93: "key": "min_score",
+   scripts/revert_temp_config.py:94: "pattern": r"min_score:\s*\d+",
+   strategies/schema.py:116: min_score: int = 0            # 0 = use global from scoring_weights.yaml
+   strategies/schema.py:258: @field_validator("min_score")
+   strategies/schema.py:262: raise ValueError("min_score must be >= 0 (0 = use global)")
+
+#### min_volume_surge  (9 hits)
+   screening/secondary_screener.py:236: "min_volume_surge": strategy.min_volume_surge,
+   screening/secondary_screener.py:462: "min_volume_surge": strategy.min_volume_surge,
+   screening/step_executor.py:250: """Volume > avg_volume_20d * min_volume_surge (audit fix c: missing/0 -> 0.0)."""
+   screening/step_executor.py:255: min_surge = thr.get("min_volume_surge", 1.5)
+   strategies/schema.py:117: min_volume_surge: float = 1.3
+   strategies/schema.py:265: @field_validator("min_volume_surge")
+   strategies/schema.py:269: raise ValueError("min_volume_surge must be > 0")
+   v3_chain/forward_shadow.py:38: min_volume_surge: float = 1.5,
+   v3_chain/forward_shadow.py:43: vs = 1.0 if (avg_volume_20d and volume and volume > avg_volume_20d * min_volume_surge) else 0.0
+
+#### min_adr_pct  (9 hits)
+   screening/secondary_screener.py:237: "min_adr_pct": strategy.min_adr_pct,
+   screening/secondary_screener.py:463: "min_adr_pct": strategy.min_adr_pct,
+   screening/step_executor.py:274: """ADR% >= min_adr_pct. Missing/zero ATR -> 0.0."""
+   screening/step_executor.py:280: min_adr = thr.get("min_adr_pct", 0.5)
+   strategies/schema.py:118: min_adr_pct: float = 0.005
+   strategies/schema.py:251: @field_validator("min_adr_pct", "max_spread_pct")
+   strategies/schema.py:255: raise ValueError("min_adr_pct and max_spread_pct must be >= 0")
+   v3_chain/forward_shadow.py:39: min_adr_pct: float = 0.5,
+   v3_chain/forward_shadow.py:44: af = 1.0 if (atr14 and ltp and (atr14 / ltp * 100.0) >= min_adr_pct) else 0.0
+
+#### max_spread_pct  (13 hits)
+   core/config_loader.py:1805: max_spread_pct: float = 0.5         # FIX-134 Item 38: max bid-ask spread %
+   orders/order_placer.py:4073: max_spread_pct = self._liquidity_max_spread_pct
+   orders/order_placer.py:4098: if spread_pct > max_spread_pct:
+   orders/order_placer.py:4099: reason = f"spread {spread_pct:.2f}% > max {max_spread_pct}%"
+   orders/order_placer.py:4104: "max_spread_pct": max_spread_pct,
+   orders/order_placer.py:4113: body=f"Spread {spread_pct:.2f}% > limit {max_spread_pct}%",
+   screening/secondary_screener.py:238: "max_spread_pct": strategy.max_spread_pct,
+   screening/secondary_screener.py:464: "max_spread_pct": strategy.max_spread_pct,
+   screening/step_executor.py:376: FIX-043: Spread <= max_spread_pct using mid-price denominator.
+   screening/step_executor.py:394: max_spread = thr.get("max_spread_pct", 0.1)
+   strategies/schema.py:119: max_spread_pct: float = 0.005
+   strategies/schema.py:251: @field_validator("min_adr_pct", "max_spread_pct")
+   strategies/schema.py:255: raise ValueError("min_adr_pct and max_spread_pct must be >= 0")
+
+#### lot_size  (55 hits)
+   capital/position_sizer.py:15: Applied AFTER min(risk, capital, concentration), BEFORE lot_size.
+   capital/position_sizer.py:16: PS6  -- Lot size rounding: qty = (qty // lot_size) * lot_size.
+   capital/position_sizer.py:17: If result < lot_size: SizingResult(success=False, constraint=BELOW_MIN).
+   capital/position_sizer.py:87: "BELOW_MIN"     -- tier/lot_size rounding made qty < minimum
+   capital/position_sizer.py:162: instrument_cache=None,  # IC7: optional InstrumentCache for lot_size lookup
+   capital/position_sizer.py:262: lot_size: int = 1,
+   capital/position_sizer.py:285: final_qty              = (tiered_qty // lot_size) * lot_size
+   capital/position_sizer.py:294: lot_size:         Shares per lot. 1 for equity; F&O uses contract lot (PS6).
+   capital/position_sizer.py:305: sl_price==entry_price, bad intent/tier/lot_size/side.
+   capital/position_sizer.py:307: # IC7: resolve lot_size from instrument_cache if available and caller
+   capital/position_sizer.py:309: if lot_size == 1 and self._instrument_cache is not None:
+   capital/position_sizer.py:311: lot_size = self._instrument_cache.lot_size(symbol)
+   capital/position_sizer.py:336: if lot_size <= 0:
+   capital/position_sizer.py:338: f"lot_size must be > 0, got {lot_size}"
+   capital/position_sizer.py:639: final_qty = (tiered_qty // lot_size) * lot_size
+   capital/position_sizer.py:686: # ── FIX-021: Lot skew rejection (skip if lot_size == 1 or final_qty == 0) ──
+   capital/position_sizer.py:688: if lot_size != 1 and tiered_qty > 0 and final_qty > 0:
+   capital/position_sizer.py:694: f"(tiered_qty={tiered_qty}, final_qty={final_qty}, lot_size={lot_size})"
+   capital/position_sizer.py:754: if final_qty < lot_size or final_qty < self._min_qty_threshold:
+   capital/position_sizer.py:758: f"tier={score_tier}({tier_mult}) lot_size={lot_size} "
+   capital/position_sizer.py:766: f"Rs{entry_price:.2f} for {symbol} (qty={final_qty} lot_size={lot_size}); "
+   capital/position_sizer.py:791: f"conc_qty={qty_by_concentration} lot_size={lot_size}"
+   capital/position_sizer.py:797: f"conc_qty={qty_by_concentration} flat_qty={breakdown['qty_by_flat']} lot_size={lot_size}"
+   core/instrument_cache.py:11: Columns: symbol, instrument_token, exchange, lot_size,
+   core/instrument_cache.py:22: IC9  -- lot_size(symbol) -> int; raises InstrumentNotFoundError on miss.
+   core/instrument_cache.py:65: lot_size:         int    # 1 for equity; F&O uses contract lot
+   core/instrument_cache.py:82: lot = cache.lot_size("TCS")
+   core/instrument_cache.py:119: "lot_size", "tick_size", "is_fno", "sector",
+   core/instrument_cache.py:146: lot_size=int(raw["lot_size"]),
+   core/instrument_cache.py:164: if row.lot_size < 1:
+   core/instrument_cache.py:166: f"instruments.csv line {lineno}: lot_size must be >= 1, "
+   core/instrument_cache.py:167: f"got {row.lot_size} for {row.symbol}",
+   core/instrument_cache.py:269: def lot_size(self, symbol: str) -> int:
+   core/instrument_cache.py:271: Return the lot_size for a symbol (IC9).
+   core/instrument_cache.py:276: return self.get_by_symbol(symbol).lot_size
+   main.py:2852: instrument_cache=instrument_cache,  # IC7: lot_size from cache
+   main.py:3592: instrument_cache=instrument_cache,  # IC: lot_size/sector lookup
+   scripts/refresh_instruments.py:16: RI4  -- Kite API provides instrument_token, lot_size, tick_size per symbol.
+   scripts/refresh_instruments.py:25: RI12 -- Symbols not matched in Kite: token=0, lot_size=1, tick_size=0.05.
+   scripts/refresh_instruments.py:57: "lot_size", "tick_size", "is_fno", "sector",
+   scripts/refresh_instruments.py:170: token=0, lot_size=1, tick_size=0.05 (RI12).
+   scripts/refresh_instruments.py:180: lot_size = 1
+   scripts/refresh_instruments.py:184: lot_size = int(kite.get("lot_size", 1))
+   scripts/refresh_instruments.py:191: print(f"  {sym}: token={token} lot={lot_size} tick={tick_size} "
+   scripts/refresh_instruments.py:198: "lot_size":         lot_size,
+   scripts/replay_signals.py:159: lot_size = strategy_obj.lot_size
+   scripts/replay_signals.py:160: qty = (qty // lot_size) * lot_size
+   signals/signal_processor.py:176: instrument_cache=None,              # IC: optional InstrumentCache for lot_size/sector
+   signals/signal_processor.py:1119: strategy_obj.lot_size,
+   signals/signal_processor.py:2050: # Strategy lookup (for intent, lot_size)
+   signals/signal_processor.py:2115: strategy_obj.lot_size,
+   signals/signal_processor.py:2457: tier, strategy_obj.lot_size,
+   strategies/schema.py:126: lot_size: int = 1
+   strategies/schema.py:279: @field_validator("lot_size")
+   strategies/schema.py:283: raise ValueError("lot_size must be >= 1")
+
+#### max_concurrent_positions  (5 hits)
+   ops_dashboard/backend/readers/config_reader.py:80: "max_concurrent_positions": int(s.get("max_concurrent_positions", 2)),
+   ops_dashboard/backend/services/capacity.py:278: note="max_concurrent_positions + capital rendered per strategy")
+   ops_dashboard/backend/services/strategy_tower.py:158: max_conc = int(conf.get("max_concurrent_positions", 2))
+   signals/signal_processor.py:760: max_strat_pos = getattr(strategy_obj, "max_concurrent_positions", 2)
+   strategies/schema.py:127: max_concurrent_positions: int = 2  # FIX-135 Item 42: per-strategy position cap
+
+#### v3_playbook  (9 hits)
+   main.py:3648: v3_scope_fn=lambda s: bool(getattr(s, "v3_playbook", False)),
+   screening/hard_gate.py:359: # v3_playbook candidate (the next-morning 5-min retest). Like the generic gates
+   scripts/strategy_status.py:75: # V3 Step 10b: a v3_playbook strategy (PB-01) is a SHADOW playbook governed by
+   scripts/strategy_status.py:81: if getattr(cfg, "v3_playbook", False):
+   signals/signal_processor.py:1603: v3_playbook=bool(getattr(strategy_obj, "v3_playbook", False)))
+   strategies/schema.py:134: v3_playbook: bool = False
+   v3_chain/models.py:49: v3_playbook: bool = False       # is this a V3-playbook strategy (10b)? (10a: all False)
+   v3_chain/score.py:121: PLAYBOOK (40): computed ONLY when `playbook` is supplied (a v3_playbook candidate,
+   v3_chain/score.py:156: # ── PLAYBOOK (40) — only for a v3_playbook candidate (spec §4). ────────────
+
+#### entry_start_time  (15 hits)
+   core/config_auditor.py:713: # envelope. FIX M-K2 (24-Jul): the fields are entry_start_time / entry_end_time
+   core/config_auditor.py:749: ss = getattr(s, "entry_start_time", None)
+   core/market_windows.py:158: (entry_start_time / entry_end_time, S14).
+   core/market_windows.py:163: on this check. `strategy` is a StrategyConfig with `entry_start_time`
+   core/market_windows.py:169: sh, sm = (int(x) for x in strategy.entry_start_time.split(":"))
+   ops_dashboard/backend/readers/config_reader.py:81: "entry_start_time": s.get("entry_start_time"),
+   scripts/strategy_status.py:96: start=cfg.entry_start_time,
+   signals/signal_processor.py:981: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   signals/signal_processor.py:2082: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   signals/signal_processor.py:2424: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   strategies/schema.py:137: entry_start_time: str = "10:00"  # Matches trading_hours.entry_start = 10:00 (T5 29-Jun)
+   strategies/schema.py:330: sh, sm = map(int, self.entry_start_time.split(":"))
+   strategies/schema.py:336: "Invalid entry_start_time or entry_end_time format; expected HH:MM"
+   strategies/schema.py:341: "entry_start_time (%s) must be < entry_end_time (%s)"
+   strategies/schema.py:342: % (self.entry_start_time, self.entry_end_time)
+
+#### entry_end_time  (16 hits)
+   core/config_auditor.py:713: # envelope. FIX M-K2 (24-Jul): the fields are entry_start_time / entry_end_time
+   core/config_auditor.py:750: se = getattr(s, "entry_end_time", None)
+   core/config_validator.py:13: - entry_end_time: YAML changed but code had hardcoded windows
+   core/market_windows.py:158: (entry_start_time / entry_end_time, S14).
+   core/market_windows.py:164: and `entry_end_time` "HH:MM" strings; defaults are 09:30 / 13:30.
+   core/market_windows.py:170: eh, em = (int(x) for x in strategy.entry_end_time.split(":"))
+   ops_dashboard/backend/readers/config_reader.py:82: "entry_end_time": s.get("entry_end_time"),
+   scripts/strategy_status.py:97: end=cfg.entry_end_time,
+   signals/signal_processor.py:981: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   signals/signal_processor.py:2082: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   signals/signal_processor.py:2424: f"({strategy_obj.entry_start_time}-{strategy_obj.entry_end_time})",
+   strategies/schema.py:138: entry_end_time: str = "15:00"    # Matches trading_hours.entry_end = 15:00 (T5 29-Jun)
+   strategies/schema.py:331: eh, em = map(int, self.entry_end_time.split(":"))
+   strategies/schema.py:336: "Invalid entry_start_time or entry_end_time format; expected HH:MM"
+   strategies/schema.py:341: "entry_start_time (%s) must be < entry_end_time (%s)"
+   strategies/schema.py:342: % (self.entry_start_time, self.entry_end_time)
+
+#### active_days  (4 hits)
+   strategies/schema.py:139: active_days: List[str] = ["MON", "TUE", "WED", "THU", "FRI"]
+   strategies/schema.py:286: @field_validator("active_days")
+   strategies/schema.py:290: raise ValueError("active_days must not be empty")
+   strategies/schema.py:294: "active_days contains invalid values: %s" % sorted(invalid)
+

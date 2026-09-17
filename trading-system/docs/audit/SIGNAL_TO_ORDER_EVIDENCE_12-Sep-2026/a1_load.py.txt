@@ -1,0 +1,47 @@
+"""D1.1 local analysis -- loader + pass A (timing, duplicate behaviour, coverage). Reads scratchpad extracts only."""
+import sys, os
+import pandas as pd, numpy as np
+
+D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+pd.set_option("display.width", 250); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 400)
+
+
+def naive(col):
+    """ISO-8601 strings with a +05:30 suffix (microseconds optional) -> naive IST datetimes."""
+    z = col.astype(str).str.replace(r"([+-]\d\d:\d\d)$", "", regex=True)
+    bad = ~col.astype(str).str.endswith("+05:30") & col.notna()
+    if bad.any():
+        print("WARN non +05:30 suffix rows:", int(bad.sum()), col[bad].head(3).tolist())
+    return pd.to_datetime(z, format="ISO8601")
+
+
+def load():
+    s = pd.read_csv(os.path.join(D, "signals.csv.gz"))
+    s["trig"] = pd.to_datetime(s["triggered_at"].str[:19])
+    s["recv"] = naive(s["received_at"])
+    s["date"] = s["recv"].dt.strftime("%Y-%m-%d")
+    sc = pd.read_csv(os.path.join(D, "screener.csv.gz"))
+    sc["sts"] = naive(sc["ts"])
+    return s, sc
+
+
+if __name__ == "__main__":
+    s, sc = load()
+    print("signals", len(s), "screener", len(sc))
+    # triggered_at format check
+    print("triggered_at seconds!=0:", (s["trig"].dt.second != 0).sum(), " tz suffix sample:", s["triggered_at"].str[19:].value_counts().head(3).to_dict())
+    print("trig date == recv date:", (s["trig"].dt.strftime("%Y-%m-%d") == s["date"]).mean())
+    s["deliv_s"] = (s["recv"] - s["trig"]).dt.total_seconds()
+    q = s.groupby("strategy")["deliv_s"].describe(percentiles=[.5, .9, .95, .99])
+    print("\n== received_at - triggered_at (s), per strategy ==\n", q.round(1))
+    print("\n== overall ==\n", s["deliv_s"].describe(percentiles=[.01, .05, .5, .9, .95, .99]).round(2))
+    m = s.merge(sc[["signal_id", "sts", "status", "score"]], on="signal_id", how="left", suffixes=("", "_sc"))
+    m["screen_s"] = (m["sts"] - m["recv"]).dt.total_seconds()
+    print("\n== screener ts - received_at (s) ==\n", m["screen_s"].describe(percentiles=[.5, .9, .95, .99]).round(2))
+    print("signals without screener row:", m["sts"].isna().sum())
+    print(m.loc[m["sts"].isna(), "status"].value_counts().head(20))
+    # minute-of-day distribution of triggered_at (by 5-min bucket around the open of the entry window)
+    s["hm"] = s["trig"].dt.strftime("%H:%M")
+    print("\n== first minutes of window: signals per minute (all days) ==")
+    print(s["hm"].value_counts().sort_index().loc["09:55":"10:10"])
+    print(s["hm"].value_counts().sort_index().loc["14:50":"15:05"])

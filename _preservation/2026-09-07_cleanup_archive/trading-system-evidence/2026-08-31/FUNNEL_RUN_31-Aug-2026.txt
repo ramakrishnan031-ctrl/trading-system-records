@@ -1,0 +1,173 @@
+############ S0  CAPITAL AT REST ############
+-- fm_ledger entry types (how capital moves) --
+entry_type|n|sum_amt
+RESERVE|2105|340386.58
+RELEASE|1775|-292377.91
+RELEASE_USED|320|-44173.05
+COMMIT|320|44173.05
+INIT|84|2717743.4
+SYNC|52|73.54
+RESET_PNL|52|0.0
+TOP_UP|7|3.96
+-- latest balance per bucket --
+bucket|balance|as_of
+both|0.0|2026-08-31T15:17:05.042325+05:30
+intraday|7336.29|2026-08-31T12:33:18.182211+05:30
+positional|3130.99|2026-08-31T15:20:36.269763+05:30
+
+############ S1  SIGNAL INTAKE ############
+signals_total|symbols|strategies|first_day|last_day
+191347|1313|13|2026-06-12|2026-08-31
+
+############ S2  GATES — the funnel, by reason code ############
+status|n|pct
+REJECTED_SCORE_57|62398|32.61
+REJECTED_SCORE_59|26865|14.04
+REJECTED_STRATEGY_CONTROL|21430|11.2
+REJECTED_CIRCUIT_PROXIMITY|9888|5.17
+REJECTED_STRATEGY_CIRCUIT_BREAKER|7705|4.03
+SKIPPED_QUOTE_UNAVAILABLE|7323|3.83
+REJECTED_SCORE_52|6923|3.62
+REJECTED_DAILY_TRADES|5146|2.69
+REJECTED_SHADOW_INNING_ACTIVE|4168|2.18
+REJECTED_SCORE_48|3997|2.09
+REJECTED_SIZING_CONCENTRATION|3862|2.02
+REJECTED_SCORE_54|2847|1.49
+REJECTED_SCORE_49|2689|1.41
+REJECTED_SCORE_56|2590|1.35
+REJECTED_SCORE_55|2407|1.26
+REJECTED_SCORE_53|2227|1.16
+REJECTED_SCORE_51|1878|0.98
+REJECTED_SCORE_47|1695|0.89
+REJECTED_SCORE_46|1675|0.88
+REJECTED_SCORE_50|1579|0.83
+REJECTED_SCORE_45|1471|0.77
+REJECTED_SCORE_44|1317|0.69
+REJECTED_SCORE_43|1067|0.56
+REJECTED_SCORE_42|868|0.45
+REJECTED_ENTRY_THROTTLED|840|0.44
+REJECTED_SCORE_58|829|0.43
+PROCESSED|655|0.34
+REJECTED_OPEN_POSITIONS|644|0.34
+REJECTED_SCORE_40|498|0.26
+REJECTED_SCORE_39|466|0.24
+REJECTED_SCORE_38|465|0.24
+REJECTED_SCORE_41|445|0.23
+REJECTED_STRATEGY_POSITION_LIMIT|381|0.2
+REJECTED_SCORE_37|376|0.2
+REJECTED_SCORE_36|325|0.17
+REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT|300|0.16
+REJECTED_SCORE_35|236|0.12
+REJECTED_SCORE_34|228|0.12
+REJECTED_SCORE_33|162|0.08
+PLACEMENT_FAILED|152|0.08
+
+############ S3  SCORING ############
+-- rejected-by-score distribution (the score is IN the status) --
+status|n
+REJECTED_SCORE_57|62398
+REJECTED_SCORE_59|26865
+REJECTED_SCORE_52|6923
+REJECTED_SCORE_48|3997
+REJECTED_SCORE_54|2847
+REJECTED_SCORE_49|2689
+REJECTED_SCORE_56|2590
+REJECTED_SCORE_55|2407
+REJECTED_SCORE_53|2227
+REJECTED_SCORE_51|1878
+REJECTED_SCORE_47|1695
+REJECTED_SCORE_46|1675
+REJECTED_SCORE_50|1579
+REJECTED_SCORE_45|1471
+REJECTED_SCORE_44|1317
+REJECTED_SCORE_43|1067
+REJECTED_SCORE_42|868
+REJECTED_SCORE_58|829
+REJECTED_SCORE_40|498
+REJECTED_SCORE_39|466
+REJECTED_SCORE_38|465
+REJECTED_SCORE_41|445
+REJECTED_SCORE_37|376
+REJECTED_SCORE_36|325
+REJECTED_SCORE_35|236
+-- how many signals survived ALL gates (became trades) --
+PROCESSED=655
+
+############ S4  TIER / MULTIPLIER  (G2) ############
+tier_multiplier_mode|n|min_tier|max_tier|min_perf|max_perf
+|63||||
+ON|746|0.5|0.7|1.0|1.0
+-- 🔴 G2: did ANY trade get a multiplier above 0.5? --
+tier_w|n
+0.7|3
+0.5|743
+
+############ S5  SIZING — which rung BOUND ############
+binding|n|pct
+concentration|746|100.0
+(null)|63|8.45
+-- are the non-binding rungs even computed? (null = never calculated) --
+has_risk|has_capital|has_conc|has_flat|trades
+746|746|746|0|809
+
+############ S6  RESERVATION — split by BOOK  (F4) ############
+product|trades|got_reservation|margin_gt0|avg_margin
+MIS|557|557|557|93.74
+(unresolved)|152|152|152|99.36
+CNC|100|100|100|500.3
+
+############ S7  ORDER CONSTRUCTION  (UNIT2 / CO) ############
+-- 🔴 does ANYTHING ever emit CO? --
+product|n
+MIS|1166
+CNC|100
+variety|n
+regular|1266
+-- declared protocol on trades vs what was built --
+protocol|n
+LIMIT_TRIPLE|809
+
+############ S8  PLACEMENT — REAL, not stubbed ############
+leg|status|n
+ENTRY|CANCELLED|337
+ENTRY|COMPLETE|320
+EOD|COMPLETE|27
+SL|COMPLETE|154
+SL|CANCELLED|143
+TGT|CANCELLED|186
+TGT|COMPLETE|99
+-- 🔴 F4: ENTRY fill rate BY BOOK, every denominator --
+product|entry_orders|complete|rejected|cancelled|fill_pct
+MIS|557|288|0|269|51.7
+CNC|100|32|0|68|32.0
+
+############ S9  POSITION LIFECYCLE ############
+-- 🔴 trailing stop: how many trades EVER trailed? --
+trail_count|n
+0|809
+-- exits by cause --
+exit_reason|n
+(open/none)|479
+SL_HIT|142
+TGT_HIT|91
+MANUAL|55
+GTT_EXIT|32
+pre-FIX-189 cleanup|6
+STALE_PENDING_CLEANUP|3
+MANUAL_CLOSE_EOD|1
+-- v45 attribution columns: ever populated? --
+closure_src_set|exit_mech_set|trades
+138|0|809
+
+############ S10 CAPITAL RELEASE — conservation ############
+entry_type|n|margin_delta_sum
+RESERVE|2105|340386.58
+RELEASE|1775|-292377.91
+RELEASE_USED|320|-44173.05
+COMMIT|320|0.0
+INIT|84|0.0
+SYNC|52|0.0
+RESET_PNL|52|0.0
+TOP_UP|7|3.96
+-- net margin delta across ALL history (0 = conserved) --
+NET_MARGIN_DELTA=3839.5727

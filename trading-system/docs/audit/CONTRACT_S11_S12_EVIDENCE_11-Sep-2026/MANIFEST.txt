@@ -1,0 +1,38 @@
+MANIFEST -- the evidence behind docs/audit/CONTRACT_S11_S12_REPORT_11-Sep-2026.md
+Copied 2026-09-11 15:49:14 IST from C:\Users\rama\.claude\jobs\6e6242ba\tmp\contract (job scratch, deleted with the job).
+Produced by four read-only measurement passes, 13:45-14:08 IST 11-Sep-2026 (run as subagents; Rama has since
+prohibited subagents). The report was assembled from these files by the main session. Copy, never edit.
+Scripts are stored as .py.txt so no code search, linter or test runner treats them as code.
+Not copied (source exports, reproducible with `git show d3ee69d:<path>`): d3ee69d/main.py, d3ee69d/screening/secondary_screener.py, d3ee69d/signals/signal_processor.py
+
+file                                             bytes  sha256 (source == copy)
+.harness_start                                       0  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+field_scan.py.txt                                 2501  3fc246e596b6dd2e00fdd3c7f793eca14595a022a0e516acd76299c2890872cc
+field_scan_970aabf.txt                           99071  ced1e1558adc5ad2c4b2bc4081017f836c8e1a0a042ef3bf84b0b0c46a451eb9
+harness_s12.py.txt                                5045  904a9207e43e6f6e6c4240c06b4d0801f911582163d5863b6640dac0f88d1849
+harness_s12_output.txt                            1041  dec01b0897f0b04a2aa4a3f8ddaf2c8189ae5b7792ad027dc50222555da8c948
+loc_sorted.txt                                    1815  45fecce24c8aad61613db80333df29bb7589533ef36b02cff07a6ed415bade0c
+local_970aabf_md5.txt                             1815  846a36889aaa79f656970ac4ad79a1c6fc591e99c883c6e0810fcb126046c375
+local_d3ee69d_md5.txt                              170  2d05b60d85b1fe3a4a384ea15beb5f3bba6564b4e501ce6a809713481cdb41f3
+s11_1_to_4.md                                    45048  94688be2a8ae36a44a520b946496590631fadd15abc99702157c4e06152e6be5
+s11_5_s11_6.md                                   31636  c6cbcba3848da371abe6b7d49b455c1dba5817bd97b4a06bb0a41d2f94925f4f
+s11_7_s11_8.md                                   32891  5c83815be525a127d40058e625dc9711b2e71c4db4f502f3a4557d1a58b90bd3
+s12_replay.md                                    25722  a79e76bbbec0af2c72a6c4575f0e4b4006be0b0c3e771cafa823a566ff07e81f
+summarise.py.txt                                   858  811911d06bca68c35c00b5f66bf866b49f07f5b91680cc8f41e5818abc6067fc
+vm_md5.txt                                        2194  1add09c64b8dfe149fe1d7e23dc407ae267ce2dca51ffa19b243ed920d7962dc
+vm_md5_lf.txt                                     2194  1add09c64b8dfe149fe1d7e23dc407ae267ce2dca51ffa19b243ed920d7962dc
+vm_queries.py.txt                                 8111  fd59133ffdffd683b3e6785ec99a02895b047d2131c45308006bc488c1a54b41
+vm_queries_out.txt                              751373  b2a906ce3ecc5fcf345acfab1d6c903a0c57755fb8c03f830f32632735f0b626
+vm_sorted.txt                                     1815  25daa81f3723c41f5518793102eaf3935d69f8b2d6fcf0e23fe4e8fbce895233
+yaml_table.py.txt                                  911  0954a1e0d7382474e4da73a5f9fd8b5d6d4c57e0ba5be9c9f02c3dcccd473fd3
+yaml_table_970aabf.txt                            3667  c84013b85c6232c85c0cb8e7dfa3717d48875f6df10d4ba2f606e16f636ebcbb
+vm/INDOCO_1m_candlestore.csv                     66371  8fa63c5c56733b7c241f3a45ac57e5f09e010102d23433b107b8305a899e6199
+vm/gtt_startup_v3.txt                             1599  1a8e7f27d1381d0ea71b9853217961181993dc9cf7b8bd0b94bb93524d498f4b
+vm/orders_gtt_analytics.txt                       2264  9621c2b1aa987da281ae981913fc000d8f9c6ca6d527e5e7540b14307aac60f0
+vm/schema_cov_screener.txt                       70096  510ea4cd76043df81b4757aa85af459c9a480dcfffa22b0d842c6618ac097ff1
+vm/screener_INDOCO_0902_1350_1420.txt             3228  ed8cfb6cf4da3d371d994374d9ebbc82921b52b2fdc298a73db019a4e9ca6c39
+vm/signals_rows.txt                              66001  73b954e5ee014585a41a7aae919f21a0c5cc0b501623747a0914136af68e3c27
+vm/sr_rows_full_INDOCO.txt                       16815  bc8c6f1f81b15ccf16bca5c6e9107cf6b7b0d3896b6c4348e481dc9062b2422a
+vm/sr_rows_summary.txt                            1331  c867a50e5078f997df8e1cef6bfd7a8fa3c10ab39534635030f098066a53ae83
+vm/trades_rows.txt                                1507  12785b0c0f89a0da234c501350f46731e53ef99ddc181ebd7dbaa0682d9700ed
+vm/v3_would_be_INDOCO_0902.jsonl                  1786  21573aeeacefdba9010e927dee52d77404430fd8787079691bb5485d2b286d77

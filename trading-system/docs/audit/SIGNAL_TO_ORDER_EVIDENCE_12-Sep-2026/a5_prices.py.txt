@@ -1,0 +1,77 @@
+"""D1.1 pass: the three prices + order-stage timing, production trades. Reads scratchpad extracts only."""
+import pandas as pd, numpy as np
+pd.set_option("display.width", 250); pd.set_option("display.max_columns", 40); pd.set_option("display.max_rows", 100)
+
+OFF = {"INTRADAY": 0.001, "DELIVERY": 0.002}
+PBW = {"first_pullback_long", "first_pullback_short", "open_high_breakdown_short", "open_low_breakout_long",
+       "vwap_bounce_long", "vwap_rejection_short"}                     # pullback_wait_enabled: true => no re-anchor
+SLP = {"first_pullback_long": .015, "first_pullback_short": .015, "gap_fade_long": .01, "gap_fade_short": .01,
+       "gap_go_long": .012, "gap_go_short": .012, "open_high_breakdown_short": .01, "open_low_breakout_long": .01,
+       "positional_momentum_long": .02, "positional_sector_rotation": .02, "positional_swing_long": .02,
+       "vwap_bounce_long": .008, "vwap_rejection_short": .008}
+DELIV = {"positional_momentum_long", "positional_sector_rotation", "positional_swing_long"}
+
+tr = pd.read_csv("data/trades.csv.gz"); s = pd.read_csv("data/signals.csv.gz"); sc = pd.read_csv("data/screener.csv.gz")
+od = pd.read_csv("data/orders.csv.gz")
+t = tr.merge(s[["signal_id", "trigger_price", "triggered_at", "received_at"]], on="signal_id", how="left")
+t = t.merge(sc[["signal_id", "ts", "ltp", "vwap", "bid", "ask", "upper_circuit", "lower_circuit", "open"]], on="signal_id", how="left")
+t["long"] = t.direction.eq("LONG")
+t["off"] = np.where(t.strategy.isin(DELIV), OFF["DELIVERY"], OFF["INTRADAY"])
+t["reanchor_strategy"] = ~t.strategy.isin(PBW)
+# entry computed from the trigger with no re-anchor
+t["entry_from_trigger"] = np.where(t.long, t.trigger_price * (1 - t.off), t.trigger_price * (1 + t.off))
+t["matches_trigger_formula"] = (t.entry_target_price - t.entry_from_trigger).abs() < 1e-6
+# implied live LTP at the re-anchor
+t["ltp_reanchor"] = np.where(t.long, t.entry_target_price / (1 - t.off), t.entry_target_price / (1 + t.off))
+sgn = np.where(t.long, 1, -1)
+t["reanchor_vs_trigger_pct"] = (t.ltp_reanchor / t.trigger_price - 1) * 100 * sgn        # + = moved in trade direction
+t["screen_vs_trigger_pct"] = (t.ltp / t.trigger_price - 1) * 100 * sgn
+print("trades", len(t), " with trigger:", int(t.trigger_price.notna().sum()), " with screener row:", int(t.ltp.notna().sum()))
+print("\n== entry_target == trigger*(1-+offset) exactly, by re-anchor flag ==")
+print(pd.crosstab(t.reanchor_strategy, t.matches_trigger_formula))
+ra = t[t.reanchor_strategy & ~t.matches_trigger_formula & t.trigger_price.notna()]
+print("\n== re-anchoring strategies, entry NOT from the trigger (re-anchored): n=", len(ra))
+print("implied live LTP vs trigger, signed in trade direction (%):", ra.reanchor_vs_trigger_pct.describe(percentiles=[.05, .25, .5, .75, .95]).round(4).to_dict())
+print("screen LTP vs trigger, signed (%), same trades:", ra.screen_vs_trigger_pct.describe(percentiles=[.05, .25, .5, .75, .95]).round(4).to_dict())
+# does the re-anchored entry still satisfy what screening checked?
+ra = ra.copy()
+ra["entry_wrong_side_of_vwap"] = np.where(ra.long, ra.entry_target_price <= ra.vwap, ra.entry_target_price >= ra.vwap)
+ra["reanchor_ltp_wrong_side_of_vwap"] = np.where(ra.long, ra.ltp_reanchor <= ra.vwap, ra.ltp_reanchor >= ra.vwap)
+up_c = ra.upper_circuit * 0.98; lo_f = ra.lower_circuit * 1.02
+ra["entry_inside_circuit_margin"] = np.where(ra.long, (ra.entry_target_price >= up_c) | (ra.entry_target_price <= lo_f),
+                                             (ra.entry_target_price <= lo_f) | (ra.entry_target_price >= up_c))
+print("re-anchored entry on the wrong side of the screen-time VWAP:", int(ra.entry_wrong_side_of_vwap.sum()), "of", len(ra),
+      "| implied live LTP wrong side:", int(ra.reanchor_ltp_wrong_side_of_vwap.sum()),
+      "| re-anchored entry inside the 2% circuit margin:", int(ra.entry_inside_circuit_margin.sum()))
+# SL / TGT arithmetic check
+t["sl_expected"] = np.where(t.long, t.entry_target_price * (1 - t.strategy.map(SLP)), t.entry_target_price * (1 + t.strategy.map(SLP)))
+t["sl_ok"] = (t.sl_initial - t.sl_expected).abs() / t.entry_target_price < 2e-4
+t["tgt_expected"] = np.where(t.long, t.entry_target_price + 1.5 * (t.entry_target_price - t.sl_initial),
+                             t.entry_target_price - 1.5 * (t.sl_initial - t.entry_target_price))
+t["tgt_ok"] = (t.tgt_initial - t.tgt_expected).abs() / t.entry_target_price < 2e-4
+print("\nSL == entry*(1-+sl_pct) within 2bp:", int(t.sl_ok.sum()), "of", int(t.sl_initial.notna().sum()),
+      "| TGT == entry+-1.5*|entry-sl| within 2bp:", int(t.tgt_ok.sum()), "of", int(t.tgt_initial.notna().sum()))
+print("tgt_risk_reward_applied values:", t.tgt_risk_reward_applied.value_counts(dropna=False).to_dict())
+# fill vs entry, timings
+f = t[t.entry_actual_price.notna()].copy()
+f["fill_vs_entry_pct"] = (f.entry_actual_price / f.entry_target_price - 1) * 100 * np.where(f.long, 1, -1)  # + = worse
+print("\nfilled trades:", len(f), " fill vs entry_target (%; + = worse for us):", f.fill_vs_entry_pct.describe(percentiles=[.05, .5, .95]).round(4).to_dict())
+for col in ["signal_to_order_ms", "order_to_fill_ms", "total_latency_ms"]:
+    v = t[col].dropna()
+    print(col, "n=", len(v), v.describe(percentiles=[.5, .9, .95, .99]).round(0).to_dict())
+e = od[od.leg == "ENTRY"].copy()
+e["placed"] = pd.to_datetime(e.placed_at.str[:26], format="ISO8601", errors="coerce")
+e["upd"] = pd.to_datetime(e.updated_at.str[:26], format="ISO8601", errors="coerce")
+e["fill"] = pd.to_datetime(e.filled_at.str[:26], format="ISO8601", errors="coerce")
+c = e[e.status == "CANCELLED"]
+print("\nENTRY CANCELLED:", len(c), " (updated_at - placed_at) seconds:", ((c.upd - c.placed).dt.total_seconds()).describe(percentiles=[.05, .5, .95]).round(1).to_dict())
+cm = e[e.status == "COMPLETE"]
+print("ENTRY COMPLETE:", len(cm), " (filled_at - placed_at) seconds:", ((cm.fill - cm.placed).dt.total_seconds()).describe(percentiles=[.5, .9, .95, .99]).round(1).to_dict())
+print("ENTRY orders.price non-null:", int(e.price.notna().sum()), "of", len(e))
+# fill rate by strategy group and direction
+t["filled"] = t.entry_actual_price.notna()
+t["sent"] = t.status.isin(["CLOSED", "CLOSED_MANUAL", "FAILED", "CANCELLED"]) & t.trade_id.isin(e.trade_id)
+g = t[t.sent].groupby(["reanchor_strategy", "direction"]).agg(sent=("filled", "size"), filled=("filled", "sum"))
+g["fill_rate"] = (g.filled / g.sent).round(3)
+print("\nentry fill rate among trades whose ENTRY order reached the broker:\n", g)
+t.to_pickle("data/trades_enriched.pkl")

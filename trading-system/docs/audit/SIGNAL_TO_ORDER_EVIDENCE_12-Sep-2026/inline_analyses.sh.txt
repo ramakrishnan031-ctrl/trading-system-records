@@ -1,0 +1,732 @@
+# Every Bash command run in this session (D1.1), in order, extracted verbatim from the session transcript.
+# Read-only: SSH commands open SQLite with mode=ro + query_only; nothing is written on either VM.
+
+# ---- [1] List memory directory and sizes of memory files
+cd "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/" && ls -la && wc -c MEMORY*.md
+
+# ---- [2] Show memory index file sizes and most recent memory files
+cd "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/" && wc -c MEMORY*.md && ls -t | head -40
+
+# ---- [3] Check sizes of prior report, map, paths and list evidence dir
+cd "D:/Projects/trading-system" && wc -c docs/audit/CONTRACT_S11_S12_REPORT_11-Sep-2026.md docs/SYSTEM_MAP.md PATHS.md && ls docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/ && git log --oneline -3 && git rev-parse HEAD && git branch --show-current
+
+# ---- [4] List discussion folder and hash the Chartink scanner text file
+ls -la "C:/Users/rama/Downloads/discussion/" | head -50; echo ---; sha256sum "C:/Users/rama/Downloads/discussion/Chartink_scanners.v2.txt" "C:/Users/rama/Downloads/candles/Chartink_scanners.v2.txt" 2>&1; wc -l -c "C:/Users/rama/Downloads/discussion/Chartink_scanners.v2.txt"
+
+# ---- [5] Show evidence manifest and the prior read-only VM query script
+cd "D:/Projects/trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026" && cat MANIFEST.txt | head -50 && echo ---- && cat vm_queries.py.txt | head -120
+
+# ---- [6] Show SSH host aliases, git remotes, and confirm 970aabf exists locally
+cd "D:/Projects/trading-system" && grep -iE "^Host |HostName|User " ~/.ssh/config 2>/dev/null | head -30; echo ---; git remote -v; echo ---; git cat-file -t 970aabf; git cat-file -t d3ee69d; git log -1 --format='%H %ci %s' 970aabf
+
+# ---- [7] Resolve origin/main by measurement via ls-remote
+cd "D:/Projects/trading-system" && date '+%Y-%m-%d %H:%M:%S %Z' && git ls-remote origin refs/heads/main && git fetch --dry-run origin 2>&1 | head -5; git rev-parse origin/main 2>/dev/null
+
+# ---- [8] Extract read-only copy of the 970aabf tree into scratchpad
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; mkdir -p "$SCR/src970" && cd "D:/Projects/trading-system" && git archive 970aabf | tar -x -C "$SCR/src970" && ls "$SCR/src970" | head -60 && find "$SCR/src970" -name "*.py" | wc -l
+
+# ---- [9] List SYSTEM_MAP.md headings to locate relevant sections
+cd "D:/Projects/trading-system" && grep -n "^#" docs/SYSTEM_MAP.md | head -150; grep -c "^#" docs/SYSTEM_MAP.md; wc -l docs/SYSTEM_MAP.md
+
+# ---- [10] Find fetch_daily_candles references and candle-related scripts at 970aabf
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -rn "fetch_daily_candles" --include=*.py --include=*.yaml --include=*.cron --include=*.sh . | head -30; echo ----; ls scripts | grep -i -E "candle|fetch|daily" 
+
+# ---- [11] Line counts of entry-path files and snapshot field names in screener
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && wc -l screening/secondary_screener.py screening/step_executor.py screening/quality_scorer.py signals/signal_processor.py signals/webhook_receiver.py main.py capital/position_sizer.py orders/order_placer.py screening/entry_gate.py screening/hard_gate.py && grep -n "prev_close\|\"close\"\|'close'\|ohlc\|market_data_snapshot\|snapshot\[" screening/secondary_screener.py | head -60
+
+# ---- [12] Inspect sample V3, S&R and signals records from prior evidence
+cd "D:/Projects/trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm" && head -c 1800 v3_would_be_INDOCO_0902.jsonl; echo; echo ----; head -c 1500 sr_rows_full_INDOCO.txt; echo; echo ----; head -c 1200 signals_rows.txt
+
+# ---- [13] Show webhook_audit and signals table schemas at 970aabf
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "CREATE TABLE IF NOT EXISTS webhook_audit" -A 25 core/schema.sql | head -40; echo ----; grep -n "CREATE TABLE IF NOT EXISTS signals" -A 40 core/schema.sql | head -50
+
+# ---- [14] Read webhook receiver kill-switch and entry-window gates
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 520,640p signals/webhook_receiver.py
+
+# ---- [15] Inspect forward_shadow_record candle source and rate handling
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && wc -l scripts/forward_shadow_record.py && grep -n "historical_data\|candles\|def \|interval\|sleep\|rate" scripts/forward_shadow_record.py | head -80
+
+# ---- [16] Read ensure_candles and the forward shadow output path
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def ensure_candles" -A 60 scripts/reconstruct_excursions.py | head -80; grep -n "OUT_PATH\s*=" scripts/forward_shadow_record.py
+
+# ---- [17] Find analytics DB path, candles schema, pb01_watchlist schema
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "analytics" core/db_connect.py | head -20; grep -n "CREATE TABLE IF NOT EXISTS candles" -A 20 core/schema.sql | head -30; grep -rn "CREATE TABLE IF NOT EXISTS pb01_watchlist" -A 30 core/ | head -40
+
+# ---- [18] Read daily_symbol_stats schema and find all non-test references
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 1581,1625p core/schema.sql; echo ----; grep -rn "daily_symbol_stats" --include=*.py --include=*.yaml . | grep -v "^./tests" | head -30
+
+# ---- [19] Check whether the daily-stats writer exists anywhere in git history
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && ls scripts/build_daily_symbol_stats.py 2>&1; grep -rn "get_daily_symbol_stats\|upsert_daily_symbol_stats\|build_daily_symbol_stats" --include=*.py --include=*.yaml --include=*.cron . | head; echo ----; sed -n 1,40p core/daily_stats.py; cd "D:/Projects/trading-system" && git log --oneline --all -- scripts/build_daily_symbol_stats.py | head
+
+# ---- [20] Run read-only inventory pass on production VM
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; ssh -o ConnectTimeout=15 trading-vm 'PYTHONDONTWRITEBYTECODE=1 python3 -' < "$SCR/inv1.py" > "$SCR/inv1_out.txt" 2>&1; echo rc=$?; wc -l "$SCR/inv1_out.txt"; head -150 "$SCR/inv1_out.txt"
+
+# ---- [21] Show remainder of inventory output
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; sed -n 150,200p "$SCR/inv1_out.txt"
+
+# ---- [22] Check pandas/numpy availability on PC and VM, VM resources
+cd "D:/Projects/trading-system" && ls venv/Scripts/python.exe 2>/dev/null && venv/Scripts/python.exe -c "import sys, pandas, numpy; print(sys.version); print('pandas', pandas.__version__, 'numpy', numpy.__version__)" 2>&1; which python; python -c "import sys; print(sys.executable, sys.version)" 2>&1; ssh trading-vm '/home/ubuntu/systems/venv/bin/python -c "import pandas, numpy, sys; print(sys.version, pandas.__version__, numpy.__version__)"; nproc; free -m | head -2; df -h /home | tail -1'
+
+# ---- [23] Check local pandas and available virtualenvs
+python -c "import pandas, numpy; print('pandas', pandas.__version__, 'numpy', numpy.__version__)" 2>&1; ls "D:/Projects/trading-system" | grep -i venv; ls "D:/Projects/" | head
+
+# ---- [24] Stream read-only extracts of seven tables from production
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; mkdir -p "$SCR/data"; for t in trades orders pb01 v3 webhook_audit signals screener; do ssh -o ConnectTimeout=15 trading-vm "D11_TABLE=$t PYTHONDONTWRITEBYTECODE=1 python3 -" < "$SCR/extract.py" > "$SCR/data/$t.csv.gz"; echo "$t rc=$? bytes=$(wc -c < "$SCR/data/$t.csv.gz") rows=$(gzip -dc "$SCR/data/$t.csv.gz" | wc -l)"; done; date '+%H:%M:%S'
+
+# ---- [25] Stream read-only extract of the 1-minute candles table
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; t=candles; ssh -o ConnectTimeout=15 trading-vm "D11_TABLE=$t PYTHONDONTWRITEBYTECODE=1 python3 -" < "$SCR/extract.py" > "$SCR/data/$t.csv.gz"; echo "$t rc=$? bytes=$(wc -c < "$SCR/data/$t.csv.gz") rows=$(gzip -dc "$SCR/data/$t.csv.gz" | wc -l)"; date '+%H:%M:%S'
+
+# ---- [26] Run pass A: delivery timing, screener latency, minute distribution
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python a1_load.py 2>&1 | tee a1_out.txt
+
+# ---- [27] Fix timestamp parsing and rerun pass A
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && python - <<'EOF'
+import re
+p='a1_load.py'
+t=open(p,encoding='utf-8').read()
+t=t.replace('''    s["trig"] = pd.to_datetime(s["triggered_at"].str[:19])
+    s["recv"] = pd.to_datetime(s["received_at"].str[:26], format="ISO8601")''','''    s["trig"] = pd.to_datetime(s["triggered_at"].str[:19])
+    s["recv"] = naive(s["received_at"])''')
+t=t.replace('''    sc["sts"] = pd.to_datetime(sc["ts"].str[:26], format="ISO8601")''','''    sc["sts"] = naive(sc["ts"])''')
+t=t.replace('''def load():''','''def naive(col):
+    """ISO-8601 strings with a +05:30 suffix (microseconds optional) -> naive IST datetimes."""
+    z = col.astype(str).str.replace(r"([+-]\\d\\d:\\d\\d)$", "", regex=True)
+    bad = ~col.astype(str).str.endswith("+05:30") & col.notna()
+    if bad.any():
+        print("WARN non +05:30 suffix rows:", int(bad.sum()), col[bad].head(3).tolist())
+    return pd.to_datetime(z, format="ISO8601")
+
+
+def load():''')
+open(p,'w',encoding='utf-8').write(t)
+EOF
+PYTHONIOENCODING=utf-8 python a1_load.py 2>&1 | tee a1_out.txt
+
+# ---- [28] Show the Batch-1 file delta between running and deployed SHAs
+cd "D:/Projects/trading-system" && git diff --stat d3ee69d 970aabf && git log --oneline d3ee69d..970aabf | head -20
+
+# ---- [29] Show Batch-1 diff for secondary_screener.py
+cd "D:/Projects/trading-system" && git diff d3ee69d 970aabf -- screening/secondary_screener.py | head -250
+
+# ---- [30] Show Batch-1 diff for signal_processor.py (non-comment lines)
+cd "D:/Projects/trading-system" && git diff -U1 d3ee69d 970aabf -- signals/signal_processor.py | grep -E "^[-+@]" | grep -vE "^\+\s*#" | head -300
+
+# ---- [31] Read quality scorer and scoring weights at 970aabf
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && cat -n screening/quality_scorer.py && echo ---- && cat -n config/scoring_weights.yaml
+
+# ---- [32] Validate score formula and compute per-step distributions
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python a2_steps.py 2>&1 | tee a2_out.txt
+
+# ---- [33] Read scoring config model field order and test float rounding
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "class ScoringStepsConfig\|class StepWeights\|class ScoringConfig" -A 16 core/config_loader.py | head -60; python -c "print(57.5/100*100.0, round(57.5/100*100.0), 59.5/100*100.0, round(59.5/100*100.0), 60.5/100*100, 64.5/100*100)"
+
+# ---- [34] Recompute scores with exact code expression and field order
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a2b_out.txt
+import pandas as pd, numpy as np, os
+x = pd.read_pickle("data/screen_all10.pkl")
+ORDER = [("volume_surge",15),("vwap_position",10),("atr_filter",10),("rsi_range",10),("price_action",15),
+         ("sector_strength",10),("time_of_day",5),("spread_check",5),("circuit_check",10),("signal_age",10)]
+vals = x[["st_"+k for k,_ in ORDER]].astype(float).to_numpy()
+rec = []
+for row in vals:
+    tot = 0.0
+    for (k,w),r in zip(ORDER,row):
+        tot += float(r)*w
+    rec.append(min(100, int(round((tot/100)*100.0))))
+x["rec2"] = rec
+mm = x["rec2"] != x["score"].astype(int)
+print("exact-code recomputation == stored score:", int((~mm).sum()), "of", len(x), " mismatches:", int(mm.sum()))
+if mm.any():
+    print(x.loc[mm, ["ts","score","rec2"]+["st_"+k for k,_ in ORDER]].head(12).to_string())
+    print(x.loc[mm, "ts"].str[:10].value_counts().sort_index().to_string())
+EOF
+
+# ---- [35] Enumerate pass-capable step combinations and compare with observed passes
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a2c_out.txt
+import pandas as pd, numpy as np, itertools
+ORDER = [("volume_surge",15),("vwap_position",10),("atr_filter",10),("rsi_range",10),("price_action",15),
+         ("sector_strength",10),("time_of_day",5),("spread_check",5),("circuit_check",10),("signal_age",10)]
+def score(d):
+    tot=0.0
+    for k,w in ORDER: tot += float(d[k])*w
+    return min(100,int(round((tot/100)*100.0)))
+# Enumerate the live discrete steps (dead ones at their constants) and find the minimum price_action that reaches 60
+rows=[]
+for vw,tod,sp,cc,age in itertools.product([0,1],[0.5,0.8,1.0],[0.0,0.5,1.0],[0,1],[0.0,0.5,1.0]):
+    base=dict(volume_surge=0,vwap_position=vw,atr_filter=0,rsi_range=0.5,sector_strength=0.5,time_of_day=tod,spread_check=sp,circuit_check=cc,signal_age=age)
+    need=None
+    for p in np.arange(0,1.00001,0.0001):
+        d=dict(base,price_action=float(round(p,4)))
+        if score(d)>=60: need=round(p,4); break
+    mx=score(dict(base,price_action=1.0))
+    rows.append((vw,tod,sp,cc,age,mx,need))
+t=pd.DataFrame(rows,columns=["vwap","time_of_day","spread","circuit","age","max_score","min_price_action_to_pass"])
+ok=t[t.min_price_action_to_pass.notna()]
+print("combinations that CAN reach 60:",len(ok),"of",len(t))
+print(ok.sort_values(["spread","time_of_day","age"]).to_string(index=False))
+print("\nmax score by (vwap,circuit) over the rest:"); print(t.groupby(["vwap","circuit"]).max_score.max())
+x=pd.read_pickle("data/screen_all10.pkl")
+x["passed"]=x["status"].eq("PASSED")
+x["sc_ok"]=x["score"].astype(int)>=60
+print("\nscore>=60 vs status PASSED (all-10 rows):"); print(pd.crosstab(x.sc_ok,x.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE_*",regex=True)))
+print("\nPASSED rows by (time_of_day, spread_check, signal_age):")
+print(x[x.passed].groupby(["st_time_of_day","st_spread_check","st_signal_age"]).size().to_string())
+print("\nALL rows by (time_of_day, spread_check): count, passed, pass_rate")
+g=x.groupby(["st_time_of_day","st_spread_check"]).agg(n=("passed","size"),passed=("passed","sum"))
+g["rate"]=(g.passed/g.n).round(4); print(g.to_string())
+print("\nPASSED with vwap=0:",int((x.passed&(x.st_vwap_position==0)).sum()),"  PASSED with price_action<0.95:",int((x.passed&(x.st_price_action<0.95)).sum()))
+EOF
+
+# ---- [36] Find the 55-to-60 pass-mark change and analyse the current regime
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a2d_out.txt
+import pandas as pd, numpy as np
+x=pd.read_pickle("data/screen_all10.pkl")
+x["d"]=x["ts"].str[:10]
+x["passed"]=x.status.eq("PASSED")
+e=x.groupby(x.eligible_score.fillna(-1)).agg(n=("d","size"),first=("ts","min"),last=("ts","max"))
+print(e.to_string())
+# the regime boundary
+x60=x[x.eligible_score==60]; x55=x[x.eligible_score==55]
+print("\nlast 55 row:", x55.ts.max(), " first 60 row:", x60.ts.min())
+print("PASSED & score<60 by eligible_score:", x[x.passed & (x.score.astype(int)<60)].eligible_score.value_counts(dropna=False).to_dict())
+print("PASSED & score<eligible:", int((x.passed & (x.score.astype(float)<x.eligible_score)).sum()))
+# current regime only
+c=x[x.eligible_score==60].copy()
+print("\n== CURRENT regime (eligible 60):", len(c), "rows", c.ts.min()[:10], "->", c.ts.max()[:10], " PASSED", int(c.passed.sum()))
+g=c.groupby(["st_time_of_day","st_spread_check"]).agg(n=("passed","size"),passed=("passed","sum")); g["rate"]=(g.passed/g.n).round(4); print(g.to_string())
+print("\nscore histogram, current regime:"); print(c.score.astype(int).value_counts().sort_index().to_string())
+# screen clock-time buckets vs time_of_day value (validate the 10:15 / 12:15 cut)
+c["hm"]=c.ts.str[11:16]
+print("\ntime_of_day value by screen-time bucket:")
+c["bucket"]=pd.cut(c.hm.str[:2].astype(int)*60+c.hm.str[3:].astype(int),[0,615,735,2000],labels=["<10:15","10:15-12:14",">=12:15"],right=False)
+print(pd.crosstab(c.bucket,c.st_time_of_day).to_string())
+EOF
+
+# ---- [37] Build the funnel for 11-Sep and 10-Sep plus all-time status counts
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a3_out.txt
+import pandas as pd, numpy as np
+wa=pd.read_csv("data/webhook_audit.csv.gz"); wa["d"]=wa.ts.str[:10]; wa["hm"]=wa.ts.str[11:16]
+s=pd.read_csv("data/signals.csv.gz"); s["d"]=s.received_at.str[:10]
+sc=pd.read_csv("data/screener.csv.gz"); sc["d"]=sc.ts.str[:10]
+tr=pd.read_csv("data/trades.csv.gz"); od=pd.read_csv("data/orders.csv.gz")
+print("trades cols:", list(tr.columns)); print("orders cols:", list(od.columns))
+for D in ["2026-09-11","2026-09-10"]:
+    print("\n==================== DAY", D, "====================")
+    w=wa[wa.d==D]
+    print("webhook_audit requests:", len(w), " by code:", w.response_code.value_counts().sort_index().to_dict())
+    print("  in-window (10:00<=t<15:00) by code:", w[(w.hm>="10:00")&(w.hm<"15:00")].response_code.value_counts().sort_index().to_dict())
+    print("  before 10:00:", w[w.hm<"10:00"].response_code.value_counts().to_dict(), " from 15:00:", w[w.hm>="15:00"].response_code.value_counts().to_dict())
+    print("  signals_accepted sum:", int(w.signals_accepted.sum()), " signals_rejected sum:", int(w.signals_rejected.sum()))
+    ss=s[s.d==D]
+    print("signals rows:", len(ss))
+    print(ss.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE_*",regex=True).value_counts().to_string())
+    c=sc[sc.d==D]
+    print("screener rows:", len(c)); print(c.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE_*",regex=True).value_counts().to_string())
+    t=tr[tr.created_at.str[:10]==D]
+    print("trades created:", len(t)); print(t.status.value_counts().to_string())
+print("\n=== ALL-TIME signals.status (families) ===")
+print(s.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE_*",regex=True).value_counts().to_string())
+EOF
+
+# ---- [38] Inspect 11-Sep and 10-Sep trades with entry order outcomes
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a3b_out.txt
+import pandas as pd
+pd.set_option("display.width",250); pd.set_option("display.max_columns",40)
+tr=pd.read_csv("data/trades.csv.gz"); od=pd.read_csv("data/orders.csv.gz"); s=pd.read_csv("data/signals.csv.gz")
+for D in ["2026-09-11","2026-09-10"]:
+    t=tr[tr.created_at.str[:10]==D].copy()
+    e=od[od.leg=="ENTRY"][["trade_id","order_id","order_type","product","variety","transaction_type","qty_requested","price","status","placed_at","filled_at","rejection_reason"]]
+    m=t.merge(e,on="trade_id",how="left",suffixes=("","_o"))
+    m=m.merge(s[["signal_id","status","trigger_price","triggered_at"]].rename(columns={"status":"sig_status"}),on="signal_id",how="left")
+    print("\n===== trades created", D, "=====")
+    print(m[["created_at","symbol","strategy","direction","status","sig_status","entry_mode","order_protocol","qty_planned","trigger_price","entry_target_price","entry_actual_price","order_type","product","price","status_o","rejection_reason","exit_reason","closure_source"]].to_string(index=False))
+print("\n=== all-time trades.status ==="); print(tr.status.value_counts().to_string())
+print("\n=== all-time ENTRY order status by trade status ===")
+e=od[od.leg=="ENTRY"]
+mm=tr.merge(e[["trade_id","status","order_type","product"]],on="trade_id",how="left",suffixes=("","_entry"))
+print(pd.crosstab(mm.status, mm.status_entry.fillna("NO_ENTRY_ROW")).to_string())
+print("\nENTRY order_type x product:"); print(pd.crosstab(e.order_type.fillna("?"), e["product"].fillna("?")).to_string())
+EOF
+
+# ---- [39] List function boundaries and reject raise sites in signal_processor
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "    def \|^def \|raise _PipelineReject" signals/signal_processor.py
+
+# ---- [40] Read circuit proximity reject rule and its margin constant
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def circuit_proximity_reason" -A 60 screening/hard_gate.py | head -80; grep -n "DEFAULT_CIRCUIT_MARGIN_PCT\s*=" -A 3 orders/price_math.py
+
+# ---- [41] Locate screener and processor wiring in main.py
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "StepExecutor(\|SecondaryScreener(\|QualityScorer(\|HardGate(\|SignalProcessor(\|quote_fn=\|circuit_proximity_reject_enabled\|mis_filter_enabled\|mis_filter_shadow\|step_timeout_sec\|market_open=" main.py | head -40
+
+# ---- [42] Read screener/scorer/hard-gate and processor construction in main.py
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 3225,3300p main.py; echo -----; sed -n 3570,3660p main.py
+
+# ---- [43] List top-level sections of system_config.yaml
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "^[a-z_]*:" config/system_config.yaml | head -80; wc -l config/system_config.yaml
+
+# ---- [44] Read trading hours, queue, product map, capital, sizing, risk, webhook, processor config
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 21,60p config/system_config.yaml; echo ....; sed -n 117,182p config/system_config.yaml; echo ....; sed -n 196,360p config/system_config.yaml
+
+# ---- [45] Read shadow tracker, S&R, regime, allocator, v3, entry gate, breaker config
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 492,530p config/system_config.yaml; echo ....; sed -n 547,742p config/system_config.yaml | grep -v "^\s*#" 
+
+# ---- [46] Date every signal status and sample post-screen reject reasons
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a4_out.txt
+import pandas as pd
+s=pd.read_csv("data/signals.csv.gz"); s["d"]=s.received_at.str[:10]
+s["fam"]=s.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE_*",regex=True)
+days=sorted(s.d.unique()); last20=set(days[-20:])
+g=s.groupby("fam").agg(n=("d","size"),first=("d","min"),last=("d","max"),days=("d","nunique"))
+g["n_last20d"]=s[s.d.isin(last20)].groupby("fam").size()
+print("trading days in signals:",len(days),days[0],"->",days[-1]," last-20 window:",min(last20),"->",max(last20))
+print(g.sort_values("n",ascending=False).fillna(0).astype({"n_last20d":int}).to_string())
+# reason strings for the post-screen rejects (sample one per family)
+post=["REJECTED_SIZING_CONCENTRATION","REJECTED_ENTRY_THROTTLED","REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT","REJECTED_STRATEGY_POSITION_LIMIT",
+      "REJECTED_DUPLICATE_SYMBOL","REJECTED_SIZING_CAPITAL","REJECTED_DAILY_TRADES","REJECTED_OPEN_POSITIONS","REJECTED_CONSECUTIVE_LOSSES",
+      "REJECTED_SIZING_RISK","PLACEMENT_FAILED","REJECTED_STRATEGY_CONTROL","REJECTED_STRATEGY_CIRCUIT_BREAKER","REJECTED_SHADOW_INNING_ACTIVE","RESERVED"]
+for f in post:
+    x=s[s.status==f]
+    if len(x):
+        print(f"\n-- {f} ({len(x)}): latest reasons")
+        for r in x.sort_values("received_at").tail(3).itertuples():
+            print("   ",r.received_at[:19],r.symbol,r.strategy,"|",str(r.rejection_reason)[:230])
+EOF
+
+# ---- [47] List the twin's evidence files read-only
+ssh -o ConnectTimeout=15 trading-sbx 'cd /home/ubuntu/systems/trading-system && ls -la data_store/evidence/ 2>&1 | head; for f in data_store/evidence/*.jsonl; do echo "$f $(wc -l < $f)"; done; systemctl is-active trading-system; date "+%F %T %Z"'
+
+# ---- [48] Inspect twin evidence records and trades read-only
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; ssh -o ConnectTimeout=15 trading-sbx 'PYTHONDONTWRITEBYTECODE=1 python3 -' < "$SCR/twin_ev1.py" > "$SCR/twin_ev1_out.txt" 2>&1; echo rc=$?; wc -l "$SCR/twin_ev1_out.txt"; cut -c1-600 "$SCR/twin_ev1_out.txt" | head -120
+
+# ---- [49] Pull full evidence, DB rows and log lines for the chosen twin trade
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; ssh -o ConnectTimeout=15 trading-sbx 'PYTHONDONTWRITEBYTECODE=1 python3 -' < "$SCR/twin_ev2.py" > "$SCR/twin_ev2_out.txt" 2>&1; echo rc=$?; wc -l "$SCR/twin_ev2_out.txt"; head -c 20000 "$SCR/twin_ev2_out.txt"
+
+# ---- [50] Show DB rows, orders and log lines for the twin trade
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; grep -n "=== signals row\|=== screener_results\|=== trade row\|=== orders rows\|=== order_execution_log\|=== system log" "$SCR/twin_ev2_out.txt"; sed -n '/=== signals row/,$p' "$SCR/twin_ev2_out.txt" | cut -c1-1500
+
+# ---- [51] Fetch reject examples from twin and production rows for RAYMOND
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; cat > "$SCR/twin_ev3.py" <<'EOF'
+"""READ-ONLY. Two more twin evidence records + their log lines. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json
+BASE = "/home/ubuntu/systems/trading-system"
+F = BASE + "/data_store/evidence/signal_evidence_VBB097_2026-09-11.jsonl"
+WANT = {"sig_8190f13b04c74326a9cdfa01e7d2664e", "sig_8efb220e7359461cb3d3b645237b4256"}
+for l in open(F, encoding="utf-8"):
+    r = json.loads(l)
+    if r.get("signal_id") in WANT:
+        print(json.dumps({k: v for k, v in r.items() if k not in ("code_fingerprint_files", "config_hashes")}, default=str))
+with open(BASE + "/logs/system_2026-09-11.log", encoding="utf-8", errors="replace") as fh:
+    for line in fh:
+        if any(w in line for w in WANT):
+            print(line.rstrip()[:600])
+EOF
+ssh -o ConnectTimeout=15 trading-sbx 'PYTHONDONTWRITEBYTECODE=1 python3 -' < "$SCR/twin_ev3.py" > "$SCR/twin_ev3_out.txt" 2>&1; echo rc=$?; cat "$SCR/twin_ev3_out.txt" | cut -c1-2500
+cd "$SCR" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+s=pd.read_csv("data/signals.csv.gz"); sc=pd.read_csv("data/screener.csv.gz")
+x=s[(s.symbol=="RAYMOND")&(s.received_at.str[:16]>="2026-09-11T14:50")&(s.received_at.str[:16]<="2026-09-11T14:56")]
+print("\nPRODUCTION RAYMOND 14:50-14:56 signals:")
+print(x[["signal_id","strategy","triggered_at","received_at","status","trigger_price"]].to_string(index=False))
+m=sc[sc.signal_id.isin(x.signal_id)]
+for r in m.itertuples(): print(r.signal_id, r.ts, r.score, r.status, r.step_results[:220], "| snap:", r.market_data_snapshot[:260] if isinstance(r.market_data_snapshot,str) else "")
+EOF
+
+# ---- [52] Show production RAYMOND 14:53-14:55 screener snapshots and spreads
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+pd.set_option("display.width",250); pd.set_option("display.max_columns",30)
+s=pd.read_csv("data/signals.csv.gz"); sc=pd.read_csv("data/screener.csv.gz")
+x=s[(s.symbol=="RAYMOND")&(s.received_at.str[:16]>="2026-09-11T14:50")&(s.received_at.str[:16]<="2026-09-11T14:56")]
+m=sc[sc.signal_id.isin(x.signal_id)][["signal_id","ts","score","status","ltp","bid","ask","vwap","open","day_high","day_low","upper_circuit","lower_circuit","step_results"]]
+m=m.merge(x[["signal_id","strategy","trigger_price"]],on="signal_id")
+m["spread_pct"]=((m.ask-m.bid)/((m.ask+m.bid)/2)*100).round(5)
+print(m.drop(columns=["step_results"]).to_string(index=False))
+for r in m.itertuples(): print(r.signal_id[:12], r.step_results)
+EOF
+
+# ---- [53] Test whether snapshot open is the real open or the circuit midpoint
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd, numpy as np
+sc=pd.read_csv("data/screener.csv.gz", usecols=["signal_id","ts","open","upper_circuit","lower_circuit","ltp","day_high","day_low"])
+s=pd.read_csv("data/signals.csv.gz", usecols=["signal_id","symbol"])
+x=sc.merge(s,on="signal_id").dropna(subset=["open","upper_circuit","lower_circuit"])
+x["d"]=x.ts.str[:10]
+x["mid"]=(x.upper_circuit+x.lower_circuit)/2
+x["diff_open_mid_pct"]=(x.open/x.mid-1)*100
+print("rows",len(x)," |open-mid|<=0.05 abs:", int(((x.open-x.mid).abs()<=0.05).sum()), f"({((x.open-x.mid).abs()<=0.05).mean():.4f})")
+print("distribution of (open/mid-1)% :", x.diff_open_mid_pct.describe(percentiles=[.01,.1,.25,.5,.75,.9,.99]).round(3).to_dict())
+# candle comparison: first candle open of the day per symbol
+c=pd.read_csv("data/candles.csv.gz"); c["d"]=c.ts.str[:10]; c["hm"]=c.ts.str[11:16]
+first=c[c.hm=="09:15"].groupby(["symbol","d"]).open.first().rename("c_open0915").reset_index()
+dayhl=c.groupby(["symbol","d"]).agg(c_high=("high","max"),c_low=("low","min")).reset_index()
+y=x.drop_duplicates(["symbol","d"]).merge(first,on=["symbol","d"]).merge(dayhl,on=["symbol","d"])
+y["open_vs_candle_pct"]=(y.open/y.c_open0915-1)*100
+print("\nsymbol-days with a 09:15 candle:",len(y))
+print("snapshot open == 09:15 candle open (|diff|<=0.05):", int(((y.open-y.c_open0915).abs()<=0.05).sum()), f"({((y.open-y.c_open0915).abs()<=0.05).mean():.4f})")
+print("(snapshot open / candle open -1)%:", y.open_vs_candle_pct.describe(percentiles=[.01,.1,.5,.9,.99]).round(3).to_dict())
+print("snapshot open == circuit mid on these:", f"{((y.open-y.mid).abs()<=0.05).mean():.4f}")
+r=y[y.symbol=="RAYMOND"][["d","open","mid","c_open0915","upper_circuit","lower_circuit"]]; print(r.tail(6).to_string(index=False))
+# band width distribution (as % of mid) -> NSE band categories
+x["band_pct"]=((x.upper_circuit-x.lower_circuit)/2/x.mid*100).round(1)
+print("\nband half-width % (value counts, top):", x.band_pct.value_counts().head(8).to_dict())
+EOF
+
+# ---- [54] Tabulate per-strategy price and gate parameters from YAMLs
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970/config/strategies" && python - <<'EOF'
+import yaml, glob, os
+keys=["intent","direction","enabled","entry_method","entry_offset_pct","pullback_wait_enabled","sl_method","sl_pct","tgt_method","tgt_risk_reward","tgt_pct","max_spread_pct","max_concurrent_positions","entry_start_time","entry_end_time","min_score"]
+print("strategy".ljust(28)," | ".join(k[:12] for k in keys))
+for f in sorted(glob.glob("*.yaml")):
+    d=yaml.safe_load(open(f,encoding="utf-8"))
+    print(os.path.basename(f)[:-5].ljust(28)," | ".join(str(d.get(k))[:12] for k in keys))
+EOF
+
+# ---- [55] Measure trigger/entry/re-anchor/fill prices and order timings
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python a5_prices.py 2>&1 | tee a5_out.txt
+
+# ---- [56] Detail distributions for spread, price action, VWAP, age and time steps
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a6_out.txt
+import pandas as pd, numpy as np
+x=pd.read_pickle("data/screen_all10.pkl")
+s=pd.read_csv("data/signals.csv.gz",usecols=["signal_id","strategy","triggered_at"])
+x=x.merge(s,on="signal_id",how="left")
+SHORT={"first_pullback_short","gap_fade_short","gap_go_short","open_high_breakdown_short","vwap_rejection_short","range_breakout_short"}
+x["long"]=~x.strategy.isin(SHORT)
+x["passed"]=x.status.eq("PASSED")
+cur=x[x.eligible_score==60].copy()
+print("current-regime rows:",len(cur))
+# spread_check
+cur["spread_pct"]=(cur.ask-cur.bid)/((cur.ask+cur.bid)/2)*100
+cur["spread_abs"]=(cur.ask-cur.bid).round(4)
+print("\nspread_pct quantiles (all current rows):",cur.spread_pct.quantile([.01,.1,.25,.5,.75,.9,.99]).round(4).to_dict())
+print("bid==ask rows:",int((cur.spread_abs==0).sum())," ask<bid rows:",int((cur.spread_abs<0).sum()))
+sp1=cur[cur.st_spread_check==1.0]
+print("spread_check=1 rows:",len(sp1)," their spread_abs values (top):",sp1.spread_abs.value_counts().head(6).to_dict())
+print("  their ltp quantiles:",sp1.ltp.quantile([0,.1,.5,.9,1]).round(2).to_dict())
+b=pd.cut(cur.ltp,[0,100,200,250,500,1000,2000,5000,1e9])
+print("spread_check pass rate by ltp bucket:\n",cur.groupby(b,observed=True).st_spread_check.agg(["size","mean"]).round(4).to_string())
+# price_action: direction blindness
+cur["body_dir_with_trade"]=np.where(cur.long,cur.ltp>=cur.open,cur.ltp<=cur.open)
+print("\nprice_action: rows where the day-candle body points AGAINST the trade direction:",int((~cur.body_dir_with_trade).sum()),"of",len(cur),
+      f"({(~cur.body_dir_with_trade).mean():.4f})")
+print("  ... of those, price_action>=0.9667:",int(((~cur.body_dir_with_trade)&(cur.st_price_action>=0.9667)).sum()),
+      "| PASSED with body against direction:",int((cur.passed&~cur.body_dir_with_trade).sum()),"of",int(cur.passed.sum()))
+pa_body=(cur.ltp-cur.open).abs()/(cur.day_high-cur.day_low+1e-9)
+print("  check: min(1,2*body/range) == stored:",int(((np.minimum(1,2*pa_body)-cur.st_price_action).abs()<1e-6).sum()),"of",len(cur))
+# vwap_position
+print("\nvwap_position=0 rows:",int((cur.st_vwap_position==0).sum()),f"({(cur.st_vwap_position==0).mean():.4f})",
+      " check ltp>vwap(long)/ltp<vwap(short) == stored:",int((np.where(cur.long,cur.ltp>cur.vwap,cur.ltp<cur.vwap).astype(float)==cur.st_vwap_position).sum()),"of",len(cur))
+# signal_age vs measured age at screening
+cur["age_at_screen_s"]=(pd.to_datetime(cur.ts.str.replace(r"([+-]\d\d:\d\d)$","",regex=True),format="ISO8601")-pd.to_datetime(cur.triggered_at.str[:19])).dt.total_seconds()
+print("\nage at screen-ts (s):",cur.age_at_screen_s.quantile([.01,.5,.9,.95,.99]).round(1).to_dict())
+print(pd.crosstab(pd.cut(cur.age_at_screen_s,[0,30,60,1e6]),cur.st_signal_age))
+# circuit_check vs circuit proximity
+print("\ncircuit_check=0 rows:",int((cur.st_circuit_check==0).sum()))
+# time_of_day by screen time
+print("\nPASSED by screen-time half hour (current regime):")
+cur["hh"]=cur.ts.str[11:13]+":"+np.where(cur.ts.str[14:16].astype(int)<30,"00","30")
+print(cur.groupby("hh").agg(rows=("passed","size"),passed=("passed","sum")).T.to_string())
+EOF
+
+# ---- [57] Reconcile receiver accepted counts with signals rows per scanner
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+wa=pd.read_csv("data/webhook_audit.csv.gz"); wa["d"]=wa.ts.str[:10]; wa["hm"]=wa.ts.str[11:16]
+for D in ["2026-09-11","2026-09-10"]:
+    w=wa[wa.d==D]
+    print(D, "non-window-200 rows:"); print(w[(w.response_code==200)&((w.hm<"10:00")|(w.hm>="15:00"))][["ts","scanner_name","payload_size_bytes","signals_accepted","signals_rejected"]].to_string(index=False))
+    iw=w[(w.response_code==200)&(w.hm>="10:00")&(w.hm<"15:00")]
+    print("  in-window 200: requests",len(iw),"accepted",int(iw.signals_accepted.sum()),"rejected",int(iw.signals_rejected.sum()))
+    print("  per scanner (in-window): requests / accepted / rejected")
+    g=iw.groupby("scanner_name").agg(req=("ts","size"),acc=("signals_accepted","sum"),rej=("signals_rejected","sum")); print(g.to_string())
+    print("  duration_ms quantiles (in-window 200):", iw.duration_ms.quantile([.5,.9,.99,1]).to_dict())
+    s=pd.read_csv("data/signals.csv.gz"); ss=s[s.received_at.str[:10]==D]
+    print("  signals rows per strategy:", ss.strategy.value_counts().to_dict())
+EOF
+
+# ---- [58] Read get_quote implementation and locate broker rate limits config
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def get_quote" -A 70 broker/zerodha_adapter.py | head -110; echo ....; grep -rn "broker_limits" config/*.yaml | head -5
+
+# ---- [59] Read broker rate-limit categories and adapter category map
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -v "^\s*#" config/broker_limits.yaml | grep -v "^\s*$" | head -40; grep -n "_CATEGORY_MAP\s*=" -A 25 broker/zerodha_adapter.py | head -30
+
+# ---- [60] Confirm quote category mapping and rate limiter acquire semantics
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "_CATEGORY_MAP" broker/zerodha_adapter.py | head -3; grep -n "\"get_quote\"\s*:" broker/*.py | head; grep -n "def try_acquire\|def acquire" -A 25 broker/rate_limiter.py | head -70
+
+# ---- [61] Check whether the processor's order-token pre-check is wired
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "rate_limiter" signals/signal_processor.py | head; grep -n "rate_limiter=" main.py | head; sed -n 155,300p signals/signal_processor.py | grep -n "self\._\w* = \|def __init__" | head -80
+
+# ---- [62] Identify which constructors receive rate_limiter in main.py
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && for n in 2385 2985; do awk -v n=$n 'NR<=n && /^[[:space:]]*[a-z_]+ = [A-Za-z_]+\(/ {l=NR": "$0} NR==n {print "line " n " belongs to -> " l}' main.py; done; sed -n 3575,3622p main.py | grep -c "rate_limiter"
+
+# ---- [63] Read strategy-control verdict and market window checks
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def strategy_will_trade" -A 60 strategies/control.py | head -75; echo ....; grep -n "def is_entry_allowed\b\|def is_entry_allowed(\|def is_entry_allowed_for_strategy" -A 30 core/market_windows.py | head -75
+
+# ---- [64] Locate the strategy circuit-breaker (governor) construction and class
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def _build_strategy_governor" -A 30 main.py | head -40; grep -rln "class StrategyGovernor\|class StrategyCircuitBreaker" --include=*.py . | head
+
+# ---- [65] Read the strategy governor check logic
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "def check\b\|def check(" -A 70 capital/strategy_governor.py | head -110
+
+# ---- [66] Confirm governor averaging window and config reads
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 119,135p capital/strategy_governor.py; sed -n 1,48p capital/strategy_governor.py | grep -n "cutoff\|lookback\|multiplier\|enabled" 
+
+# ---- [67] Verify the V3 chain is log-only and how it is wired
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 1,30p v3_chain/runner.py; grep -n "def observe" -A 25 v3_chain/runner.py | head -35; grep -n "v3_chain_mode\|V3ChainRunner(" main.py | head
+
+# ---- [68] Count never-firing rejects and find readers of scorer outputs
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python -c "
+import pandas as pd
+sc=pd.read_csv('data/screener.csv.gz',usecols=['status','eligible_score','step_results'])
+s=pd.read_csv('data/signals.csv.gz',usecols=['status'])
+print('screener REJECTED_SIGNAL_AGE:',int((sc.status=='REJECTED_SIGNAL_AGE').sum()),' signals REJECTED_SIGNAL_AGE:',int((s.status=='REJECTED_SIGNAL_AGE').sum()))
+print('signals REJECTED_EXPIRED:',int((s.status=='REJECTED_EXPIRED').sum()),' REJECTED_KILL_SWITCH*:',int(s.status.str.startswith('REJECTED_KILL_SWITCH').sum()),' REJECTED_OUTSIDE_ENTRY_WINDOW:',int((s.status=='REJECTED_OUTSIDE_ENTRY_WINDOW').sum()))
+print('screener REJECTED_STEP_ERROR:',int((sc.status=='REJECTED_STEP_ERROR').sum()),' REJECTED_NOT_MIS_TRADABLE:',int((sc.status=='REJECTED_NOT_MIS_TRADABLE').sum()),' SKIPPED_EXECUTOR_ERROR:',int((sc.status=='SKIPPED_EXECUTOR_ERROR').sum()),' SKIPPED_SCORER_ERROR:',int((sc.status=='SKIPPED_SCORER_ERROR').sum()))
+print('all screener statuses (non-score):', sc[~sc.status.str.startswith('REJECTED_SCORE_')].status.value_counts().to_dict())
+"
+cd src970 && echo "---- readers of ScoreResult/StepExecutorResult fields (non-test):" && for k in "\.rejected_at" "\.step_scores" "\.missing_steps" "\.tier_thresholds" "score_result\.passed\|\.passed\b"; do echo "== $k"; grep -rn "$k" --include=*.py . | grep -v "^./tests" | grep -v "step_executor.py\|quality_scorer.py" | head -6; done
+
+# ---- [69] Compute the stage funnel for 11-Sep, 10-Sep and the last 20 days
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF' 2>&1 | tee a7_out.txt
+import pandas as pd
+wa=pd.read_csv("data/webhook_audit.csv.gz"); wa["d"]=wa.ts.str[:10]; wa["hm"]=wa.ts.str[11:16]
+s=pd.read_csv("data/signals.csv.gz"); s["d"]=s.received_at.str[:10]
+tr=pd.read_csv("data/trades.csv.gz"); tr["d"]=tr.created_at.str[:10]
+od=pd.read_csv("data/orders.csv.gz"); e=od[od.leg=="ENTRY"]
+days=sorted(s.d.unique()); D20=days[-20:]
+def funnel(dset):
+    w=wa[wa.d.isin(dset)]; ss=s[s.d.isin(dset)]; t=tr[tr.d.isin(dset)]
+    st=ss.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE",regex=True).value_counts()
+    g=lambda k: int(st.get(k,0))
+    iw=w[(w.response_code==200)&(w.hm>="10:00")&(w.hm<"15:00")]
+    eod=w[(w.response_code==200)&~((w.hm>="10:00")&(w.hm<"15:00"))]
+    tm=t.merge(e[["trade_id","status"]].rename(columns={"status":"entry_status"}),on="trade_id",how="left")
+    r={"requests":len(w),"403":int((w.response_code==403).sum()),"401":int((w.response_code==401).sum()),"404":int((w.response_code==404).sum()),
+       "400":int((w.response_code==400).sum()),"503":int((w.response_code==503).sum()),"eod_200":len(eod),
+       "inwin_200":len(iw),"alerts_in_inwin":int(iw.signals_accepted.sum()+iw.signals_rejected.sum()),"receiver_rejected":int(iw.signals_rejected.sum()),
+       "signals":len(ss)}
+    pre=["REJECTED_STRATEGY_CONTROL","REJECTED_STRATEGY_CIRCUIT_BREAKER","REJECTED_SHADOW_INNING_ACTIVE","REJECTED_KILL_SWITCH","REJECTED_OUTSIDE_ENTRY_WINDOW","REJECTED_EXPIRED","REJECTED_TRADE_TYPE"]
+    r["pre_screen_rejects"]=sum(g(k) for k in pre)
+    r["screened"]=r["signals"]-r["pre_screen_rejects"]
+    r["quote_unavail"]=g("SKIPPED_QUOTE_UNAVAILABLE"); r["circuit_prox"]=g("REJECTED_CIRCUIT_PROXIMITY")
+    r["scored"]=r["screened"]-r["quote_unavail"]-r["circuit_prox"]
+    r["score_rejected"]=g("REJECTED_SCORE"); r["passed"]=r["scored"]-r["score_rejected"]
+    r["sizing_rejects"]=g("REJECTED_SIZING_CONCENTRATION")+g("REJECTED_SIZING_CAPITAL")+g("REJECTED_SIZING_RISK")
+    r["sized"]=r["passed"]-r["sizing_rejects"]
+    adm=["REJECTED_STRATEGY_POSITION_LIMIT","REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT","REJECTED_DUPLICATE_SYMBOL","REJECTED_OPEN_POSITIONS","REJECTED_DAILY_TRADES","REJECTED_CONSECUTIVE_LOSSES","REJECTED_RESERVE_FAILED"]
+    r["admission_rejects"]=sum(g(k) for k in adm)
+    r["admitted"]=r["sized"]-r["admission_rejects"]
+    r["throttled"]=g("REJECTED_ENTRY_THROTTLED"); r["dispatched"]=r["admitted"]-r["throttled"]
+    r["placement_failed"]=g("PLACEMENT_FAILED"); r["processed"]=g("PROCESSED")
+    r["other_status"]=int(len(ss)-sum(st.get(k,0) for k in st.index if k in set(pre+adm+["SKIPPED_QUOTE_UNAVAILABLE","REJECTED_CIRCUIT_PROXIMITY","REJECTED_SCORE","REJECTED_SIZING_CONCENTRATION","REJECTED_SIZING_CAPITAL","REJECTED_SIZING_RISK","REJECTED_ENTRY_THROTTLED","PLACEMENT_FAILED","PROCESSED"])))
+    r["trades_created"]=len(t); r["entry_orders_at_broker"]=int(tm.entry_status.notna().sum())
+    r["entry_filled"]=int((tm.entry_status=="COMPLETE").sum()); r["entry_cancelled_unfilled"]=int((tm.entry_status=="CANCELLED").sum())
+    return r
+cols={"2026-09-11":funnel(["2026-09-11"]),"2026-09-10":funnel(["2026-09-10"]),f"20d {D20[0]}..{D20[-1]}":funnel(D20)}
+print(pd.DataFrame(cols).to_string())
+EOF
+
+# ---- [70] Measure broker call latencies from production's 11-Sep log
+ssh -o ConnectTimeout=15 trading-vm 'cd /home/ubuntu/systems/trading-system/logs && python3 -c "
+import json,statistics as st,sys
+sys.dont_write_bytecode=True
+d={}
+for line in open(\"system_2026-09-11.log\",encoding=\"utf-8\",errors=\"replace\"):
+    if \"call_end\" not in line: continue
+    try: r=json.loads(line)
+    except Exception: continue
+    m=r.get(\"method\"); ms=r.get(\"duration_ms\")
+    if m and isinstance(ms,(int,float)): d.setdefault(m,[]).append(ms)
+for m,v in sorted(d.items()):
+    v=sorted(v); n=len(v)
+    q=lambda p: v[min(n-1,int(p*n))]
+    print(m,\"n=\",n,\"p50=\",q(.5),\"p90=\",q(.9),\"p99=\",q(.99),\"max=\",v[-1])
+"'
+
+# ---- [71] Tabulate sizing outcomes on production trades
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+t=pd.read_csv("data/trades.csv.gz")
+t["d"]=t.created_at.str[:10]
+r=t[t.d>="2026-08-17"]
+for c in ["binding_constraint","tier_weight_applied","perf_weight_applied","tier_multiplier_mode","qty_planned","entry_mode","order_protocol","tolerance_fraction_used"]:
+    print(c, "| last-20d:", r[c].value_counts(dropna=False).head(8).to_dict(), "| all:", t[c].value_counts(dropna=False).head(6).to_dict())
+r2=r.copy(); r2["pos_value"]=r2.qty_planned*r2.entry_target_price
+print("planned position value Rs (last 20d):", r2.pos_value.describe(percentiles=[.1,.5,.9]).round(1).to_dict())
+print("qty_by_risk / capital / concentration medians (last 20d):", r[["qty_by_risk","qty_by_capital","qty_by_concentration"]].median().to_dict())
+EOF
+
+# ---- [72] Characterise quote-unavailable symbols and placement-failure reasons
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd, re
+s=pd.read_csv("data/signals.csv.gz"); sc=pd.read_csv("data/screener.csv.gz",usecols=["signal_id","status","ltp"])
+m=s.merge(sc,on="signal_id",how="left",suffixes=("","_sc"))
+q=m[m.status=="SKIPPED_QUOTE_UNAVAILABLE"]
+print("SKIPPED_QUOTE_UNAVAILABLE:",len(q)," distinct symbols:",q.symbol.nunique())
+top=q.symbol.value_counts().head(12)
+ever=m[m.ltp.notna()].groupby("symbol").size()
+print(pd.DataFrame({"skipped":top,"rows_with_a_quote_ever":ever.reindex(top.index).fillna(0).astype(int)}).to_string())
+allq=q.symbol.value_counts(); never=[x for x in allq.index if ever.get(x,0)==0]
+print("symbols skipped that NEVER had a quote:",len(never),"of",len(allq)," rows:",int(allq[never].sum()))
+pf=s[s.status=="PLACEMENT_FAILED"]
+kind=pf.rejection_reason.fillna("").map(lambda r: r.split(":")[0][:40])
+print("\nPLACEMENT_FAILED reasons (prefix):", kind.value_counts().head(10).to_dict())
+print("PLACEMENT_FAILED last-20d:", pf[pf.received_at.str[:10]>="2026-08-17"].rejection_reason.fillna("").map(lambda r: r.split(":")[0][:40]).value_counts().to_dict())
+EOF
+
+# ---- [73] Group broker-side placement rejection texts
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd, re
+s=pd.read_csv("data/signals.csv.gz")
+pf=s[(s.status=="PLACEMENT_FAILED")&s.rejection_reason.fillna("").str.startswith("Zerodha")]
+norm=pf.rejection_reason.str.replace(r"\d+(\.\d+)?","#",regex=True).str.slice(0,150)
+print(norm.value_counts().head(12).to_string())
+EOF
+
+# ---- [74] Inspect unexplained entry prices and trigger-to-quote drift
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd, numpy as np
+t=pd.read_pickle("data/trades_enriched.pkl")
+a=t[~t.reanchor_strategy & ~t.matches_trigger_formula]
+print("no-re-anchor strategies, entry != trigger formula:",len(a))
+print(a.groupby([a.created_at.str[:10]]).size().to_string()[:800])
+print(a.strategy.value_counts().to_dict())
+print("ratio entry/trigger (first 8):",(a.entry_target_price/a.trigger_price).round(6).head(8).tolist())
+# drift Chartink trigger -> screen LTP, all screened signals, signed in trade direction
+sc=pd.read_csv("data/screener.csv.gz",usecols=["signal_id","ltp","status"]); s=pd.read_csv("data/signals.csv.gz",usecols=["signal_id","strategy","trigger_price","received_at"])
+x=s.merge(sc,on="signal_id").dropna(subset=["ltp","trigger_price"])
+SHORT={"first_pullback_short","gap_fade_short","gap_go_short","open_high_breakdown_short","vwap_rejection_short"}
+sg=np.where(x.strategy.isin(SHORT),-1,1)
+x["drift_pct"]=(x.ltp/x.trigger_price-1)*100*sg
+print("\nall screened signals with a quote:",len(x)," trigger->screen LTP drift, signed in trade direction (%):",x.drift_pct.quantile([.01,.05,.25,.5,.75,.95,.99]).round(4).to_dict())
+print("share |drift|>0.5%:",round(float((x.drift_pct.abs()>0.5).mean()),4)," share drift==0:",round(float((x.drift_pct==0).mean()),4))
+EOF
+
+# ---- [75] Pin line numbers of cited system_config keys at 970aabf
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "entry_start:\|entry_end:\|eod_entry_cutoff:\|market_open:\|capacity:\|backpressure_pct:\|expiry_sec:\|force_intraday_only:\|^trade_type:\|delivery_enabled:\|^  enabled: true   \|shadow: true\|intraday_bucket_pct\|positional_bucket_pct\|sl_limit_offset_pct\|gtt_sl_limit_offset_pct\|INTRADAY: 5.0\|DELIVERY: 1.0\|risk_per_trade_pct:\|max_concentration_pct:\|min_qty_threshold\|max_position_value_pct:\|HIGH: 1.0\|MEDIUM: 0.70\|LOW: 0.50\|dynamic_by_winrate\|max_open_positions:\|max_daily_trades:\|max_open_delivery_positions\|max_daily_delivery_trades\|one_trade_per_symbol_direction_per_day:\|max_consecutive_losses\|daily_loss_limit_pct:\|sector_cap_mode\|dedup_window_seconds\|per_ip_burst\|per_ip_refill\|worker_count:\|tgt_min_pct:\|min_gap_between_entries_sec\|entry_burst_window_sec\|entry_burst_max\|per_symbol_cooldown_sec\|max_entry_slippage_pct\|min_effective_rr\|min_pending_rr\|circuit_proximity_reject_enabled\|max_slippage_fraction\|absolute_cap_rs\|hard_max_slippage_rs\|allocator_mode\|v3_chain_mode\|wait_for_retest_enabled\|loss_multiplier\|cutoff_time:\|lookback_days: 10\|^  enabled: false              # SH13\|atr_fallback_mode\|liquidity_check_enabled\|min_depth_qty" config/system_config.yaml | head -80; grep -n "sr_detector:\|^  enabled: true               # ★ SNR-V1" config/system_config.yaml | head -3; grep -n "market_open" config/system_config.yaml | head -3
+
+# ---- [76] Check the clock and whether agent findings files exist yet
+date '+%Y-%m-%d %H:%M:%S %Z'; ls "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/" | grep -i agent
+
+# ---- [77] Verify R:R gate, protocol choice, slippage guard and drift top-up
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 937,961p orders/order_placer.py; echo ....; sed -n 1099,1135p orders/order_placer.py; echo ....; sed -n 1194,1262p orders/order_placer.py
+
+# ---- [78] Verify tick snap, wire kwargs, NULL price, fill timeout and pending R:R cancel
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 1436,1453p broker/zerodha_adapter.py; echo ....; sed -n 636,655p broker/zerodha_adapter.py; echo ....; sed -n 383,390p orders/order_manager.py; echo ....; grep -n "fill_timeout_sec\|min_pending_rr" broker/order_monitor.py | head -8; sed -n 1128,1150p broker/order_monitor.py; echo ....; sed -n 2870,2880p orders/order_placer.py; grep -n "fill_timeout_sec\|poll_interval_sec" config/system_config.yaml
+
+# ---- [79] Count placer and monitor mechanism log lines in production logs
+ssh -o ConnectTimeout=15 trading-vm 'cd /home/ubuntu/systems/trading-system/logs && ls system_2026-09-*.log | head -20 | tr "\n" " "; echo; for p in "order_placer.price_drift_detected" "order_placer.rejected_price_drift" "rr_gate_failed" "price_movement_cancel\|FIX-141\|pending_rr" "fill_timeout\|order_monitor.timeout\|timed out waiting for fill\|cancel_unfilled" "entry_slippage_observed" "\"aborted\":true" "snap_to_tick.missing_tick_size"; do printf "%-70s " "$p"; cat system_2026-09-*.log | grep -c "$p"; done'
+
+# ---- [80] Show drift, pending-R:R cancel, timeout and missing-tick log lines
+ssh -o ConnectTimeout=15 trading-vm 'cd /home/ubuntu/systems/trading-system/logs && cat system_2026-09-*.log | grep "order_placer.price_drift_detected\|top_up\|price_movement_cancel\|FIX-141\|pending_rr" | cut -c1-420 | head -14; echo ....; cat system_2026-09-*.log | grep "fill_timeout\|order_monitor.timeout\|timed out waiting for fill\|cancel_unfilled" | sed -E "s/.*\"msg\":\"([^\"]*)\".*/\1/" | cut -c1-80 | sort | uniq -c | sort -rn | head -8; echo ....; cat system_2026-09-*.log | grep "snap_to_tick.missing_tick_size" | cut -c1-300 | head -9'
+
+# ---- [81] Date the tick-size broker rejections
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python -c "
+import pandas as pd
+s=pd.read_csv('data/signals.csv.gz')
+x=s[s.rejection_reason.fillna('').str.contains('Tick size')]
+print(x.groupby(x.received_at.str[:10]).size().to_dict()); print(x[['received_at','symbol','strategy','trigger_price']].tail(6).to_string(index=False))
+"
+
+# ---- [82] Verify per-symbol check order and whether rejects are logged
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 900,960p signals/webhook_receiver.py | grep -n "return\|status\|_claim_in_flight\|dedup\|age_sec\|epoch_bucket\|self._log" ; grep -n "_log\.\(debug\|info\|warning\)" signals/webhook_receiver.py | sed -n 1,60p | grep -i "duplicate\|in_process\|expired\|invalid\|excluded\|accepted" 
+
+# ---- [83] Measure spacing of accepted signals per scanner and symbol
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd, numpy as np
+s=pd.read_csv("data/signals.csv.gz",usecols=["symbol","strategy","triggered_at","received_at"])
+s=s[s.received_at.str[:10]>="2026-08-17"].copy()
+s["t"]=pd.to_datetime(s.triggered_at.str[:19]); s["d"]=s.received_at.str[:10]
+s=s.sort_values(["strategy","symbol","d","t"])
+s["gap_min"]=s.groupby(["strategy","symbol","d"]).t.diff().dt.total_seconds()/60
+g=s.gap_min.dropna()
+print("consecutive accepted signals, same scanner+symbol+day (last 20 days): n=",len(g))
+vc=g.round().value_counts().sort_index()
+print("gap (minutes) share:", {int(k): round(v/len(g),4) for k,v in vc.items() if k<=12})
+print("share of gaps in [5,6] min:", round(float(((g>=5)&(g<=6)).mean()),4), " share < 5 min:", round(float((g<5).mean()),4))
+EOF
+
+# ---- [84] Verify sizing formulas, risk checks, reserve buffer, perf weights, throttle
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && sed -n 456,457p capital/position_sizer.py; sed -n 492,512p capital/position_sizer.py; sed -n 555,562p capital/position_sizer.py; echo ....; grep -n "failed_check=\"" capital/risk_engine.py | head -16; grep -n "sector_cap_mode" capital/risk_engine.py | head -4; echo ....; grep -n "slm_buffer = \|total_margin = " capital/fund_manager.py | head; grep -n "perf_weights" signals/signal_processor.py main.py | head; echo ....; grep -n "def admit" -A 40 signals/entry_throttle.py | grep -n "min_gap\|burst\|per_symbol\|return\|record" | head -20
+
+# ---- [85] Confirm the order of risk engine checks by line
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970" && grep -n "\"KILL_SWITCH\"\|\"SIZING_VALID\"\|\"CAPITAL\"\|\"OPEN_POSITIONS\"\|\"DAILY_TRADES\"\|\"CONSECUTIVE_LOSSES\"\|\"DAILY_LOSS\"\|\"SECTOR_EXPOSURE\"\|\"CONTRARY_POSITION\"\|\"DUPLICATE_SYMBOL\"" capital/risk_engine.py | head -20
+
+# ---- [86] Compare entry fill rates and statuses between MIS and delivery books
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+DELIV={"positional_momentum_long","positional_sector_rotation","positional_swing_long"}
+tr=pd.read_csv("data/trades.csv.gz"); od=pd.read_csv("data/orders.csv.gz"); s=pd.read_csv("data/signals.csv.gz")
+e=od[od.leg=="ENTRY"][["trade_id","status","product"]].rename(columns={"status":"es"})
+t=tr.merge(e,on="trade_id",how="left"); t["book"]=t.strategy.isin(DELIV).map({True:"DELIVERY",False:"INTRADAY"})
+x=t[t.es.notna()]
+g=x.groupby("book").agg(at_broker=("es","size"),filled=("es",lambda v:(v=="COMPLETE").sum())); g["fill_rate"]=(g.filled/g.at_broker).round(3); print(g)
+print("product by book (entry rows):",pd.crosstab(x.book,x["product"]).to_dict())
+s["book"]=s.strategy.isin(DELIV).map({True:"DELIVERY",False:"INTRADAY"}); s20=s[s.received_at.str[:10]>="2026-08-17"]
+st=s20.status.str.replace(r"REJECTED_SCORE_\d+","REJECTED_SCORE",regex=True)
+print("\n20-day signals by book:",s20.book.value_counts().to_dict())
+print(pd.crosstab(st,s20.book).loc[lambda d:(d.sum(axis=1)>0)].sort_values("INTRADAY",ascending=False).to_string())
+EOF
+
+# ---- [87] Independently count strategy YAML keys and their presence
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970/config/strategies" && python - <<'EOF'
+import yaml, glob, os, collections
+files=sorted(glob.glob("*.yaml")); tot=0; union=collections.Counter(); per={}
+for f in files:
+    d=yaml.safe_load(open(f,encoding="utf-8")); per[f[:-5]]=len(d); tot+=len(d); union.update(d.keys())
+print("files",len(files),"key instances",tot,"distinct",len(union))
+print({k:v for k,v in per.items()})
+print("keys not in all files:",{k:v for k,v in union.items() if v<len(files)})
+EOF
+
+# ---- [88] List strategy keys whose values differ across the 16 YAMLs
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/src970/config/strategies" && python - <<'EOF'
+import yaml, glob
+rows={f[:-5]:yaml.safe_load(open(f,encoding="utf-8")) for f in sorted(glob.glob("*.yaml"))}
+keys=sorted({k for d in rows.values() for k in d})
+diff=[k for k in keys if len({repr(d.get(k)) for d in rows.values()})>1 and k not in ("name","display_name","description")]
+print("keys whose value differs:",diff)
+for k in diff:
+    print(f"\n{k}:"," | ".join(f"{n}={rows[n].get(k)}" for n in rows))
+EOF
+
+# ---- [89] Check the clock and section anchors in the drafts
+date '+%Y-%m-%d %H:%M:%S %Z'; cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && grep -n "^## " draft_funnel_steps.md draft_prices_signals.md
+
+# ---- [90] Date the delivery-strategy entries sent as MIS versus CNC
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python -c "
+import pandas as pd
+DELIV={'positional_momentum_long','positional_sector_rotation','positional_swing_long'}
+tr=pd.read_csv('data/trades.csv.gz'); od=pd.read_csv('data/orders.csv.gz')
+e=od[od.leg=='ENTRY'][['trade_id','product','placed_at']]
+t=tr.merge(e,on='trade_id'); d=t[t.strategy.isin(DELIV)]
+print(d.groupby('product').placed_at.agg(['min','max','count']).to_string())
+"
+
+# ---- [91] Per-strategy signals, passes, orders and fills over 20 days
+cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && PYTHONIOENCODING=utf-8 python - <<'EOF'
+import pandas as pd
+s=pd.read_csv("data/signals.csv.gz"); sc=pd.read_csv("data/screener.csv.gz",usecols=["signal_id","status"]).rename(columns={"status":"sc_status"})
+tr=pd.read_csv("data/trades.csv.gz"); od=pd.read_csv("data/orders.csv.gz"); e=od[od.leg=="ENTRY"][["trade_id","status"]].rename(columns={"status":"es"})
+s=s[s.received_at.str[:10]>="2026-08-17"].merge(sc,on="signal_id",how="left")
+t=tr[tr.created_at.str[:10]>="2026-08-17"].merge(e,on="trade_id",how="left")
+g=s.groupby("strategy").agg(signals=("signal_id","size"),passed=("sc_status",lambda v:(v=="PASSED").sum()),processed=("status",lambda v:(v=="PROCESSED").sum()))
+g["filled"]=t[t.es=="COMPLETE"].groupby("strategy").size()
+g["pass_pct"]=(100*g.passed/g.signals).round(2)
+print(g.fillna(0).astype({"filled":int}).sort_values("signals",ascending=False).to_string())
+print("TOTAL",g[["signals","passed","processed"]].sum().to_dict(), int(g.filled.fillna(0).sum()))
+EOF
+
+# ---- [92] Compare decision-file hashes: 970aabf vs twin vs production disk
+cd "D:/Projects/trading-system" && FILES="signals/signal_processor.py screening/secondary_screener.py screening/step_executor.py screening/quality_scorer.py signals/webhook_receiver.py capital/position_sizer.py capital/risk_engine.py capital/fund_manager.py orders/order_placer.py broker/zerodha_adapter.py config/scoring_weights.yaml"; for f in $FILES; do printf "%s %s\n" "$(git show 970aabf:$f | md5sum | cut -c1-12)" "$f"; done > "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/md5_970aabf.txt"; ssh -o ConnectTimeout=15 trading-sbx "cd /home/ubuntu/systems/trading-system && for f in $FILES; do printf '%s %s\n' \$(md5sum \$f | cut -c1-12) \$f; done" > "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/md5_twin.txt"; ssh -o ConnectTimeout=15 trading-vm "cd /home/ubuntu/systems/trading-system && for f in $FILES; do printf '%s %s\n' \$(md5sum \$f | cut -c1-12) \$f; done" > "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad/md5_prod.txt"; cd "C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad" && paste md5_970aabf.txt md5_twin.txt md5_prod.txt | awk '{print $1, ($1==$3?"twin=":"twin!="), ($1==$5?"prod=":"prod!="), $2}'; grep -c "" md5_twin.txt md5_prod.txt
+
+# ---- [93] Diff the twin's webhook receiver against 970aabf and find its commit
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; ssh -o ConnectTimeout=15 trading-sbx 'cat /home/ubuntu/systems/trading-system/signals/webhook_receiver.py' > "$SCR/twin_webhook_receiver.py.txt"; cd "D:/Projects/trading-system" && git show 970aabf:signals/webhook_receiver.py > "$SCR/970_webhook_receiver.py.txt"; diff "$SCR/970_webhook_receiver.py.txt" "$SCR/twin_webhook_receiver.py.txt" | head -60; echo "diff lines: $(diff "$SCR/970_webhook_receiver.py.txt" "$SCR/twin_webhook_receiver.py.txt" | wc -l)"; cd "D:/Projects/trading-system" && for c in $(git log --format=%h -n 40 --all -- signals/webhook_receiver.py); do if [ "$(git show $c:signals/webhook_receiver.py 2>/dev/null | md5sum | cut -c1-12)" = "$(md5sum < "$SCR/twin_webhook_receiver.py.txt" | cut -c1-12)" ]; then echo "twin receiver == $c"; git log -1 --format='%h %ci %s' $c; fi; done
+
+# ---- [94] Compare the twin receiver with carriage returns stripped
+SCR="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/4f1a76a9-b32b-4cc1-80f6-47e9b390ac02/scratchpad"; printf "CR bytes: twin=%s 970=%s\n" "$(tr -cd '\r' < "$SCR/twin_webhook_receiver.py.txt" | wc -c)" "$(tr -cd '\r' < "$SCR/970_webhook_receiver.py.txt" | wc -c)"; diff --strip-trailing-cr "$SCR/970_webhook_receiver.py.txt" "$SCR/twin_webhook_receiver.py.txt" && echo "IDENTICAL ignoring CR"; tr -d '\r' < "$SCR/twin_webhook_receiver.py.txt" | md5sum | cut -c1-12
+
+# ---- [95] Locate this session's transcript file
+ls -la "C:/Users/rama/.claude/projects/D--Projects-trading-system/" | grep 4f1a76a9 | head -5
+

@@ -1,0 +1,228 @@
+# BOOT PROOF — Fri 11-Sep-2026 · THE FIRST PRODUCTION RUN OF BLOCK A (`d3ee69d`)
+
+**Status of this record:** COMPLETE -- the check ran to DONE
+**Triage (the script's own line, verbatim):** `P5 / T2 -- service active, today's process; REQUIRED EVIDENCE MISSING -- FAIL: none ; NOT EXECUTED: 3.5. Production is running: a records gap, not an emergency.`
+**Verdict (the script's own line, verbatim):** `NOT ESTABLISHED -- host gate: PASS ; FAIL: none ; NOT EXECUTED: 3.5. Do NOT restart, do NOT repair.`
+**Host gate (verbatim):** `PASS  hostname=trading-system`
+
+🏷️ **ONE-TIME, DATED EVIDENCE RECORD. IMMUTABILITY IS NEVER-EDIT-AFTER-CREATION** *(07:20 file §2.1)*. The read-only attribute on this file and its sidecar is a **secondary** guard only — a privileged process can overwrite it. A later correction is a **NEW** record under `docs/audit/` that cites this file's path and **both** SHA-256s — the raw sidecar's (in §0) and this file's (in the ledger entry that recorded it). ⛔ Never chmod-and-edit this one.
+⭐ Written whatever the verdict: a failed or partial check is still evidence *(07:20 file §2.2–§2.3)*.
+⛔ **ESTABLISHED would prove runtime, config and provenance — NOT that the exit path works.** That is the 15:13 capture's separate question, and a flat PASS_2 will never answer it.
+
+All work in this file is **read-only measurement**: one read-only script, run once on production over ssh (base64 over stdin; nothing written on the VM; the DB opened read-only; broker calls read-only). The prose is a frame; ⭐ **§3 is the evidence.**
+
+---
+
+## §0 — PROVENANCE
+
+| fact | value |
+|---|---|
+| status | COMPLETE -- the check ran to DONE |
+| target host — the first thing the script printed | `trading-system` (production's hostname is `trading-system`, measured 11-Sep 06:33) |
+| run time — the script's own clock | `2026-09-11 08:20:33 IST` |
+| run by | session job 31f68404 (08:20); host confirmed trading-system and precheck 0 at 08:20:30 IST |
+| raw output | `BOOT_PROOF_BLOCK_A_d3ee69d_11-Sep-2026.raw.txt` beside this file — written FIRST, before this record; 11719 bytes, SHA-256 `82b2c694dcb1701e7d327c75d3e61264aa283e1d7c5f093d21d88e372670f305`; embedded verbatim in §3 |
+| script | `prod_0820_check.py` (v5) — SHA-256 `82e39df6ded99ed53acd3508a7209b5bbf89f0518784d8fdaa34314ae59e49aa`; embedded verbatim in `memory/fallback_instructions/FALLBACK_11-Sep-2026_0820_PRODUCTION_RUNTIME_CHECK.txt` |
+| authority | the CLOSE-SIX file (10-Sep) §5.1, and the 11-Sep instruction files delivered **05:28:02**, **06:30:55**, **06:49:38** and **07:19:47** — delivery times read from the session transcript; ⛔ their ISSUED headers are not evidence (standing rule) |
+| record written | 2026-09-11 08:23:38 IST (PC clock) |
+
+## §1 — THE QUESTION
+
+Block A (`d3ee69d`) reached production by push at ~16:19 on 10-Sep, after that day's 08:15 boot; the 11-Sep 08:15 boot is the first to load it. **Does the RUNNING production process hold Block A?** Proven by experiment — the pre-Block-A loader (`3b15bbf`) must refuse today's YAML, because `EodSquareoffConfig` is `extra="forbid"` and today's YAML carries the two Block A keys — ⛔ never by PID age alone, ⛔ never by bare HEAD alone. The **host** is a separate hard gate; the **inputs** are 3.1–3.12, each PASS, FAIL or NOT EXECUTED (an experiment that could not run — never a pass, never a failure). The triage code comes from an explicit precedence, P0–P6 *(07:20 file §1)*; *"we cannot prove Block A is running"* and *"production is not running"* are different sentences.
+
+## §2 — TRIAGE AND THE VERDICT (a verbatim excerpt of §3)
+
+````text
+== TRIAGE (explicit precedence P0-P6) -- THE FIRST LINE OF THE REPORT ==
+  TRIAGE: P5 / T2 -- service active, today's process; REQUIRED EVIDENCE MISSING -- FAIL: none ; NOT EXECUTED: 3.5. Production is running: a records gap, not an emergency.
+  SERVICE: active, process started Fri Sep 11 08:15:19 2026 | KILL SWITCH: INACTIVE at 2026-09-11T08:15:21.050806+05:30 by main.auto_clear_stale
+  WITNESS: AGREE
+
+== VERDICT: the HOST GATE, then the twelve INPUTS (3.1-3.12) -- each separately ==
+  HOST GATE : PASS  hostname=trading-system
+  3.1   service active                                             PASS          ActiveState=active SubState=running NRestarts=0
+  3.2   process started TODAY (2026-09-11)                         PASS          MainPID=2298907 lstart=Fri Sep 11 08:15:19 2026
+  3.3   running source = approved Block-A content (d3ee69d)        PASS          disk==d3ee69d 5/5; process newer than every file: True
+  3.4   today's YAML loads with PASS_1=1.5 and PASS_2=2.5          PASS          pass_1=1.5 pass_2=2.5
+  3.5   OLD loader genuinely REFUSES (ConfigSchemaError, error_count=2) NOT EXECUTED  stopped on PydanticUserError -- not the schema refusal the experiment tests
+  3.6   market_protection wiring at the call site                  PASS          main.py pass_1@3339 pass_2@3341; mis_autosquareoff.py market_protection=protection@877
+  3.7   kiteconnect 5.1.0 (from __file__ + __version__.__version__) PASS          version=5.1.0 file=/home/ubuntu/systems/venv/lib/python3.12/site-packages/kiteconnect/__init__.py (metadata 5.1.0)
+  3.8   local live trades (read)                                   PASS          0 live: none
+  3.9   broker positions + holdings (read-only)                    PASS          net non-zero 0, day non-zero 0, holdings with quantity 0
+  3.10  kill-switch state (read)                                   PASS          state=INACTIVE at=2026-09-11T08:15:21.050806+05:30 by=main.auto_clear_stale
+  3.11  no unexpected orders                                       PASS          pre-open at 08:20: broker orders 0, local orders placed today 0
+  3.12  d3ee69d exists in this host's bare repo                    PASS          cat-file -t -> commit
+  => NOT ESTABLISHED -- host gate: PASS ; FAIL: none ; NOT EXECUTED: 3.5. Do NOT restart, do NOT repair.
+````
+
+## §3 — RAW OUTPUT, VERBATIM — THE PRIMARY EVIDENCE
+
+````text
+== TARGET HOST ==
+  hostname  : trading-system
+  production: True   (production's hostname is 'trading-system')
+  time      : 2026-09-11 08:20:33 IST
+
+== the process ==
+MainPID=2298907
+NRestarts=0
+ExecMainStartTimestamp=Fri 2026-09-11 08:15:20 IST
+ActiveState=active
+SubState=running
+ActiveEnterTimestamp=Fri 2026-09-11 08:15:20 IST
+ps lstart: Fri Sep 11 08:15:19 2026  (epoch 1789094719)
+  unit ExecStart={ path=/home/ubuntu/systems/venv/bin/python ; argv[]=/home/ubuntu/systems/venv/bin/python /home/ubuntu/systems/trading-system/main.py --mode live ; ignore_errors=no ; start_time=[Fri 2026-09-11 08:15:20 IST] ; stop_time=[n/a] ; pid=2298907 ; code=(nu
+  unit EnvironmentFiles=/home/ubuntu/systems/trading-system/.env (ignore_errors=no)
+  unit WorkingDirectory=/home/ubuntu/systems/trading-system
+  unit Environment names: ['PATH', 'PYTHONUNBUFFERED']
+  unit PYTHONPATH: not set in the unit
+
+== boot-attempt evidence (triage) ==
+Result=success
+ExecMainExitTimestamp=
+ExecMainCode=0
+ExecMainStatus=0
+StateChangeTimestamp=Fri 2026-09-11 08:15:20 IST
+InactiveEnterTimestamp=Thu 2026-09-10 17:35:04 IST
+  ExecMainStartTimestamp is today: True | ExecMainExitTimestamp is today: False
+  today's system log (logs/system_2026-09-11.log): present
+  journal readable: True | systemd start lines today: 1 | exit/fail/restart lines today: 0
+  journal, the unit's last 40 lines today (masked):
+    2026-09-11T08:15:20+05:30 trading-system systemd[1]: Started trading-system.service - Trading System v2 (paper/live mode).
+    2026-09-11T08:15:21+05:30 trading-system trading-system[2298907]: 2026-09-11T08:15:21 CRITICAL kill_switch ? KILL SWITCH ACTIVE AT STARTUP: state=SOFT_KILL reason=circuit_breaker_force_close_15:15 triggered_by=order_monitor -- operator must call resume() to clear (Audit Issue #18 fix)
+    2026-09-11T08:15:21+05:30 trading-system trading-system[2298907]: 2026-09-11T08:15:21 WARNING  kill_switch ? Kill switch auto-cleared: prior SOFT_KILL from 2026-09-10 (reason=circuit_breaker_force_close_15:15 by=order_monitor) -- new day 2026-09-11 starts clean (HEADLESS); audited to system_events
+    2026-09-11T08:15:29+05:30 trading-system trading-system[2298907]: Tier multiplier: ON (tier weights: 1.0/0.7/0.5 x perf_weights)
+    2026-09-11T08:15:32+05:30 trading-system trading-system[2298907]: 2026-09-11T08:15:32 WARNING  core.config_validator ? CONFIG_UNACCESSED: 396 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.brokerage_pct_intraday', 'broker_costs.zerodha.exchange_txn_pct
+  token_watcher.log, last 12 lines (masked):
+    [2026-09-04 13:47:46 IST] trading-system.service start command issued.
+    [2026-09-07 08:15:21 IST] Fresh token detected (daily start, in service window). Starting trading-system.service.
+    [2026-09-07 08:15:21 IST] trading-system.service start command issued.
+    [2026-09-08 08:15:18 IST] Fresh token detected (daily start, in service window). Starting trading-system.service.
+    [2026-09-08 08:15:18 IST] trading-system.service start command issued.
+    [2026-09-08 15:16:47 IST] token_watcher started (poll=30s, backoff=300s, max_crash=3/hr)
+    [2026-09-09 08:15:23 IST] Fresh token detected (daily start, in service window). Starting trading-system.service.
+    [2026-09-09 08:15:23 IST] trading-system.service start command issued.
+    [2026-09-10 08:15:21 IST] Fresh token detected (daily start, in service window). Starting trading-system.service.
+    [2026-09-10 08:15:21 IST] trading-system.service start command issued.
+    [2026-09-11 08:15:20 IST] Fresh token detected (daily start, in service window). Starting trading-system.service.
+    [2026-09-11 08:15:20 IST] trading-system.service start command issued.
+  today's config-load failures and tracebacks (system log, full lines, masked):
+    (none)
+    (none)
+
+== token refresh evidence (07:20 file sec 4: behind any T3) ==
+  token file: /home/ubuntu/systems/trading-system/data_store/session/zerodha_token.json -- mtime 2026-09-11 08:15:01 -- dated today: True
+  auto_refresh_token's cron log: /home/ubuntu/systems/trading-system/logs/cron-auto-token.log -- mtime 2026-09-08 08:15:10; its last 25 lines (masked):
+    telegram.send_deadline_exceeded
+  'Token refresh FAILED' lines in its last 80 lines: 0
+  cron journal today: auto_refresh_token CMD lines: 1
+  heartbeat (cron_heartbeat.None): 3 recent token row(s)
+    job=auto_refresh_token status=SUCCESS at=None msg=None
+    job=auto_refresh_token status=SUCCESS at=None msg=None
+    job=auto_refresh_token status=SUCCESS at=None msg=None
+  its exit code: not recorded directly; by the script's own contract (0 <=> heartbeat SUCCESS, 1 <=> heartbeat FAILED) today's heartbeat says: NO heartbeat row dated today
+  token reading: the token is dated today and no refresh failure is recorded
+
+>>> EARLY TRIAGE: service active, today's process -- P4 / P5 / P6 are decided at the end
+
+== provenance: the bare repo (context -- bare HEAD alone is NOT proof) ==
+  bare HEAD : d3ee69d78e2f1e72cb552e80eef3890348fb16bd
+  bare main : d3ee69d78e2f1e72cb552e80eef3890348fb16bd
+  HEAD log  : d3ee69d 2026-09-10 15:37:13 +0530 docs(incident): IDEA 10-Sep -- the second market-protection rejection in two days
+  cat-file -t d3ee69d: commit
+
+== 3.3 the running source vs the APPROVED Block-A content (d3ee69d) ==
+  broker/zerodha_adapter.py      disk==d3ee69d:True  (disk==HEAD:True)  mtime 2026-09-10 16:19:37  process-newer-than-file=True
+  core/config_loader.py          disk==d3ee69d:True  (disk==HEAD:True)  mtime 2026-09-10 16:19:37  process-newer-than-file=True
+  main.py                        disk==d3ee69d:True  (disk==HEAD:True)  mtime 2026-09-10 16:19:37  process-newer-than-file=True
+  orders/mis_autosquareoff.py    disk==d3ee69d:True  (disk==HEAD:True)  mtime 2026-09-10 16:19:37  process-newer-than-file=True
+  config/system_config.yaml      disk==d3ee69d:True  (disk==HEAD:True)  mtime 2026-09-10 16:19:37  process-newer-than-file=True
+
+== 3.4 / 3.5 THE EXPERIMENT: today's YAML through the NEW and the OLD loader ==
+  NEW loader: OK  pass_1=1.5 pass_2=2.5
+  OLD loader source from 3b15bbf: 120790 bytes
+  OLD loader: REFUSED -- PydanticUserError: `SystemConfig` is not fully defined; you should define `BrokerConfig`, then call `SystemConfig.model_rebuild()`.
+      error_count=None
+      
+      For further information visit https://errors.pydantic.dev/2.13/u/class-not-fully-defined
+
+== 3.6 wiring: do the YAML values reach the squareoff? (the deployed source) ==
+  main.py                      mis_pass_1_market_protection_percent   at lines: 3339
+  main.py                      mis_pass_2_market_protection_percent   at lines: 3341
+  orders/mis_autosquareoff.py  market_protection=protection           at lines: 877
+
+== .pyc headers (corroboration only: ANY import rewrites them) ==
+  broker/__pycache__/zerodha_adapter.cpython-312.pyc src-mtime/size MATCH=True
+  core/__pycache__/config_loader.cpython-312.pyc   src-mtime/size MATCH=True
+  __pycache__/main.cpython-312.pyc                 src-mtime/size MATCH=False
+  orders/__pycache__/mis_autosquareoff.cpython-312.pyc src-mtime/size MATCH=True
+
+== boot log (today) ==
+  logs/system_2026-09-11.log (present)
+  Config loaded            1
+  run_all_startup_checks   1
+  Config load failed       0
+  STARTUP                  1
+  Traceback                0
+  first Config loaded : {"ts":"2026-09-11T08:15:21.036+05:30","level":"INFO","logger":"main","msg":"Config loaded from config (8 files)"}
+  first STARTUP       : {"ts":"2026-09-11T08:15:21.050+05:30","level":"CRITICAL","logger":"kill_switch","msg":"KILL SWITCH ACTIVE AT STARTUP: state=SOFT_KILL reason=circuit_breaker_for
+  CRITICAL lines today: 1
+
+== 3.7 kiteconnect: what THIS interpreter imports (same venv + cwd as the unit) ==
+  interpreter: /home/ubuntu/systems/venv/bin/python
+  __file__   : /home/ubuntu/systems/venv/lib/python3.12/site-packages/kiteconnect/__init__.py
+  __version__: (the attribute is the MODULE /home/ubuntu/systems/venv/lib/python3.12/site-packages/kiteconnect/__version__.py)
+  __version__.__version__: 5.1.0
+  metadata   : 5.1.0
+  dist-info  : kiteconnect-5.1.0.dist-info
+
+== 3.8 / 3.10 local state (DB, read-only) ==
+  -wal present: True -> opened mode=ro
+  KILL SWITCH: state=INACTIVE triggered_at=2026-09-11T08:15:21.050806+05:30 triggered_by=main.auto_clear_stale
+               reason=auto_clear_stale: was SOFT_KILL from 2026-09-10 (reason=circuit_breaker_force_close_15:15, by=order_monitor)
+  system_events STARTUP rows today: 1  (a PROVEN BOOT = one written AFTER the process start)
+    ev 3842  2026-09-11T08:15:32.649115+05:30  COLD  after-process-start=True
+  live trades (PENDING_FILL/OPEN/PARTIAL/EXITING): 0
+  local orders placed today: 0
+
+== the kill switch as an INDEPENDENT WITNESS to the boot (07:20 file sec 3) ==
+  kill switch : cleared TODAY at 2026-09-11T08:15:21.050806+05:30 by main.auto_clear_stale -- corroborates a boot today
+  process     : the process / log / journal evidence says a boot today
+  WITNESS CHECK: AGREE
+
+== 3.9 / 3.11 broker truth (READ-ONLY: profile, positions, holdings, orders, GTTs) ==
+  token file mtime: 2026-09-11 08:15:01
+  profile read OK (account id deliberately not printed)
+  positions net: 0 row(s), 0 with non-zero quantity
+  positions day: 0 row(s), 0 with non-zero quantity
+  holdings with quantity: 0
+  broker orders today: 0   (pre-open: ANY order here is unexpected)
+  GTTs by status: none
+
+== TRIAGE (explicit precedence P0-P6) -- THE FIRST LINE OF THE REPORT ==
+  TRIAGE: P5 / T2 -- service active, today's process; REQUIRED EVIDENCE MISSING -- FAIL: none ; NOT EXECUTED: 3.5. Production is running: a records gap, not an emergency.
+  SERVICE: active, process started Fri Sep 11 08:15:19 2026 | KILL SWITCH: INACTIVE at 2026-09-11T08:15:21.050806+05:30 by main.auto_clear_stale
+  WITNESS: AGREE
+
+== VERDICT: the HOST GATE, then the twelve INPUTS (3.1-3.12) -- each separately ==
+  HOST GATE : PASS  hostname=trading-system
+  3.1   service active                                             PASS          ActiveState=active SubState=running NRestarts=0
+  3.2   process started TODAY (2026-09-11)                         PASS          MainPID=2298907 lstart=Fri Sep 11 08:15:19 2026
+  3.3   running source = approved Block-A content (d3ee69d)        PASS          disk==d3ee69d 5/5; process newer than every file: True
+  3.4   today's YAML loads with PASS_1=1.5 and PASS_2=2.5          PASS          pass_1=1.5 pass_2=2.5
+  3.5   OLD loader genuinely REFUSES (ConfigSchemaError, error_count=2) NOT EXECUTED  stopped on PydanticUserError -- not the schema refusal the experiment tests
+  3.6   market_protection wiring at the call site                  PASS          main.py pass_1@3339 pass_2@3341; mis_autosquareoff.py market_protection=protection@877
+  3.7   kiteconnect 5.1.0 (from __file__ + __version__.__version__) PASS          version=5.1.0 file=/home/ubuntu/systems/venv/lib/python3.12/site-packages/kiteconnect/__init__.py (metadata 5.1.0)
+  3.8   local live trades (read)                                   PASS          0 live: none
+  3.9   broker positions + holdings (read-only)                    PASS          net non-zero 0, day non-zero 0, holdings with quantity 0
+  3.10  kill-switch state (read)                                   PASS          state=INACTIVE at=2026-09-11T08:15:21.050806+05:30 by=main.auto_clear_stale
+  3.11  no unexpected orders                                       PASS          pre-open at 08:20: broker orders 0, local orders placed today 0
+  3.12  d3ee69d exists in this host's bare repo                    PASS          cat-file -t -> commit
+  => NOT ESTABLISHED -- host gate: PASS ; FAIL: none ; NOT EXECUTED: 3.5. Do NOT restart, do NOT repair.
+
+DONE
+````
+
+## §4 — HOW THIS RECORD CHANGES
+
+It does not. ⛔ No edit, no appended re-run, no reinterpretation in place, ⛔ no chmod-and-edit. If a later finding changes what this means, write a NEW dated record under `docs/audit/` that names this file and both SHA-256s — the same discipline as striking a false claim in place rather than silently rewriting it.

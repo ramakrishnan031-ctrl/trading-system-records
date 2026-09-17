@@ -1,0 +1,198 @@
+now=2026-09-17 09:18:05 IST
+
+##### deploy/hooks/post-receive  (lines mentioning crontab: 7; subprocess/os.system/Popen lines: 0)
+2:# deploy/hooks/post-receive — Phase 3 Option A (AUTO-INSTALL the crontab).
+5:# on the VM and runs on every push to main: checkout, then crontab auto-install.
+9:# push on 17-Jul printed "post-receive: crontab AUTO-INSTALLED from canonical", which
+22:# A crontab swap does NOT disrupt in-flight jobs (only future triggers).
+34:    if "$VENV_PY" scripts/generate_crontab.py --generate | diff -q - deploy/cron/trading-system.cron >/dev/null 2>&1; then
+35:      crontab deploy/cron/trading-system.cron && echo "post-receive: crontab AUTO-INSTALLED from canonical."
+37:      echo "post-receive: WARNING canonical != generate(registry) on the deployed tree — crontab NOT installed."
+
+##### scripts/generate_crontab.py  (lines mentioning crontab: 30; subprocess/os.system/Popen lines: 0)
+3:scripts/generate_crontab.py — Self-maintaining cron: the executable generator.
+6:TRUTH. This module composes each crontab line DETERMINISTICALLY from a job's
+7:generation fields, and (for the one-time bootstrap) parses the LIVE crontab back
+9:mode proves it byte-for-byte against the live crontab, which is the migration gate
+25:  --selftest [--crontab FILE]  parse→compose each live line; assert byte-equal
+26:  --generate                   emit canonical crontab from the registry (stdout)
+27:  --bootstrap --crontab FILE   parse live crontab → enriched-registry YAML (stdout)
+28:  --check --crontab FILE       diff generate(registry) vs live (bidirectional)
+73:    """Build one crontab line from a job's generation fields (byte-stable)."""
+92:    """Decompose a live crontab command line into generation fields.
+136:# ── crontab text helpers ────────────────────────────────────────────────────
+147:def selftest(crontab_text: str) -> int:
+150:    lines = _command_lines(crontab_text)
+171:    print(f"SELFTEST PASSED: all {total} live crontab lines round-trip "
+180:#   python scripts/generate_crontab.py --generate --out deploy/cron/trading-system.cron
+182:# compares the live `crontab -l` against this (bidirectional).
+191:# ── Bootstrap (ONE-TIME migration: live crontab -> enriched registry) ────────
+307:              "# via scripts/generate_crontab.py --generate. Edit jobs HERE, regenerate.\n"
+324:    """Emit the canonical crontab text (enabled jobs only), deterministically."""
+364:    p.add_argument("--generate", action="store_true", help="enriched registry -> canonical crontab (stdout)")
+367:    p.add_argument("--crontab", type=Path, help="live crontab file")
+373:        if not args.crontab or not args.crontab.exists():
+374:            print("--selftest needs --crontab FILE"); return 2
+375:        return selftest(args.crontab.read_text(encoding="utf-8"))
+378:        if not args.crontab or not args.crontab.exists():
+
+##### core/cron_registry.py  (lines mentioning crontab: 1; subprocess/os.system/Popen lines: 0)
+281:        job + gap_minutes). Used to derive the crontab line and as the report's
+
+##### scripts/check_cron_drift.py  (lines mentioning crontab: 18; subprocess/os.system/Popen lines: 2)
+11:  PASS 2 — content drift (Phase 3): the live `crontab -l` vs generate(registry),
+26:                                       [--crontab-file P] [--dry-run]
+45:from scripts.generate_crontab import (
+85:    """Bidirectional content-drift result (live `crontab -l` vs generate(registry))."""
+103:def content_drift(registry_path: Path, crontab_text: str) -> ContentDrift:
+104:    """Compare the live crontab against generate(registry), normalized via the
+114:    for raw in _command_lines(crontab_text):
+132:def _read_crontab(crontab_file: Path | None) -> str | None:
+133:    if crontab_file is not None:
+134:        return crontab_file.read_text(encoding="utf-8")
+136:        r = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=10)
+139:        _log.warning("check_cron_drift.crontab_unreadable", extra={"error": str(exc)})
+153:        lines.append("🔴 ENABLED in registry, ABSENT from live crontab (CRITICAL):")
+156:        lines.append("🔴 Live crontab line no longer parses (CRITICAL):")
+177:    p.add_argument("--crontab-file", type=Path, default=None,
+178:                   help="read crontab from FILE instead of `crontab -l` (testing)")
+194:        crontab_text = _read_crontab(args.crontab_file)
+195:        cd = content_drift(args.config_dir / "cron_registry.yaml", crontab_text) if crontab_text else None
+
+##### scripts/cron_officer.py  (lines mentioning crontab: 32; subprocess/os.system/Popen lines: 3)
+12:    --check-change Diff config/cron_registry.yaml vs the live `crontab -l`.
+270:# Change detection (registry vs live crontab)
+274:    """A distinctive token to match a registry job against a crontab line."""
+291:def parse_crontab(text: str) -> list[dict]:
+292:    """Parse `crontab -l` text into [{hhmm, token, raw}] for command lines."""
+310:def build_change_report(registry: CronRegistry, crontab_text: str) -> tuple[str, bool]:
+312:    Diff python jobs in the registry against the live crontab (matched by token).
+317:    cron_lines = parse_crontab(crontab_text)
+320:    added = [tok for tok in reg_py if tok not in cron_tokens]       # in registry, not crontab
+321:    missing = [tok for tok in cron_tokens if tok not in reg_py]     # in crontab, not registry
+331:        return f"✅ [{primary_account_tag()}] Cron registry matches live crontab (python jobs).", False
+335:        lines.append(f"+ in registry, not in crontab: {tok} ({reg_py[tok].schedule})")
+337:        lines.append(f"- in crontab, not in registry: {tok}")
+555:def _read_crontab_safe() -> Optional[str]:
+557:        r = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=10)
+563:def _auto_discover(registry: CronRegistry, crontab_text: Optional[str]) -> list:
+564:    """Live crontab lines whose resolved job is NOT in the registry -> runtime
+566:    if not crontab_text:
+568:    from scripts.generate_crontab import _command_lines, parse as _parse, resolve_job_name as _rjn
+571:    for raw in _command_lines(crontab_text):
+584:                              "in crontab, not in registry — needs registry entry + contract"))
+621:                      today: date, crontab_text: Optional[str]) -> tuple[list, str]:
+629:        if crontab_text:
+631:            cd = content_drift(config_dir / "cron_registry.yaml", crontab_text)
+643:            lines.append("  (a) live==generate: UNKNOWN (crontab unavailable)")
+
+##### alerts/cron_alerts.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### scripts/strategy_registry_officer.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### scripts/preflight/checks/config_integrity.py  (lines mentioning crontab: 2; subprocess/os.system/Popen lines: 0)
+186:    """Registry integrity (parses + has jobs). The full registry<->crontab drift
+204:                            "[crontab drift -> Cron Officer check_cron_drift]")
+
+##### scripts/preflight/deliver.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### scripts/auto_refresh_token.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### scripts/output_retention.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### scripts/generate_screened_stocks_csv.py  (lines mentioning crontab: 1; subprocess/os.system/Popen lines: 0)
+21:CRON ENTRY (to add to VM crontab):
+
+##### scripts/wal_checkpoint.py  (lines mentioning crontab: 1; subprocess/os.system/Popen lines: 0)
+7:Usage (add to crontab on VM):
+
+##### scripts/sr_shadow_evaluate.py  (lines mentioning crontab: 2; subprocess/os.system/Popen lines: 0)
+4:Runs AFTER the session, on the TESTING VM only, from a hand-added crontab line
+5:(never the canonical crontab). For the target date it:
+
+##### ops/control_tower/aggregator.py  (lines mentioning crontab: 1; subprocess/os.system/Popen lines: 0)
+135:                recommended_action="check crontab + the job log"))
+
+##### ops_dashboard/backend/readers/host_reader.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 10)
+
+##### ops_dashboard/backend/readers/config_reader.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### reports/daily_report.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### reports/daily_trade_review.py  (lines mentioning crontab: 1; subprocess/os.system/Popen lines: 0)
+2885:    # field is METADATA ONLY — nothing enforces it, and the crontab (7 16 * * 1-5) only
+
+##### core/config_loader.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+
+##### deploy/hooks/pre-commit  (lines mentioning crontab: 2; subprocess/os.system/Popen lines: 0)
+25:if git diff --cached --name-only | grep -qE '^(config/cron_registry\.yaml|scripts/generate_crontab\.py)$'; then
+26:  "$VENV_PY" scripts/generate_crontab.py --generate --out deploy/cron/trading-system.cron
+
+##### deploy/hooks/pre-receive  (lines mentioning crontab: 3; subprocess/os.system/Popen lines: 0)
+50:      scripts/generate_crontab.py 2>/dev/null | tar -x -C "$TMP" 2>/dev/null || true
+53:  GEN="$("$VENV_PY" "$TMP/scripts/generate_crontab.py" --generate \
+64:      echo "  Fix: python scripts/generate_crontab.py --generate > deploy/cron/trading-system.cron"
+
+##### every subprocess/os.system call in the four cron tools (what binaries do they run?)
+--- scripts/generate_crontab.py
+--- core/cron_registry.py
+--- scripts/check_cron_drift.py
+136:        r = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=10)
+--- scripts/cron_officer.py
+557:        r = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=10)
+890:            result = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=10)
+
+##### cron_watchdog.py (19:30 timer) + token_watcher.sh: imports / binaries
+13:from __future__ import annotations
+15:import sys
+16:from datetime import datetime, time
+17:from pathlib import Path
+22:from dotenv import load_dotenv
+25:from alerts.critical import write_critical_sentinel
+26:from core.logger import get_logger
+27:from core.state_store import StateStore
+28:from core.time_authority import now_ist
+29:from core.account_registry import primary_account_tag
+
+##### watcher units: full ExecStart (continuation lines)
+--- trading-watchman
+ExecStart=/home/ubuntu/systems/venv/bin/python \
+    /home/ubuntu/systems/trading-system/scripts/gemini_watchman.py
+StandardInput=null
+--- alert-watcher
+ExecStart=/home/ubuntu/systems/venv/bin/python \
+    /home/ubuntu/systems/trading-system/scripts/alert_watcher.py --loop
+
+--- security-watcher
+ExecStart=/home/ubuntu/systems/venv/bin/python \
+    /home/ubuntu/systems/trading-system/scripts/security_monitor.py --watch
+Restart=always
+--- gui-dashboard
+ExecStart=/home/ubuntu/systems/trading-system/ops_dashboard/venv/bin/python -m backend.app
+Restart=always
+RestartSec=10
+
+##### python-crontab library present in either venv?
+  systems/venv: no python-crontab
+  ops_dashboard/venv: no python-crontab
+
+##### which scripts IMPORT the cron tools (indirect invokers)
+./alerts/cron_alerts.py
+./core/cron_registry.py
+./core/state_store.py
+./ops/control_tower/aggregator.py
+./ops/control_tower/runner.py
+./scripts/auto_refresh_token.py
+./scripts/check_cron_drift.py
+./scripts/cron_officer.py
+./scripts/cron_report_render.py
+./scripts/cron_watchdog.py
+./scripts/generate_crontab.py
+./scripts/generate_screened_stocks_csv.py
+./scripts/monitoring_canary.py
+./scripts/preflight/checks/config_integrity.py
+./scripts/preflight/checks/services.py
+./scripts/preflight/deliver.py
+./scripts/strategy_registry_officer.py
+./scripts/system_manager.py
+./strategies/control.py

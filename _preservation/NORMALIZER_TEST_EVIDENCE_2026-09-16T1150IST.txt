@@ -1,0 +1,316 @@
+RAW TEST EVIDENCE for the frozen normalizer v3 (md5 0cbcf225048e079c4ac83f06e044745a)
+Captured 2026-09-16 ~11:50 IST, BEFORE the first VM write. Amendment 17 s4.
+Every assertion in the Amendment 16 record is re-derivable from the runs below.
+================================================================================
+
+### T1  POST-FIX CALIBRATION  15-Sep vs 16-Sep (no code change between them)
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = CALIBRATION_bootwindow_2026-09-15.jsonl : 83 events (0 unparseable)
+B = CALIBRATION_bootwindow_2026-09-16.jsonl : 82 events (0 unparseable)
+distinct A=73  B=72
+
+--- ONLY IN A (2 event-instances, 2 distinct) ---
+  x1  [INFO] main | check_ntp_sync: drift 0.001s OK (host=pool.ntp.org)
+  x1  [INFO] telegram_notifier | email_fallback.sent
+
+--- ONLY IN B (1 event-instances, 1 distinct) ---
+  x1  [WARNING] main | check_ntp_sync: failed to query pool.ntp.org: timed out
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x2    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x1    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 0
+
+  Observed residual sample: 3 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+T1 rc=0
+
+### T2  SIMULATED 17-Sep CORRECT DEPLOYMENT (sr_shadow up, composition 63/63)
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = CALIBRATION_bootwindow_2026-09-16.jsonl : 82 events (0 unparseable)
+B = C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/sim_success.jsonl : 84 events (0 unparseable)
+distinct A=72  B=74
+
+--- ONLY IN A (1 event-instances, 1 distinct) ---
+  x1  [INFO] main | effect_telemetry: composition OK (62 registered, 62 expected)
+
+--- ONLY IN B (3 event-instances, 3 distinct) ---
+  x1  [INFO] main | effect_telemetry: composition OK (63 registered, 63 expected)
+  x1  [INFO] main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+  x1  [INFO] sr_shadow | sr_shadow: worker started (contract=v1.3 schema=1 db=<PATH>/sr_shadow.db)
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x0    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x0    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 4
+      >>> INFO | main | effect_telemetry: composition OK (62 registered, 62 expected)
+      >>> INFO | main | effect_telemetry: composition OK (63 registered, 63 expected)
+      >>> INFO | sr_shadow | sr_shadow: worker started (contract=v1.3 schema=1 db=<PATH>/sr_shadow.db)
+      >>> INFO | main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+
+  Observed residual sample: 4 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+T2 rc=1
+
+### T3  SIMULATED 17-Sep FAILED DEPLOYMENT (manager never started)
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = CALIBRATION_bootwindow_2026-09-16.jsonl : 82 events (0 unparseable)
+B = C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/sim_failed.jsonl : 82 events (0 unparseable)
+distinct A=72  B=72
+
+--- ONLY IN A (0 event-instances, 0 distinct) ---
+
+--- ONLY IN B (0 event-instances, 0 distinct) ---
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x0    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x0    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 0
+
+  Observed residual sample: 0 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+T3 rc=0
+
+### T4  ANCHORED-FAMILY NON-VACUITY: new ERROR CONTAINING 'check_ntp_sync'
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = CALIBRATION_bootwindow_2026-09-15.jsonl : 83 events (0 unparseable)
+B = C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/t2.jsonl : 83 events (0 unparseable)
+distinct A=73  B=73
+
+--- ONLY IN A (2 event-instances, 2 distinct) ---
+  x1  [INFO] main | check_ntp_sync: drift 0.001s OK (host=pool.ntp.org)
+  x1  [INFO] telegram_notifier | email_fallback.sent
+
+--- ONLY IN B (2 event-instances, 2 distinct) ---
+  x1  [ERROR] main | startup_checks: check_ntp_sync wrapper crashed
+  x1  [WARNING] main | check_ntp_sync: failed to query pool.ntp.org: timed out
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x2    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x1    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 1
+      >>> ERROR | main | startup_checks: check_ntp_sync wrapper crashed
+
+  Observed residual sample: 4 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+T4 rc=1
+
+### T5  CORRUPTION NON-VACUITY: 2 unparseable lines in 84 (<50%)
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = CALIBRATION_bootwindow_2026-09-15.jsonl : 83 events (0 unparseable)
+B = C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/t3.jsonl : 82 events (2 unparseable)
+distinct A=73  B=72
+
+*** UNPARSEABLE LINES in C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/t3.jsonl: 2 of 84 ***
+
+--- ONLY IN A (2 event-instances, 2 distinct) ---
+  x1  [INFO] main | check_ntp_sync: drift 0.001s OK (host=pool.ntp.org)
+  x1  [INFO] telegram_notifier | email_fallback.sent
+
+--- ONLY IN B (1 event-instances, 1 distinct) ---
+  x1  [WARNING] main | check_ntp_sync: failed to query pool.ntp.org: timed out
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x2    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x1    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 0
+
+  Observed residual sample: 3 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+  *** FINDING: 2 unparseable line(s) were DROPPED from this comparison.
+  *** The application log is machine-written JSON; an unparseable line is
+  *** an anomaly to adjudicate. Record it in the Gate 7/8 table. ***
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+T5 rc=1
+
+### T6  MISUSE GUARD: journal-format input
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/fake_journal.txt : 0 events (2 unparseable)
+B = CALIBRATION_bootwindow_2026-09-16.jsonl : 82 events (0 unparseable)
+distinct A=0  B=72
+
+*** UNPARSEABLE LINES in C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/fake_journal.txt: 2 of 2 ***
+*** REFUSED: this is not a JSON application log. The journal is NOT
+*** comparable with this tool -- systemd lifecycle events are compared
+*** separately, and the journal's copy of an application event is a
+*** level-dependent stdout duplicate. See ruleset R2. ***
+T6 rc=2

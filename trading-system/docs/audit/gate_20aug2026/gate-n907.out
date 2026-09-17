@@ -1,0 +1,438 @@
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+.........s.............................................................. [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+.......................................F................................ [  8%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+...................................F.................................... [ 36%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+.......................................................s................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........  OK WARNING mirrored to stdout (L4)
+.  OK INFO not mirrored to stdout (L4)
+.  OK DEBUG not mirrored to stdout (L4)
+.............................................................. [ 49%]
+..................F....................F..F..F.......................... [ 50%]
+........................................................................ [ 52%]
+........................................................................ [ 53%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 61%]
+...................................................................F.... [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+............s.s......................................................... [ 99%]
+.................................................                        [100%]
+================================== FAILURES ===================================
+_______________ test_no_module_restates_the_vocabulary_literals _______________
+
+    def test_no_module_restates_the_vocabulary_literals() -> None:
+        """\u2b50 THE POINT OF THE WHOLE EXERCISE. Consumers must IMPORT these names, never
+        re-type the strings. A second literal copy is how the 4-way collision started."""
+        offenders: list[str] = []
+        pattern = re.compile(r"""["'](OWN_SL|OWN_TGT|OWN_EOD|OWN_KILL|EXTERNAL_UNATTRIBUTED)["']""")
+        for path in _REPO.rglob("*.py"):
+            parts = path.parts
+            if any(p in parts for p in ("tests", "venv", ".venv", "node_modules", "build")):
+                continue
+            if path.resolve() == _CANONICAL.resolve():
+                continue
+            try:
+                text = path.read_text(encoding="utf-8")
+            except (UnicodeDecodeError, OSError):
+                continue
+            for n, line in enumerate(text.splitlines(), 1):
+                if pattern.search(line):
+                    offenders.append(f"{path.relative_to(_REPO)}:{n}")
+>       assert not offenders, (
+            "closure-source literals restated outside core/closure_source.py -- import "
+            f"them instead: {offenders}"
+        )
+E       AssertionError: closure-source literals restated outside core/closure_source.py -- import them instead: ['scripts\\backfill_closure_source_w8.py:92']
+E       assert not ['scripts\\backfill_closure_source_w8.py:92']
+
+tests\unit\test_closure_source_contract.py:170: AssertionError
+_ TestStep4_ReconcilerInflightOrphan.test_inflight_orphan_flattened_when_kill_active _
+
+self = <test_fix181.TestStep4_ReconcilerInflightOrphan object at 0x00000144649C5F10>
+tmp_path = WindowsPath('C:/Users/rama/AppData/Local/Temp/pytest-of-rama/pytest-1218/test_inflight_orphan_flattened0')
+
+    def test_inflight_orphan_flattened_when_kill_active(self, tmp_path) -> None:
+        from dataclasses import dataclass
+    
+        @dataclass
+        class _BP:
+            symbol: str
+            qty: int
+            avg_price: float
+    
+        recon, store, adapter = self._recon(tmp_path, kill_active=True, quote_ltp=200.0)
+        trade = {"trade_id": "t1", "status": "PENDING_FILL"}
+        action = recon._check2_inflight_orphan("GICRE", _BP("GICRE", 4, 199.0), trade)
+        assert action.check_name == "INFLIGHT_ORPHAN_FLATTEN"
+        adapter.place_order.assert_called_once()
+        kw = adapter.place_order.call_args.kwargs
+        assert kw["side"] == "SELL"
+>       assert kw["order_type"] == "LIMIT"
+E       AssertionError: assert 'MARKET' == 'LIMIT'
+E         
+E         - LIMIT
+E         + MARKET
+
+tests\unit\test_fix181.py:482: AssertionError
+------------------------------ Captured log call ------------------------------
+CRITICAL order_reconciler:order_reconciler.py:2195 CHECK2 INFLIGHT_ORPHAN + HARD_KILL: GICRE qty=4 trade=t1 — entry filled at broker during/after kill; FLATTENING
+_ TestBl15WebhookSecretRequired.test_paper_mode_does_not_require_webhook_secret _
+
+self = <test_main.TestBl15WebhookSecretRequired object at 0x0000014464CA92D0>
+
+    def test_paper_mode_does_not_require_webhook_secret(self):
+        captured, sideeffect = self._capture_startup_call()
+        rc = _run(argv=["--mode", "paper"], extra={
+            "run_all_startup_checks": MagicMock(side_effect=sideeffect),
+        })
+        assert rc == 0
+>       assert "WEBHOOK_SECRET" not in captured["required_secrets"]
+E       AssertionError: assert 'WEBHOOK_SECRET' not in ['ZERODHA_API_KEY_LFL836', 'ZERODHA_API_SECRET_LFL836', 'TELEGRAM_BOT_TOKEN', 'WEBHOOK_SECRET']
+
+tests\unit\test_main.py:806: AssertionError
+---------------------------- Captured stdout call -----------------------------
+Tier multiplier: ON (tier weights: 1.0/0.7/0.5 x perf_weights)
+------------------------------ Captured log call ------------------------------
+INFO     paper_quote_provider:main.py:513 paper_quote_provider: loaded 2 symbol aliases
+INFO     waitress:wasyncore.py:449 Serving on http://127.0.0.1:5000
+INFO     waitress:wasyncore.py:449 Serving on http://127.0.0.1:8080
+WARNING  preflight.startup_hook:startup_hook.py:93 preflight.startup_hook.launched
+DEBUG    core.config_validator:config_validator.py:236 ConfigValidator.validate_all() already called; skipping
+____ TestContinueFromGate.test_price_hit_calls_placer_with_correct_prices _____
+
+self = <test_main.TestContinueFromGate object at 0x0000014465231DD0>
+
+    def test_price_hit_calls_placer_with_correct_prices(self):
+        placer = MagicMock()
+        proc = self._make_processor(order_placer=placer)
+        entry = self._make_watch_entry()
+        proc.continue_from_gate(entry)
+>       placer.place.assert_called_once()
+
+tests\unit\test_main.py:1058: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='mock.place' id='1393642990800'>
+
+    def assert_called_once(self):
+        """assert that the mock was called only once.
+        """
+        if not self.call_count == 1:
+            msg = ("Expected '%s' to have been called once. Called %s times.%s"
+                   % (self._mock_name or 'mock',
+                      self.call_count,
+                      self._calls_repr()))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'place' to have been called once. Called 0 times.
+
+C:\python311\Lib\unittest\mock.py:918: AssertionError
+_ TestContinueFromGate.test_no_placer_releases_reservation_and_updates_status _
+
+self = <test_main.TestContinueFromGate object at 0x0000014464489550>
+
+    def test_no_placer_releases_reservation_and_updates_status(self):
+        proc = self._make_processor(order_placer=None)
+        entry = self._make_watch_entry()
+        proc.continue_from_gate(entry)
+>       proc._fm.release.assert_called()
+
+tests\unit\test_main.py:1085: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <MagicMock name='mock.release' id='1393646359824'>
+
+    def assert_called(self):
+        """assert that the mock was called at least once
+        """
+        if self.call_count == 0:
+            msg = ("Expected '%s' to have been called." %
+                   (self._mock_name or 'mock'))
+>           raise AssertionError(msg)
+E           AssertionError: Expected 'release' to have been called.
+
+C:\python311\Lib\unittest\mock.py:908: AssertionError
+________ TestContinueFromGate.test_stats_placed_incremented_on_success ________
+
+self = <test_main.TestContinueFromGate object at 0x000001446448B0D0>
+
+    def test_stats_placed_incremented_on_success(self):
+        placer = MagicMock()
+        proc = self._make_processor(order_placer=placer)
+        entry = self._make_watch_entry()
+        initial = proc._stats["placed"]
+        proc.continue_from_gate(entry)
+>       assert proc._stats["placed"] == initial + 1
+E       assert 0 == (0 + 1)
+
+tests\unit\test_main.py:1115: AssertionError
+____________________ test_fix077_flask_max_content_length _____________________
+
+    def test_fix077_flask_max_content_length() -> None:
+        """
+        FIX-077: Flask MAX_CONTENT_LENGTH must be 1MB to prevent OOM on oversized payloads.
+        """
+        import queue
+        from unittest.mock import Mock
+        from signals.webhook_receiver import WebhookReceiver
+    
+        signal_queue = queue.Queue(maxsize=100)
+        state_store = Mock()
+        state_store.transaction = Mock()
+        market_windows = Mock()
+        kill_switch = Mock()
+        logger = Mock()
+    
+        # No HMAC config - simple test
+        config = Mock()
+        config.webhook = Mock()
+        config.webhook.require_hmac = False
+    
+>       receiver = WebhookReceiver(
+            signal_queue, state_store, config, market_windows, kill_switch, logger
+        )
+
+tests\unit\test_phase17_batch2.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <signals.webhook_receiver.WebhookReceiver object at 0x000001447B84BD90>
+signal_queue = <queue.Queue object at 0x000001447B8485D0>
+state_store = <Mock id='1393641688976'>, config = <Mock id='1393641694672'>
+market_windows = <Mock id='1393641700496'>
+kill_switch = <Mock id='1393641693328'>, logger = <Mock id='1393641691728'>
+secret_token = None, eod_capture = None
+
+    def __init__(
+        self,
+        signal_queue: queue.Queue,
+        state_store: Any,
+        config: Any,          # SystemConfig (duck-typed for testability)
+        market_windows: Any,  # MarketWindows
+        kill_switch: Any,     # KillSwitch (may be None in tests)
+        logger: Any,
+        secret_token: Optional[str] = None,
+        eod_capture: Any = None,   # V3 Step 10b: WatchlistCaptureWorker (None \u2192 EOD alerts are a fail-safe miss)
+    ) -> None:
+        # BL-18: if the deployed config declares require_hmac=True, refuse to
+        # construct without a secret. Prevents silent downgrade where config
+        # claims HMAC is enforced but the receiver silently accepts unsigned
+        # requests because secret_token was None.
+        #
+        # Shape-tolerant resolution: production passes AppConfig (has .system
+        # .webhook.require_hmac), tests pass a flat SimpleNamespace (may or
+        # may not have .webhook). Absent -> treated as non-strict.
+        _webhook_cfg = getattr(config, "webhook", None)
+        if _webhook_cfg is None:
+            _system_cfg = getattr(config, "system", None)
+            if _system_cfg is not None:
+                _webhook_cfg = getattr(_system_cfg, "webhook", None)
+        _require_hmac = bool(getattr(_webhook_cfg, "require_hmac", False))
+        if _require_hmac and not secret_token:
+            raise ValueError(
+                "WebhookReceiver: config.webhook.require_hmac=True but "
+                "secret_token is empty. Set WEBHOOK_SECRET env var or "
+                "flip require_hmac to False for non-prod deployments."
+            )
+    
+        self._queue = signal_queue
+        self._store = state_store
+        self._config = config
+        self._mw = market_windows
+        self._ks = kill_switch
+        self._log = logger
+        self._secret = secret_token
+        # V3 Step 10b: the EOD-capture worker. An "eod" scanner routes here ONLY (never
+        # the intraday signal_queue). None (default / watchlist disabled) \u2192 an EOD alert
+        # is a fail-SAFE miss (logged, never silent). Purely additive: intraday scanners
+        # never touch this, so the live path is byte-identical.
+        self._eod_capture = eod_capture
+        # G.1 (2026-04-25): persist for request-time enforcement. When True
+        # the token-param fallback is disabled -- HMAC is the sole accepted
+        # auth surface (token in URL is logged by nginx and weaker than
+        # HMAC over the body).
+        self._require_hmac = _require_hmac
+    
+        # WR17: in-flight symbol set (thread-safe)
+        # FIX-011: heartbeat-aware lock tracking. Each entry stores:
+        #   {'acquired_at': monotonic_ts, 'heartbeat_at': monotonic_ts}
+        # Sweeper evicts if (now - heartbeat_at) > 60s, NOT (now - acquired_at).
+        self._in_flight: dict[str, dict[str, float]] = {}
+        self._in_flight_lock = threading.Lock()
+        self._in_flight_timeout_sec: float = 60.0  # evict if no heartbeat for 60s
+    
+        # H-16: set during graceful shutdown to reject new webhooks with 503
+        # before signal_processor is stopped. In-flight requests drain
+        # naturally; only NEW requests see the flag.
+        self._shutting_down = threading.Event()
+    
+        # HIGH #9: background sweeper evicts stuck in_flight entries
+        self._sweeper_stop = threading.Event()
+        self._sweeper_thread = threading.Thread(
+            target=self._run_sweeper, name="in_flight_sweeper", daemon=True
+        )
+        self._sweeper_thread.start()
+    
+        # FIX-032: Load symbol aliases once at startup
+        # Chartink webhook sends alternate symbol names (e.g., TVSSCS) that don't
+        # match Zerodha's trading symbols (TVSSRICHAK). Load the mapping from
+        # config/symbol_aliases.yaml to resolve at webhook edge before any DB write
+        # or in-flight check uses the wrong symbol name.
+        self._alias_map = self._load_symbol_aliases()
+    
+        # FIX-036: TTL-based deduplication cache
+        # FIX-131 Item 17: TTL driven by dedup_window_seconds (default 300s / 5 min).
+        # Key: (symbol, scanner_name). Thread-safe via lock wrapper.
+        try:
+            _dedup_sec = int(getattr(_webhook_cfg, "dedup_window_seconds", 300))
+        except (TypeError, ValueError):
+            _dedup_sec = 300
+        self._dedup_window_seconds: int = max(60, _dedup_sec)
+        self._dedup_cache = TTLCache(maxsize=10000, ttl=self._dedup_window_seconds)
+        self._dedup_lock = threading.Lock()
+    
+        # C-2 (02-Jul-2026): per-source-IP rate limiter (token bucket). Disabled -> None.
+        _rl_on = bool(getattr(_webhook_cfg, "per_ip_rate_limit_enabled", True))
+        if _rl_on:
+>           _burst = int(getattr(_webhook_cfg, "per_ip_burst", 60) or 60)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: int() argument must be a string, a bytes-like object or a real number, not 'Mock'
+
+signals\webhook_receiver.py:212: TypeError
+============================== warnings summary ===============================
+tests/unit/test_hard_gate.py: 7 warnings
+tests/integration/test_end_to_end_smoke.py: 11 warnings
+tests/integration/test_full_signal_flow.py: 7 warnings
+tests/integration/test_hardening_scenarios.py: 5 warnings
+tests/integration/test_q9_capital_invariant_wired.py: 6 warnings
+tests/integration/test_q9_consecutive_losses_wired.py: 13 warnings
+tests/integration/test_q9_daily_loss_limit_wired.py: 1 warning
+tests/integration/test_q9_killswitch_lastmile_wired.py: 3 warnings
+tests/integration/test_q9_live_seed_mc1_wired.py: 9 warnings
+tests/integration/test_q9_post_restart_capital_wired.py: 10 warnings
+tests/integration/test_q9_sizing_floors_caps_wired.py: 21 warnings
+  C:\Users\rama\AppData\Local\Temp\claude\D--Projects-trading-system\3bdb2912-ae06-4bd6-bc2f-4df54526afca\scratchpad\gate-n907\screening\quality_scorer.py:58: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    if hasattr(weights.steps, "model_fields") and isinstance(
+
+tests/unit/test_hard_gate.py: 7 warnings
+tests/integration/test_end_to_end_smoke.py: 11 warnings
+tests/integration/test_full_signal_flow.py: 7 warnings
+tests/integration/test_hardening_scenarios.py: 5 warnings
+tests/integration/test_q9_capital_invariant_wired.py: 6 warnings
+tests/integration/test_q9_consecutive_losses_wired.py: 13 warnings
+tests/integration/test_q9_daily_loss_limit_wired.py: 1 warning
+tests/integration/test_q9_killswitch_lastmile_wired.py: 3 warnings
+tests/integration/test_q9_live_seed_mc1_wired.py: 9 warnings
+tests/integration/test_q9_post_restart_capital_wired.py: 10 warnings
+tests/integration/test_q9_sizing_floors_caps_wired.py: 21 warnings
+  C:\Users\rama\AppData\Local\Temp\claude\D--Projects-trading-system\3bdb2912-ae06-4bd6-bc2f-4df54526afca\scratchpad\gate-n907\screening\quality_scorer.py:59: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    getattr(weights.steps, "model_fields", None), dict
+
+tests/unit/test_hard_gate.py: 7 warnings
+tests/integration/test_end_to_end_smoke.py: 11 warnings
+tests/integration/test_full_signal_flow.py: 7 warnings
+tests/integration/test_hardening_scenarios.py: 5 warnings
+tests/integration/test_q9_capital_invariant_wired.py: 6 warnings
+tests/integration/test_q9_consecutive_losses_wired.py: 13 warnings
+tests/integration/test_q9_daily_loss_limit_wired.py: 1 warning
+tests/integration/test_q9_killswitch_lastmile_wired.py: 3 warnings
+tests/integration/test_q9_live_seed_mc1_wired.py: 9 warnings
+tests/integration/test_q9_post_restart_capital_wired.py: 10 warnings
+tests/integration/test_q9_sizing_floors_caps_wired.py: 21 warnings
+  C:\Users\rama\AppData\Local\Temp\claude\D--Projects-trading-system\3bdb2912-ae06-4bd6-bc2f-4df54526afca\scratchpad\gate-n907\screening\quality_scorer.py:62: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    self._step_names: list[str] = list(weights.steps.model_fields.keys())
+
+tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_live_mode_adds_webhook_secret_to_required_secrets
+tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_live_mode_keeps_original_secrets
+  C:\python311\Lib\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread broker_clock_skew_probe
+  
+  Traceback (most recent call last):
+    File "C:\python311\Lib\threading.py", line 1045, in _bootstrap_inner
+      self.run()
+    File "C:\python311\Lib\threading.py", line 982, in run
+      self._target(*self._args, **self._kwargs)
+    File "C:\Users\rama\AppData\Local\Temp\claude\D--Projects-trading-system\3bdb2912-ae06-4bd6-bc2f-4df54526afca\scratchpad\gate-n907\broker\clock_skew_probe.py", line 107, in _run_loop
+      self._stop_event.wait(timeout=self._config.probe_interval_sec)
+    File "C:\python311\Lib\threading.py", line 629, in wait
+      signaled = self._cond.wait(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\python311\Lib\threading.py", line 330, in wait
+      if timeout > 0:
+         ^^^^^^^^^^^
+  TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/unit/test_closure_source_contract.py::test_no_module_restates_the_vocabulary_literals
+FAILED tests/unit/test_fix181.py::TestStep4_ReconcilerInflightOrphan::test_inflight_orphan_flattened_when_kill_active
+FAILED tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_paper_mode_does_not_require_webhook_secret
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_price_hit_calls_placer_with_correct_prices
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_no_placer_releases_reservation_and_updates_status
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_stats_placed_incremented_on_success
+FAILED tests/unit/test_phase17_batch2.py::test_fix077_flask_max_content_length
+7 failed, 5654 passed, 4 skipped, 281 warnings in 917.59s (0:15:17)

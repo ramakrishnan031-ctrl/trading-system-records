@@ -1,0 +1,27 @@
+SANDBOX STATE CAPTURE — 2026-09-07T21:29:42+05:30 — host trading-system-sandbox
+=== config values that make it a sandbox ===
+328:  bind_host: "127.0.0.1"        # 2026-04-27: bind all interfaces so the VM
+335:  bind_port: 5010             # port to listen on
+    enabled: false               # TASK-10: master ON/OFF switch. Set false to suppress ALL Telegram alerts (silent)
+=== .env KEY NAMES ONLY (no values) ===
+ZERODHA_API_KEY_LFL836 ZERODHA_API_SECRET_LFL836 TELEGRAM_BOT_TOKEN WEBHOOK_SECRET 
+dummy markers: 3
+=== unit states ===
+trading-system-sbx       enabled=disabled active=inactive
+token-watcher            enabled=disabled active=inactive
+alert-watcher            enabled=disabled active=inactive
+security-watcher         enabled=disabled active=inactive
+trading-watchman         enabled=disabled active=inactive
+=== crontab ===
+no crontab for ubuntu
+=== git state ===
+20061b6
+ M config/system_config.yaml
+?? config/system_config.yaml.bak.20260628_132654
+?? config/system_config.yaml.bak_pre_v1_enable_20260627_223605
+?? docs/audit/OPS2_HANDOVER_RAMA_23-Aug-2026.md
+?? docs/audit/ROLLBACK_AND_ATTENDANCE_23-Aug-2026.md.bak-28aug
+=== analytics.db system_metrics ===
+4706 rows, 2026-06-19 -> 2026-09-07
+=== crontab archive ===
+148 /home/ubuntu/sandbox_crontab_archive/installed_canonical_2026-09-07.cron

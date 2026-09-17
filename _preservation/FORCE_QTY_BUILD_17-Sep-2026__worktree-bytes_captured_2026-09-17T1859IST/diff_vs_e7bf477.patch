@@ -1,0 +1,386 @@
+diff --git a/capital/position_sizer.py b/capital/position_sizer.py
+index f92eace..e82e0a7 100644
+--- a/capital/position_sizer.py
++++ b/capital/position_sizer.py
+@@ -88,6 +88,9 @@ class SizingResult:
+                            "ZERO_MULTIPLIER" -- M-C6: tier_mult × perf_weight <= 0, i.e.
+                                               sizing said "trade nothing" -> skip (NOT
+                                               floored to 1 lot)
++                           "FORCE_QTY"     -- position_sizing.force_qty set (testing VM,
++                                              17-Sep-2026): the size is the override,
++                                              not a rung
+         reason:          Human-readable explanation (non-empty always).
+         breakdown:       Dict with all candidate qtys + tier multiplier for audit.
+     """
+@@ -178,7 +181,22 @@ class PositionSizer:
+         delivery_risk_per_trade_pct: Optional[float] = None,
+         delivery_max_concentration_pct: Optional[float] = None,
+         delivery_max_position_value_pct: Optional[float] = None,
++        # force_qty (17-Sep-2026, TESTING VM ONLY). None = OFF = the sizing below,
++        # unchanged. When set, _calculate uses exactly this quantity in place of the
++        # risk / capital / concentration rungs and the tier × perf multiplier; the
++        # SL-distance guard before them and the tail after them (lot rounding, output
++        # qty guard, position-value cap, minimum) still run. ⚠️ Unlike the defaults
++        # above, a SET value can ENLARGE a position past the rungs — only the tail and
++        # FundManager.reserve bound it. Default OFF; production passes None.
++        force_qty: Optional[int] = None,
+     ) -> None:
++        if force_qty is not None and (
++            isinstance(force_qty, bool) or not isinstance(force_qty, int) or force_qty < 1
++        ):
++            raise ValueError(
++                f"PositionSizer: force_qty must be None or an integer >= 1, got {force_qty!r}"
++            )
++        self._force_qty = force_qty
+         self._fm = fund_manager
+         self._leverage_map = dict(leverage_map)
+         self._risk_per_trade_pct = risk_per_trade_pct
+@@ -458,7 +476,9 @@ class PositionSizer:
+ 
+         # FIX-041: Guard 2 — Qty explosion sanity cap
+         # Prevents micro-fraction sl_distance from producing million-share orders.
+-        if qty_by_risk > self._max_single_order_qty:
++        # force_qty: this guard tests the RISK RUNG, which the override does not use,
++        # so it is skipped when force_qty is set; the OUTPUT guard below still runs.
++        if self._force_qty is None and qty_by_risk > self._max_single_order_qty:
+             if self._log is not None:
+                 self._log.critical(
+                     "position_sizer.qty_explosion_guard",
+@@ -499,138 +519,173 @@ class PositionSizer:
+             (total_capital * eff_conc_pct) / entry_price
+         ))
+ 
+-        # Binding constraint: CAPITAL wins on tie (most conservative), then RISK
+-        raw_qty = min(qty_by_risk, qty_by_capital, qty_by_concentration)
+-        if qty_by_capital <= qty_by_risk and qty_by_capital <= qty_by_concentration:
+-            constraint = "CAPITAL"
+-        elif qty_by_risk <= qty_by_concentration:
+-            constraint = "RISK"
+-            # effect-telemetry (frozen A2.3, gamma): the risk-per-trade term
+-            # actually bound a size (IA-P3-04 — algebraically never today).
+-            self._fx_risk_bind.inc()
+-        else:
+-            constraint = "CONCENTRATION"
+-
+-        # Build breakdown (PS4) — populated before any early exits
+-        breakdown: dict = {
+-            "qty_by_risk": qty_by_risk,
+-            "qty_by_capital": qty_by_capital,
+-            "qty_by_concentration": qty_by_concentration,
+-            "raw_qty": raw_qty,
+-            "tier_multiplier": self._tier_multipliers.get(score_tier, 1.0),
+-        }
+-
+-        # Early exit: no quantity possible at all (capital/risk/conc exhausted)
+-        if raw_qty <= 0:
+-            reason = (
+-                f"qty=0: {constraint} exhausted for {symbol} "
+-                f"(risk_qty={qty_by_risk} capital_qty={qty_by_capital} "
+-                f"conc_qty={qty_by_concentration})"
+-            )
+-            return SizingResult(
+-                success=False,
+-                qty=0,
+-                margin_required=0.0,
+-                risk_amount=0.0,
+-                bucket=bucket,
+-                constraint=constraint,
+-                reason=reason,
+-                breakdown=breakdown,
++        if self._force_qty is not None:
++            # ── force_qty OVERRIDE (17-Sep-2026, testing VM only) ─────────────────
++            # REPLACES THE SIZE CALCULATION ONLY: no min() over the rungs as the size,
++            # no RISK/CAPITAL/CONCENTRATION binding (so no risk-bind telemetry), no
++            # qty=0 early exit, no tier × perf multiplier (so no ZERO_MULTIPLIER skip).
++            # The rung quantities are kept in the breakdown for the audit trail only.
++            # Everything from lot rounding onwards runs exactly as for a computed size:
++            # (1 // lot_size) * lot_size is 1 or 0 (-> BELOW_MIN), never more.
++            raw_qty = min(qty_by_risk, qty_by_capital, qty_by_concentration)  # audit only
++            constraint = "FORCE_QTY"
++            tier_mult = self._tier_multipliers.get(score_tier, 1.0)  # audit only
++            tiered_qty = self._force_qty
++            breakdown = {
++                "qty_by_risk": qty_by_risk,
++                "qty_by_capital": qty_by_capital,
++                "qty_by_concentration": qty_by_concentration,
++                "raw_qty": raw_qty,
++                "tier_multiplier": tier_mult,
++                "tier_multiplier_mode": "FORCE_QTY",
++                "tier_weight_applied": None,
++                "perf_weight_applied": None,
++                "flat_value_rs_used": None,
++                "qty_by_flat": None,
++                "force_qty": self._force_qty,
++            }
++            # ONE WARNING per sizing call, naming the key and the value.
++            self._warn(
++                "position_sizer.force_qty_override",
++                {"symbol": symbol, "intent": intent, "bucket": bucket,
++                 "config_key": "position_sizing.force_qty", "force_qty": self._force_qty,
++                 "bypassed": "risk/capital/concentration rungs + tier x perf multiplier",
++                 "qty_by_risk": qty_by_risk, "qty_by_capital": qty_by_capital,
++                 "qty_by_concentration": qty_by_concentration},
+             )
+-
+-        # ── Sizing mode (Diary #4) ─────────────────────────────────────────────
+-        tier_mult = self._tier_multipliers.get(score_tier, 1.0)  # configured weight (audit)
+-        if self._enabled:
+-            # ON: PS5 tier multiplier × PA4 performance weight (FIX-132 Item 9) — unchanged.
+-            effective_mult = tier_mult * max(0.0, perf_weight)  # perf_weight >= 0 guard
+-            # M-C6 (16-Jul-2026): a ZERO (or negative) multiplier means "size this to
+-            # nothing" — SKIP the trade. FIX-133's floor below turned it into 1 lot,
+-            # i.e. real capital and real risk on a signal the sizing model had just
+-            # said to stay out of. The floor exists so a small-but-POSITIVE multiplier
+-            # still trades (0.3 × 2 lots rounding to 0 should not silently kill a
+-            # wanted trade); it was never meant to manufacture a position out of an
+-            # explicit zero. Split the two cases and the floor keeps its real job.
+-            #
+-            # `<= 0` needs no tolerance: perf_weight is already clamped >= 0 one line
+-            # up, so the product cannot be a tiny FP negative — a negative here means
+-            # a genuinely negative tier_mult (PositionSizingTierConfig types HIGH/
+-            # MEDIUM/LOW as bare floats with no ge=0 bound, so a config typo reaches
+-            # this), and -1.0 * 0.0 == -0.0 which `<= 0` also catches. Negative is
+-            # treated exactly as zero: there is no meaning to a negative size.
+-            #
+-            # NOT reachable today: performance_allocator clamps min_weight=0.5 (PA3/
+-            # PA8) and signal_processor defaults an unknown strategy to 1.0, so
+-            # effective_mult >= 0.25 in production and this branch never fires. It is
+-            # a hard PREREQUISITE for ever lowering min_weight.
+-            if effective_mult <= 0:
+-                breakdown["tier_multiplier_mode"] = "ON"
+-                breakdown["tier_weight_applied"] = tier_mult
+-                breakdown["perf_weight_applied"] = round(perf_weight, 4)
+-                breakdown["flat_value_rs_used"] = None
+-                breakdown["qty_by_flat"] = None
+-                breakdown["tiered_qty"] = 0
+-                breakdown["tier_mult"] = tier_mult
+-                breakdown["perf_weight"] = round(perf_weight, 4)
+-                breakdown["effective_mult"] = effective_mult
++        else:
++            # Binding constraint: CAPITAL wins on tie (most conservative), then RISK
++            raw_qty = min(qty_by_risk, qty_by_capital, qty_by_concentration)
++            if qty_by_capital <= qty_by_risk and qty_by_capital <= qty_by_concentration:
++                constraint = "CAPITAL"
++            elif qty_by_risk <= qty_by_concentration:
++                constraint = "RISK"
++                # effect-telemetry (frozen A2.3, gamma): the risk-per-trade term
++                # actually bound a size (IA-P3-04 — algebraically never today).
++                self._fx_risk_bind.inc()
++            else:
++                constraint = "CONCENTRATION"
++
++            # Build breakdown (PS4) — populated before any early exits
++            breakdown: dict = {
++                "qty_by_risk": qty_by_risk,
++                "qty_by_capital": qty_by_capital,
++                "qty_by_concentration": qty_by_concentration,
++                "raw_qty": raw_qty,
++                "tier_multiplier": self._tier_multipliers.get(score_tier, 1.0),
++            }
++
++            # Early exit: no quantity possible at all (capital/risk/conc exhausted)
++            if raw_qty <= 0:
+                 reason = (
+-                    f"qty=0: ZERO_MULTIPLIER for {symbol} — effective_mult="
+-                    f"{effective_mult} (tier_mult={tier_mult} × perf_weight="
+-                    f"{perf_weight}) sizes this trade to nothing; skipping rather "
+-                    f"than flooring to 1 lot"
++                    f"qty=0: {constraint} exhausted for {symbol} "
++                    f"(risk_qty={qty_by_risk} capital_qty={qty_by_capital} "
++                    f"conc_qty={qty_by_concentration})"
+                 )
+-                if self._log is not None:
+-                    self._log.warning(
+-                        "position_sizer.zero_multiplier_skip",
+-                        extra={
+-                            "symbol": symbol,
+-                            "tier_mult": tier_mult,
+-                            "perf_weight": perf_weight,
+-                            "effective_mult": effective_mult,
+-                            "raw_qty": raw_qty,
+-                        },
+-                    )
+                 return SizingResult(
+                     success=False,
+                     qty=0,
+                     margin_required=0.0,
+                     risk_amount=0.0,
+                     bucket=bucket,
+-                    constraint="ZERO_MULTIPLIER",
++                    constraint=constraint,
+                     reason=reason,
+                     breakdown=breakdown,
+                 )
+-            tiered_qty = int(math.floor(raw_qty * effective_mult))
+-            # FIX-133 Item 21: cap at 2x base_qty, floor at 1 — for a POSITIVE
+-            # multiplier only (see the M-C6 note above).
+-            tiered_qty = max(1, min(tiered_qty, raw_qty * 2))
+-            # BUG-NI18 (23-Aug-2026): when the multiplier lifts the size ABOVE the
+-            # tightest rung, that rung did NOT bind the result, and reporting it
+-            # names a limit the quantity EXCEEDS — a trap, not a diagnostic. The
+-            # OFF branch below already re-points `constraint` at FLAT when flat is
+-            # the tighter ceiling; this is the same move for the ON branch. The rung
+-            # that would have bound is preserved in the breakdown, so nothing is lost.
+-            # ⛔ The QUANTITY is deliberately unchanged — this fixes what is REPORTED.
+-            if tiered_qty > raw_qty:
+-                breakdown["rung_before_multiplier"] = constraint.lower()
+-                constraint = "MULTIPLIER"
+-            breakdown["tier_multiplier_mode"] = "ON"
+-            breakdown["tier_weight_applied"] = tier_mult
+-            breakdown["perf_weight_applied"] = round(perf_weight, 4)
+-            breakdown["flat_value_rs_used"] = None
+-            breakdown["qty_by_flat"] = None
+-        else:
+-            # OFF (Option δ): flat Rs/order. flat_value_rs is one more ceiling on top of
+-            # risk/capital/concentration. Score-tier and perf-weight are NOT applied, so
+-            # the size is score-neutral. NO floor-at-1: a flat below 1 lot -> BELOW_MIN skip.
+-            qty_by_flat = int(math.floor(self._flat_value_rs / entry_price))
+-            tiered_qty = min(raw_qty, qty_by_flat)
+-            if qty_by_flat < raw_qty:
+-                constraint = "FLAT"  # flat is the binding ceiling
+-            breakdown["tier_multiplier_mode"] = "OFF_FLAT"
+-            breakdown["tier_weight_applied"] = None
+-            breakdown["perf_weight_applied"] = None
+-            breakdown["flat_value_rs_used"] = self._flat_value_rs
+-            breakdown["qty_by_flat"] = qty_by_flat
++
++            # ── Sizing mode (Diary #4) ─────────────────────────────────────────────
++            tier_mult = self._tier_multipliers.get(score_tier, 1.0)  # configured weight (audit)
++            if self._enabled:
++                # ON: PS5 tier multiplier × PA4 performance weight (FIX-132 Item 9) — unchanged.
++                effective_mult = tier_mult * max(0.0, perf_weight)  # perf_weight >= 0 guard
++                # M-C6 (16-Jul-2026): a ZERO (or negative) multiplier means "size this to
++                # nothing" — SKIP the trade. FIX-133's floor below turned it into 1 lot,
++                # i.e. real capital and real risk on a signal the sizing model had just
++                # said to stay out of. The floor exists so a small-but-POSITIVE multiplier
++                # still trades (0.3 × 2 lots rounding to 0 should not silently kill a
++                # wanted trade); it was never meant to manufacture a position out of an
++                # explicit zero. Split the two cases and the floor keeps its real job.
++                #
++                # `<= 0` needs no tolerance: perf_weight is already clamped >= 0 one line
++                # up, so the product cannot be a tiny FP negative — a negative here means
++                # a genuinely negative tier_mult (PositionSizingTierConfig types HIGH/
++                # MEDIUM/LOW as bare floats with no ge=0 bound, so a config typo reaches
++                # this), and -1.0 * 0.0 == -0.0 which `<= 0` also catches. Negative is
++                # treated exactly as zero: there is no meaning to a negative size.
++                #
++                # NOT reachable today: performance_allocator clamps min_weight=0.5 (PA3/
++                # PA8) and signal_processor defaults an unknown strategy to 1.0, so
++                # effective_mult >= 0.25 in production and this branch never fires. It is
++                # a hard PREREQUISITE for ever lowering min_weight.
++                if effective_mult <= 0:
++                    breakdown["tier_multiplier_mode"] = "ON"
++                    breakdown["tier_weight_applied"] = tier_mult
++                    breakdown["perf_weight_applied"] = round(perf_weight, 4)
++                    breakdown["flat_value_rs_used"] = None
++                    breakdown["qty_by_flat"] = None
++                    breakdown["tiered_qty"] = 0
++                    breakdown["tier_mult"] = tier_mult
++                    breakdown["perf_weight"] = round(perf_weight, 4)
++                    breakdown["effective_mult"] = effective_mult
++                    reason = (
++                        f"qty=0: ZERO_MULTIPLIER for {symbol} — effective_mult="
++                        f"{effective_mult} (tier_mult={tier_mult} × perf_weight="
++                        f"{perf_weight}) sizes this trade to nothing; skipping rather "
++                        f"than flooring to 1 lot"
++                    )
++                    if self._log is not None:
++                        self._log.warning(
++                            "position_sizer.zero_multiplier_skip",
++                            extra={
++                                "symbol": symbol,
++                                "tier_mult": tier_mult,
++                                "perf_weight": perf_weight,
++                                "effective_mult": effective_mult,
++                                "raw_qty": raw_qty,
++                            },
++                        )
++                    return SizingResult(
++                        success=False,
++                        qty=0,
++                        margin_required=0.0,
++                        risk_amount=0.0,
++                        bucket=bucket,
++                        constraint="ZERO_MULTIPLIER",
++                        reason=reason,
++                        breakdown=breakdown,
++                    )
++                tiered_qty = int(math.floor(raw_qty * effective_mult))
++                # FIX-133 Item 21: cap at 2x base_qty, floor at 1 — for a POSITIVE
++                # multiplier only (see the M-C6 note above).
++                tiered_qty = max(1, min(tiered_qty, raw_qty * 2))
++                # BUG-NI18 (23-Aug-2026): when the multiplier lifts the size ABOVE the
++                # tightest rung, that rung did NOT bind the result, and reporting it
++                # names a limit the quantity EXCEEDS — a trap, not a diagnostic. The
++                # OFF branch below already re-points `constraint` at FLAT when flat is
++                # the tighter ceiling; this is the same move for the ON branch. The rung
++                # that would have bound is preserved in the breakdown, so nothing is lost.
++                # ⛔ The QUANTITY is deliberately unchanged — this fixes what is REPORTED.
++                if tiered_qty > raw_qty:
++                    breakdown["rung_before_multiplier"] = constraint.lower()
++                    constraint = "MULTIPLIER"
++                breakdown["tier_multiplier_mode"] = "ON"
++                breakdown["tier_weight_applied"] = tier_mult
++                breakdown["perf_weight_applied"] = round(perf_weight, 4)
++                breakdown["flat_value_rs_used"] = None
++                breakdown["qty_by_flat"] = None
++            else:
++                # OFF (Option δ): flat Rs/order. flat_value_rs is one more ceiling on top of
++                # risk/capital/concentration. Score-tier and perf-weight are NOT applied, so
++                # the size is score-neutral. NO floor-at-1: a flat below 1 lot -> BELOW_MIN skip.
++                qty_by_flat = int(math.floor(self._flat_value_rs / entry_price))
++                tiered_qty = min(raw_qty, qty_by_flat)
++                if qty_by_flat < raw_qty:
++                    constraint = "FLAT"  # flat is the binding ceiling
++                breakdown["tier_multiplier_mode"] = "OFF_FLAT"
++                breakdown["tier_weight_applied"] = None
++                breakdown["perf_weight_applied"] = None
++                breakdown["flat_value_rs_used"] = self._flat_value_rs
++                breakdown["qty_by_flat"] = qty_by_flat
+         breakdown["tiered_qty"] = tiered_qty
+         breakdown["tier_mult"] = tier_mult
+         breakdown["perf_weight"] = round(perf_weight, 4)
+diff --git a/core/config_loader.py b/core/config_loader.py
+index 3c78a89..6924a4b 100644
+--- a/core/config_loader.py
++++ b/core/config_loader.py
+@@ -497,6 +497,26 @@ class PositionSizingConfig(BaseModel):
+     delivery_risk_per_trade_pct: Optional[float]
+     delivery_max_concentration_pct: Optional[float]
+     delivery_max_position_value_pct: Optional[float]
++    # force_qty (17-Sep-2026, TESTING VM ONLY — Rama: "only with 1 Qty; [Not more than
++    # 1qty]"). An OVERRIDE, not a clamp: when set, PositionSizer uses exactly this
++    # quantity and BYPASSES the risk / capital / concentration rungs and the tier ×
++    # perf multiplier (a clamp cannot rescue a rung that returns 0). The tail still
++    # runs: lot rounding, the output qty guard, the position-value cap, the minimum.
++    # Default null = OFF = today's sizing exactly. Production and the repo keep null.
++    # ⚠️ While set, risk_per_trade_pct does NOT govern the size.
++    force_qty: Optional[int] = None
++
++    @field_validator("force_qty", mode="before")
++    @classmethod
++    def _validate_force_qty(cls, v):
++        if v is None:
++            return v
++        # bool is an int subclass; `force_qty: true` must not load as 1.
++        if isinstance(v, bool) or not isinstance(v, int):
++            raise ValueError("force_qty must be null or an integer >= 1")
++        if v < 1:
++            raise ValueError("force_qty must be null or an integer >= 1")
++        return v
+ 
+     @field_validator("delivery_risk_per_trade_pct",
+                      "delivery_max_concentration_pct",
+diff --git a/main.py b/main.py
+index 3515758..795e3c1 100644
+--- a/main.py
++++ b/main.py
+@@ -2868,6 +2868,8 @@ def _main_locked(args, config_dir: Path) -> int:
+         delivery_risk_per_trade_pct=ps_cfg.delivery_risk_per_trade_pct,
+         delivery_max_concentration_pct=ps_cfg.delivery_max_concentration_pct,
+         delivery_max_position_value_pct=ps_cfg.delivery_max_position_value_pct,
++        # force_qty (17-Sep-2026, testing VM only): null = OFF = today's sizing.
++        force_qty=ps_cfg.force_qty,
+     )
+     # Diary #4: surface the active sizing mode at startup (one info-level line).
+     if ps_cfg.enabled:

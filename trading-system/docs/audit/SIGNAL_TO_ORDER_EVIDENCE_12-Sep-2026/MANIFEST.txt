@@ -1,0 +1,53 @@
+MANIFEST -- the evidence behind docs/audit/SIGNAL_TO_ORDER_FLOW_12-Sep-2026.md
+Written 2026-09-11 23:58:05 IST (PC clock). Copied from the session scratchpad; copy, never edit.
+Scripts are stored as .py.txt so no code search, linter or test runner treats them as code.
+inline_analyses.sh.txt = every Bash command of the session, verbatim; session_outputs.txt = every Bash output, verbatim
+(both extracted from the session transcript). agent*.md = the four research agents' findings (research; the report
+states which of their claims were re-read in source). All VM access was read-only (sqlite mode=ro + query_only).
+
+file                                                 bytes  sha256 (source == copy)
+a1_load.py.txt                                        2623  8c8dc9b5de431bc818d921a154a9d7605bf5333a9c3c4ff7a185a9ae2a1abefc
+a1_out.txt                                            2641  93d64c4c7420cd0a3f5cd959a52a05cfcd783b52b7b748daeb020bdc4cec021c
+a2_out.txt                                            3612  a771444e8e0285e171e3659b021d90cd63faaec9b5c7ecf5a08608b5f3962056
+a2_steps.py.txt                                       2359  aa8cac0626b3fae8f271aec5a0433a5ac0202b9a93650745d36f1de341082322
+a2b_out.txt                                             75  330eeda47834439279814206ef6ef7e9a58d3f1da5599ce09619d6611f8cf2a8
+a2c_out.txt                                           2244  06b79a84a1778b176d7df62f665c2881cfeeea6ab008ea7d918fe09b52bc5f19
+a2d_out.txt                                           1857  c14abaa27371ff547c3263d751a036ff26257da4b265b367bc3524ee90f957ad
+a3_out.txt                                            4505  e96a26c35458fdb0e8406b02cadf195bec5facdc9e49a0c7535a9fc6d380a6f4
+a3b_out.txt                                          12216  963fca1acd9f9ca9f84c27b83ec14a94758043a958909e9b115d8fde75580700
+a4_out.txt                                            8736  f01cb3f426964189d6964ba454d80a4b8408ab09bf9bd484670eb472c295642c
+a5_out.txt                                            2580  1045672f3514f0a08d85435429715d5c12da32f40f34c4a6ca40ba98de3211b3
+a5_prices.py.txt                                      6523  8a49fa96428fd5fbd107f54668b93fb173a8665c4677445cbee8afc4ffb2eb5c
+a6_out.txt                                            1797  66a631815506aa8eaaae016c9099a3230532a86b5e86899fb3f4ffb2cb5168b0
+a7_out.txt                                            2496  c091a3af71b060efad6245f3cb114050e0462a403f198001571b23ac2a87fd41
+agentA_webhook.md                                    66824  a9b4a62041b6841b933ac961a4226e1e481e26019297e09f01b88bd80a5eeda1
+agentB_sizing_admission.md                           66067  4ddba67af100312c68e0f6cbfb1542140433a1bd0791329274083a1dfd9ce791
+agentC_order.md                                      51117  908fdfd71c46ea276405f93fb15f8fc35225d9cda1a5886752d17505d86eeb3e
+agentD_strategies.md                                 55508  d8eba1da41ec5d000047846c51b4f36e55269248094fa6f05474b10a631ebead
+agentD_yaml_dump.txt                                 49099  5166e0b94d8db74adca88914c5b92081b084b410fa21380dfd38c8f8da00758e
+extract.py.txt                                        4172  515f00ba4de476674e38aa8ab8c27b21ad4786f96bd82d4fe5838cf24fed66cf
+inline_analyses.sh.txt                               66600  a36f4f81889a3abb3f7f6d76c086332315545433bf39fc8c87303431f8096a97
+inv1.py.txt                                           4057  95c364d4c1c422a4d5bbec8662dc381066769e9f63448f1f99d25e1f3fff5a82
+inv1_out.txt                                          6052  0f19699f4b3e8d67747b3363c55dd1d3d145ff6f50a0872e3ddb6f4ed5cbebe3
+md5_970aabf.txt                                        436  57b6f7675bd9cec58218c9147d204c1861825ca3d8e47af9a98b3f041be7d8e3
+md5_prod.txt                                           436  57b6f7675bd9cec58218c9147d204c1861825ca3d8e47af9a98b3f041be7d8e3
+md5_twin.txt                                           436  c351f9d8dc636df3b1c1853638f529fdd2013d71a44a148f10c5c696386d7260
+session_outputs.txt                                 376404  9e46e52d6d87155e2b4389b62ba40ba8871aa06f289039f6b743c4215d65263c
+twin_ev1.py.txt                                       2429  4272ff3a19d9479300ba203a1dc2e3ea060aca333bd642c1320c14224d125ce2
+twin_ev1_out.txt                                     18692  efe508a7d9a3d11f12743ec2a5c1a8c6e85d1ac5df8745793316f832b357def1
+twin_ev2.py.txt                                       3085  b510982c5c89696f516a7189c8bd59dfb15e8ff45b86d129c7333962ef391680
+twin_ev2_out.txt                                     70710  199f72244088f7f06a114d092ab5e87011e40a06c4353d018ef5dbe7d4acd16d
+twin_ev3.py.txt                                        753  a3e906c295a782e82fd160e3c81ee2e8f3d85c215c80261853cbc3d9f2891a99
+twin_ev3_out.txt                                      5202  207b3d175d7535896ecb25772310cc5ef22ee17294a1c733c6a375623221e40e
+
+NOT COPIED -- raw production extracts (size; production data). Kept in the session scratchpad only:
+  data/candles.csv.gz                   21313179 B  rows   1760221  sha256 19219c5b0391d9121f46efee0a60420945862c14f88de9f62f3a4725bc46d774
+  data/orders.csv.gz                       64149 B  rows      1453  sha256 fdd1d8b7d8f1943c839a5b7c4c266a50c76b5c87d48eabc67bbede3a29d9fe85
+  data/pb01.csv.gz                         16245 B  rows       873  sha256 9ae82e8924b3330df916938ed97d5bee1f2490347691f8a35122e6146f41775f
+  data/screener.csv.gz                  10397798 B  rows    196586  sha256 d238415bea37cf57355b36bb3b6e4c296cc892d207c97dfa01822e03f2b8cdaf
+  data/signals.csv.gz                    7721047 B  rows    233600  sha256 4c8c958bb385f0ba7070647e7f22c42a05b285b8d3c50ae0bc6fc9837655065e
+  data/trades.csv.gz                      141199 B  rows       955  sha256 071ab86dbce42586e48b0f26292e86591ce3b72085a5ccdefcef661f90126bc3
+  data/v3.csv.gz                          188124 B  rows      2554  sha256 d7f5b59b16d0d72f7ed51a638c377fe9cce4eda7df31f8fcc299fd7656057dd7
+  data/webhook_audit.csv.gz              2649856 B  rows    237750  sha256 8d948819c2f73a340f5f0f4e6d1a3a9b12e175ff02c8079b847ab41bb6823e4b
+
+ALL COPIES MATCH SOURCE: True

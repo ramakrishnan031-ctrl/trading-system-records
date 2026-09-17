@@ -1,0 +1,85 @@
+trades cols: ['trade_id', 'signal_id', 'symbol', 'direction', 'strategy', 'sector', 'qty_planned', 'qty_filled', 'entry_target_price', 'entry_actual_price', 'sl_initial', 'tgt_initial', 'margin_reserved', 'risk_amount', 'created_at', 'entry_time', 'exit_time', 'exit_price', 'exit_reason', 'gross_pnl', 'charges', 'net_pnl', 'status', 'recovered_flag', 'entry_mode', 'order_protocol', 'reservation_id', 'cost_brokerage', 'cost_stt', 'cost_exchange_txn', 'cost_sebi', 'cost_gst', 'cost_stamp_duty', 'mode', 'sl_trail_count', 'signal_to_order_ms', 'order_to_fill_ms', 'total_latency_ms', 'needs_tgt_retry', 'tgt_retry_count', 'tgt_last_retry_at', 'tolerance_fraction_used', 'tolerance_source', 'tier_multiplier_mode', 'tier_weight_applied', 'perf_weight_applied', 'flat_value_rs_used', 'qty_by_risk', 'qty_by_capital', 'qty_by_concentration', 'qty_by_flat', 'binding_constraint', 'actual_position_value_rs', 'tgt_risk_reward_applied', 'exits_verified', 'exits_verify_detail', 'closure_source', 'exit_mechanism', 'updated_at']
+orders cols: ['order_id', 'trade_id', 'leg', 'leg_index', 'transaction_type', 'order_type', 'product', 'variety', 'qty_requested', 'price', 'trigger_price', 'status', 'qty_filled', 'avg_fill_price', 'placed_at', 'filled_at', 'updated_at', 'rejection_reason', 'reconciliation_status', 'superseded_by']
+
+==================== DAY 2026-09-11 ====================
+webhook_audit requests: 3662  by code: {200: 3199, 403: 463}
+  in-window (10:00<=t<15:00) by code: {200: 3198}
+  before 10:00: {403: 103}  from 15:00: {403: 360, 200: 1}
+  signals_accepted sum: 3825  signals_rejected sum: 17198
+signals rows: 3807
+status
+REJECTED_SCORE_*                         3453
+SKIPPED_QUOTE_UNAVAILABLE                 160
+REJECTED_CIRCUIT_PROXIMITY                113
+REJECTED_SIZING_CONCENTRATION              32
+PROCESSED                                  21
+REJECTED_ENTRY_THROTTLED                   16
+REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT       7
+REJECTED_STRATEGY_POSITION_LIMIT            3
+PLACEMENT_FAILED                            1
+REJECTED_DUPLICATE_SYMBOL                   1
+screener rows: 3807
+status
+REJECTED_SCORE_*              3453
+SKIPPED_QUOTE_UNAVAILABLE      160
+REJECTED_CIRCUIT_PROXIMITY     113
+PASSED                          81
+trades created: 22
+status
+FAILED           15
+CLOSED            5
+REJECTED          1
+CLOSED_MANUAL     1
+
+==================== DAY 2026-09-10 ====================
+webhook_audit requests: 3636  by code: {200: 3032, 403: 604}
+  in-window (10:00<=t<15:00) by code: {200: 3031}
+  before 10:00: {403: 287}  from 15:00: {403: 317, 200: 1}
+  signals_accepted sum: 4511  signals_rejected sum: 20265
+signals rows: 4484
+status
+REJECTED_SCORE_*                         3723
+REJECTED_CIRCUIT_PROXIMITY                384
+SKIPPED_QUOTE_UNAVAILABLE                 294
+REJECTED_SIZING_CONCENTRATION              27
+REJECTED_ENTRY_THROTTLED                   15
+PROCESSED                                  13
+REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT      10
+REJECTED_SIZING_CAPITAL                     8
+REJECTED_STRATEGY_POSITION_LIMIT            4
+REJECTED_DUPLICATE_SYMBOL                   3
+PLACEMENT_FAILED                            3
+screener rows: 4484
+status
+REJECTED_SCORE_*              3723
+REJECTED_CIRCUIT_PROXIMITY     384
+SKIPPED_QUOTE_UNAVAILABLE      294
+PASSED                          83
+trades created: 16
+status
+CLOSED           7
+FAILED           5
+REJECTED         3
+CLOSED_MANUAL    1
+
+=== ALL-TIME signals.status (families) ===
+status
+REJECTED_SCORE_*                         161989
+REJECTED_STRATEGY_CONTROL                 23481
+REJECTED_CIRCUIT_PROXIMITY                12906
+REJECTED_STRATEGY_CIRCUIT_BREAKER          9269
+SKIPPED_QUOTE_UNAVAILABLE                  8757
+REJECTED_DAILY_TRADES                      5146
+REJECTED_SHADOW_INNING_ACTIVE              4168
+REJECTED_SIZING_CONCENTRATION              4084
+REJECTED_ENTRY_THROTTLED                   1080
+PROCESSED                                   767
+REJECTED_OPEN_POSITIONS                     658
+REJECTED_STRATEGY_POSITION_LIMIT            418
+REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT       385
+PLACEMENT_FAILED                            186
+REJECTED_DUPLICATE_SYMBOL                   185
+REJECTED_SIZING_CAPITAL                     103
+REJECTED_CONSECUTIVE_LOSSES                  13
+REJECTED_SIZING_RISK                          3
+RESERVED                                      2

@@ -1,0 +1,94 @@
+RAW TEST EVIDENCE -- window validator (frozen validate_window__frozen_2026-09-16T1225IST.py)
+Captured 2026-09-16 ~12:25 IST, BEFORE the first VM write. Amendment 19 s1/s3.
+rc 0 = WINDOW_OK, rc 3 = WINDOW_INVALID, rc 2 = input unusable
+================================================================================
+
+### A_valid_boot   (kind=boot)
+WINDOW VALIDATOR  kind=boot  file=CALIBRATION_bootwindow_2026-09-16.jsonl
+  provenance: start main.py:2188 / end core/effect_telemetry.py:190|:197 via main.py:4277
+  start marker 'Trading System v'                 count=1 at lines [1]
+  end marker(s) 'effect_telemetry: composition OK|effect_telemetry composition assertion FAILED' count=1 at lines [82]
+
+WINDOW_OK  lines 1..82  (82 events in window)
+A_valid_boot rc=0
+
+### C_start_no_end   (kind=boot)
+WINDOW VALIDATOR  kind=boot  file=C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/w_noend.jsonl
+  provenance: start main.py:2188 / end core/effect_telemetry.py:190|:197 via main.py:4277
+  start marker 'Trading System v'                 count=1 at lines [1]
+  end marker(s) 'effect_telemetry: composition OK|effect_telemetry composition assertion FAILED' count=0 at lines -
+
+*** WINDOW_INVALID ***
+  - end marker count is 0 -- the boot NEVER REACHED ITS TERMINATOR. That is ITSELF THE FINDING; the window would otherwise run to end of file and the comparison would produce enormous residuals that look like a normalizer or window fault.
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+C_start_no_end rc=3
+
+### E_TWO_end_markers   (kind=boot)
+WINDOW VALIDATOR  kind=boot  file=C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/w_twoend.jsonl
+  provenance: start main.py:2188 / end core/effect_telemetry.py:190|:197 via main.py:4277
+  start marker 'Trading System v'                 count=1 at lines [1]
+  end marker(s) 'effect_telemetry: composition OK|effect_telemetry composition assertion FAILED' count=2 at lines [82, 83]
+
+*** WINDOW_INVALID ***
+  - end marker count is 2, must be EXACTLY 1 -- two windows in one day break EVERY multiplicity check. NOTE: a '>= 1' guard would have PASSED this.
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+E_TWO_end_markers rc=3
+
+### two_start_markers   (kind=boot)
+WINDOW VALIDATOR  kind=boot  file=C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/w_twostart.jsonl
+  provenance: start main.py:2188 / end core/effect_telemetry.py:190|:197 via main.py:4277
+  start marker 'Trading System v'                 count=2 at lines [1, 83]
+  end marker(s) 'effect_telemetry: composition OK|effect_telemetry composition assertion FAILED' count=1 at lines [82]
+
+*** WINDOW_INVALID ***
+  - start marker count is 2, must be EXACTLY 1 (0 = window never opened; >=2 = two boot events in one day)
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+two_start_markers rc=3
+
+### end_before_start   (kind=boot)
+WINDOW VALIDATOR  kind=boot  file=C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/amend8/w_endfirst.jsonl
+  provenance: start main.py:2188 / end core/effect_telemetry.py:190|:197 via main.py:4277
+  start marker 'Trading System v'                 count=1 at lines [2]
+  end marker(s) 'effect_telemetry: composition OK|effect_telemetry composition assertion FAILED' count=1 at lines [1]
+
+*** WINDOW_INVALID ***
+  - the end marker (line 1) does not occur AFTER the start marker (line 2)
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+end_before_start rc=3
+
+### EOD_valid_15Sep   (kind=eod)
+WINDOW VALIDATOR  kind=eod  file=CALIBRATION_eodwindow_2026-09-15.jsonl
+  provenance: start main.py:1631 / end main.py:1839 -- sr_shadow.stop() at main.py:1705 lies between them
+  start marker 'Shutdown initiated'               count=1 at lines [1]
+  end marker(s) 'Shutdown complete'               count=1 at lines [69]
+
+WINDOW_OK  lines 1..69  (69 events in window)
+EOD_valid_15Sep rc=0
+
+### EOD_spec_on_BOOT_file   (kind=eod)
+WINDOW VALIDATOR  kind=eod  file=CALIBRATION_bootwindow_2026-09-16.jsonl
+  provenance: start main.py:1631 / end main.py:1839 -- sr_shadow.stop() at main.py:1705 lies between them
+  start marker 'Shutdown initiated'               count=0 at lines -
+  end marker(s) 'Shutdown complete'               count=0 at lines -
+
+*** WINDOW_INVALID ***
+  - start marker count is 0, must be EXACTLY 1 (0 = window never opened; >=2 = two eod events in one day)
+  - end marker count is 0 -- the eod NEVER REACHED ITS TERMINATOR. That is ITSELF THE FINDING; the window would otherwise run to end of file and the comparison would produce enormous residuals that look like a normalizer or window fault.
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+EOD_spec_on_BOOT_file rc=3
+
+### CHECK_B  prediction v7 carries no independently maintained procedure
+pointer_to_manifest_section=1  (>=1)
+independent_identity_step=0  (must be 0)
+numbered_procedure_steps=0  (must be 0)
+artifact_filenames_named=0  (0 = cannot go stale)

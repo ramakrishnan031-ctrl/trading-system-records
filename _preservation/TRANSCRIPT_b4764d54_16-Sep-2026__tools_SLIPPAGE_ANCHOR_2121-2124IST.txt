@@ -1,0 +1,262 @@
+
+==== [09-16 21:21:56] USER-TEXT (12566 chars, not shown) ====
+
+==== [09-16 21:22:15] ASSISTANT-TEXT ====
+Pre-build gate, no code. Starting with §3 — it blocks the spec.
+
+==== [09-16 21:22:21] TOOL_USE Bash id=EAUhc5FH ====
+  command: cat > /tmp/p.sh <<'EOS'
+cd /home/ubuntu/systems/trading-system
+echo "=== §3(b) ZERO-COUNT FIRST: did PAPER ever place orders here? ==="
+sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" "
+SELECT '  trades by mode: '||COALESCE(mode,'<null>')||' = '||COUNT(*) FROM trades GROUP BY mode;" 2>/dev/null \
+  || echo "  (trades has no mode column)"
+echo "--- what columns could carry mode? ---"
+sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" "PRAGMA table_info(trades);" 2>/dev/null | awk -F'|' '{printf "%s ", $2}'; echo
+echo
+echo "=== how the service actually starts (mode flag) ==="
+systemctl cat trading-system 2>/dev/null | grep -E "ExecStart|--mode" | sed 's/^/  /'
+echo
+echo "=== any PAPER string in retained system logs? ==="
+grep -ho '"mode": "[A-Za-z]*"' logs/system_2026-09-*.log 2>/dev/null | sort | uniq -c | sed 's/^/  /'
+EOS
+for h in trading-vm trading-sbx; do echo "################ $h"; ssh -o BatchMode=yes -o ConnectTimeout=25 $h 'bash -s' < /tmp/p.sh 2>&1; done
+  description: Check for paper-mode history on both VMs
+
+==== [09-16 21:22:25] TOOL_RESULT id=EAUhc5FH (2426 chars) ====
+################ trading-vm
+=== §3(b) ZERO-COUNT FIRST: did PAPER ever place orders here? ===
+  trades by mode: LIVE = 972
+--- what columns could carry mode? ---
+trade_id signal_id symbol direction strategy sector qty_planned qty_filled entry_target_price entry_actual_price sl_initial tgt_initial margin_reserved risk_amount created_at entry_time exit_time exit_price exit_reason gross_pnl charges net_pnl status recovered_flag entry_mode order_protocol reservation_id cost_brokerage cost_stt cost_exchange_txn cost_sebi cost_gst cost_stamp_duty mode sl_trail_count signal_to_order_ms order_to_fill_ms total_latency_ms needs_tgt_retry tgt_retry_count tgt_last_retry_at tolerance_fraction_used tolerance_source tier_multiplier_mode tier_weight_applied perf_weight_applied flat_value_rs_used qty_by_risk qty_by_capital qty_by_concentration qty_by_flat binding_constraint actual_position_value_rs tgt_risk_reward_applied exits_verified exits_verify_detail closure_source exit_mechanism updated_at 
+
+=== how the service actually starts (mode flag) ===
+  ExecStart=/home/ubuntu/systems/venv/bin/python \
+      /home/ubuntu/systems/trading-system/main.py --mode live
+
+=== any PAPER string in retained system logs? ===
+################ trading-sbx
+=== §3(b) ZERO-COUNT FIRST: did PAPER ever place orders here? ===
+  trades by mode: LIVE = 966
+--- what columns could carry mode? ---
+trade_id signal_id symbol direction strategy sector qty_planned qty_filled entry_target_price entry_actual_price sl_initial tgt_initial margin_reserved risk_amount created_at entry_time exit_time exit_price exit_reason gross_pnl charges net_pnl status recovered_flag entry_mode order_protocol reservation_id cost_brokerage cost_stt cost_exchange_txn cost_sebi cost_gst cost_stamp_duty mode sl_trail_count signal_to_order_ms order_to_fill_ms total_latency_ms needs_tgt_retry tgt_retry_count tgt_last_retry_at tolerance_fraction_used tolerance_source tier_multiplier_mode tier_weight_applied perf_weight_applied flat_value_rs_used qty_by_risk qty_by_capital qty_by_concentration qty_by_flat binding_constraint actual_position_value_rs tgt_risk_reward_applied exits_verified exits_verify_detail closure_source exit_mechanism updated_at 
+
+=== how the service actually starts (mode flag) ===
+  ExecStart=/home/ubuntu/systems/venv/bin/python \
+      /home/ubuntu/systems/trading-system/main.py --mode live
+
+=== any PAPER string in retained system logs? ===
+
+==== [09-16 21:22:38] ASSISTANT-TEXT ====
+**§3(b) — the zero-count precondition FAILS, decisively.** Both VMs show `mode: LIVE` on **every** trade (972 prod / 966 test), zero PAPER, and both units run `--mode live`. So §3(c) applies: absence of paper slippage events proves nothing because paper never placed an order here. Settling it by construction.
+
+==== [09-16 21:22:41] TOOL_USE Bash id=P59A3rJW ====
+  command: echo "=== does PAPER go through the same order_placer.place()? ===" && grep -n "_paper_place_order\|def place_order" broker/zerodha_adapter.py | head -6 | cut -c1-120; echo; echo "=== is get_quote_raw paper-gated? (does it need live kite?) ===" && sed -n '1740,1768p' broker/zerodha_adapter.py | grep -nE "paper|_kite|if |return" | head -12 | cut -c1-130; echo; echo "=== how does the adapter know it is paper? ===" && grep -n "self._paper\b\|paper_mode\|_is_paper" broker/zerodha_adapter.py | head -6 | cut -c1-120
+  description: Trace paper path through adapter
+
+==== [09-16 21:22:41] TOOL_RESULT id=P59A3rJW (1330 chars) ====
+=== does PAPER go through the same order_placer.place()? ===
+50:            Mechanics: _paper_place_order spawns a daemon thread that
+419:        # Updated by _paper_place_order (SUBMITTED), _synth_fill (COMPLETE),
+478:    def place_order(
+574:            result = self._paper_place_order(
+2048:    def _paper_place_order(
+2258:                    # and _paper_place_order already put the resolved broker code on it
+
+=== is get_quote_raw paper-gated? (does it need live kite?) ===
+4:        Unlike ``get_quote`` which returns typed ``Quote`` objects, this
+5:        returns the raw dict from ``kite.quote()`` so callers that need
+7:        through the rate limiter.  Returns ``{}`` in paper mode.
+9:        if self._paper:
+10:            return {}
+13:            raw = self._kite.quote(*instrument_keys)
+19:        return raw or {}
+28:        In paper mode returns an empty list (paper adapter tracks fills internally).
+
+=== how does the adapter know it is paper? ===
+27:    ZA10 -- paper_mode=True: simulate all calls, never touch kite.
+60:            Guard: the synth path fires ONLY when self._paper is True
+65:            publishing if invoked with self._paper == False.
+348:        paper_mode: bool = False,
+389:        self._paper = paper_mode
+395:        # Audit 6.2: paper LTP-gating settings (no-op when paper_mode=False)
+
+==== [09-16 21:22:59] ASSISTANT-TEXT ====
+**§3 RESOLVED — and FF was right; my earlier reading was wrong.** The divergence isn't in `order_placer`, it's one level down: `get_quote_raw` **returns `{}` in paper** (`zerodha_adapter.py:1748-1749`), `_fetch_ltp` maps falsy → `None`, and the guard's `if _slip_ltp is not None` skips the whole block.
+
+**The parity gap and D-1 are the same defect.** Checking whether the gate path leaks an LTP into paper anyway.
+
+==== [09-16 21:23:02] TOOL_USE Bash id=DzPaCWTv ====
+  command: echo "=== is release_ltp populated in PAPER? (would make paper self-inconsistent) ===" && grep -rn "release_ltp" --include="*.py" . | grep -v "^./tests" | head -8 | cut -c1-150; echo; echo "=== §6(4) FIX-075: overwrite of entry price after the R:R gate ===" && grep -rn "FIX-075" --include="*.py" . | grep -v "^./tests" | head -6 | cut -c1-150
+  description: Check release_ltp in paper and locate FIX-075
+
+==== [09-16 21:23:02] TOOL_RESULT id=DzPaCWTv (1553 chars) ====
+=== is release_ltp populated in PAPER? (would make paper self-inconsistent) ===
+./core/config_loader.py:1609:    When EntryGate releases a signal with PRICE_HIT, the release_ltp is
+./core/config_loader.py:1612:      LONG:  adjusted_limit = min(requested_entry + buffer, release_ltp)
+./core/config_loader.py:1613:      SHORT: adjusted_limit = max(requested_entry - buffer, release_ltp)
+./main.py:929:    def _gate_release_worker(entry: WatchEntry, release_ltp) -> None:
+./main.py:931:            signal_processor.continue_from_gate(entry, release_ltp=release_ltp)
+./main.py:939:            release_ltp = entry.extras.get("release_ltp")
+./main.py:945:            _gate_release_pool.submit(_gate_release_worker, entry, release_ltp)
+./orders/order_placer.py:884:        release_ltp: Optional[float] = None,  # FIX-025: gate release LTP for slippage protection
+
+=== §6(4) FIX-075: overwrite of entry price after the R:R gate ===
+./capital/fund_manager.py:785:        FIX-075: Increase an existing reservation's margin.
+./core/config_loader.py:633:    price_drift_threshold: float = 0.005  # FIX-075: 0.5% default drift threshold for margin top-up
+./orders/order_placer.py:585:        price_drift_threshold: float = 0.005,  # FIX-075: 0.5% default drift threshold for margin top-up
+./orders/order_placer.py:667:        # FIX-075: Price drift threshold for margin top-up
+./orders/order_placer.py:1194:        # FIX-075: Price drift check before placement
+./orders/order_placer.py:1279:                # FIX-075: don't block order on quote failure (best-effort)
+
+==== [09-16 21:23:16] ASSISTANT-TEXT ====
+**FIX-075 sits at `order_placer.py:1194` — *after* the guard (1104–1180)** — and line 1279 carries the same fail-open pattern. Reading it, since §6(4) is the coherence question.
+
+==== [09-16 21:23:17] TOOL_USE Bash id=chqr5BFy ====
+  command: sed -n '1194,1215p' orders/order_placer.py && echo "  ......" && sed -n '1265,1290p' orders/order_placer.py
+  description: Read FIX-075 price drift block
+
+==== [09-16 21:23:17] TOOL_RESULT id=chqr5BFy (2419 chars) ====
+        # FIX-075: Price drift check before placement
+        # If price has drifted significantly since reservation, top up margin.
+        # Best-effort: if quote fetch fails, log warning and proceed (don't block order).
+        original_entry_price = entry_price
+        if self._adapter is not None:
+            try:
+                # Bug 6 (FIX-180): fetch current LTP via adapter.get_quote_raw
+                # (live_feed has no .quote()); None -> skip drift top-up.
+                current_ltp = self._fetch_ltp(symbol)
+                if current_ltp is not None and original_entry_price:
+                    drift_pct = abs(current_ltp - original_entry_price) / original_entry_price
+
+                    # Load threshold from config
+                    drift_threshold = self._price_drift_threshold
+
+                    if drift_pct > drift_threshold:
+                        self._log.info(
+                            "order_placer.price_drift_detected",
+                            extra={
+                                "trade_id": trade_id,
+                                "signal_id": signal_id,
+                                "symbol": symbol,
+  ......
+                                    "trade_id": trade_id,
+                                    "signal_id": signal_id,
+                                    "symbol": symbol,
+                                    "additional_margin": additional_margin,
+                                    "adjusted_entry_price": current_ltp,
+                                },
+                            )
+                        # else: drift increased price but less margin needed (e.g., SHORT position), proceed
+
+            except OrderRejectedError:
+                # Re-raise rejection errors (insufficient capital for top-up)
+                raise
+            except Exception as quote_exc:
+                # Quote fetch or drift check failed - log warning and continue
+                # FIX-075: don't block order on quote failure (best-effort)
+                self._log.warning(
+                    "order_placer.price_drift_check_failed",
+                    extra={
+                        "trade_id": trade_id,
+                        "signal_id": signal_id,
+                        "symbol": symbol,
+                        "error": str(quote_exc),
+                        "note": "proceeding with original price",
+                    },
+                )
+
+==== [09-16 21:23:26] ASSISTANT-TEXT ====
+The decisive §6(4) question is whether FIX-075 *assigns* to `entry_price` or only tops up margin.
+
+==== [09-16 21:23:30] TOOL_USE Bash id=EPtM86yS ====
+  command: PYTHONIOENCODING=utf-8 python -c "
+src=open('orders/order_placer.py',encoding='utf-8').read().split('\n')
+print('=== assignments to entry_price between the guard (1104) and placement ===')
+for i in range(1100,1400):
+    l=src[i]
+    s=l.strip()
+    if s.startswith('entry_price') and '=' in s and '==' not in s:
+        print('  %5d  %s'%(i+1,s[:130]))
+    if 'entry_price =' in s and not s.startswith('#') and not s.startswith('entry_price'):
+        print('  %5d  %s'%(i+1,s[:130]))
+print()
+print('=== where is entry_price finally used for the order? ===')
+for i in range(1290,1420):
+    s=src[i].strip()
+    if ('price=' in s or 'limit_price' in s) and not s.startswith('#'):
+        print('  %5d  %s'%(i+1,s[:130]))
+"
+  description: Check whether FIX-075 assigns entry_price
+
+==== [09-16 21:23:31] TOOL_RESULT id=EPtM86yS (344 chars) ====
+=== assignments to entry_price between the guard (1104) and placement ===
+   1197  original_entry_price = entry_price
+   1261  entry_price = current_ltp
+   1349  entry_price=entry_price,
+
+=== where is entry_price finally used for the order? ===
+   1349  entry_price=entry_price,
+   1350  sl_price=sl_price,
+   1351  tgt_price=tgt_price,
+
+==== [09-16 21:23:50] ASSISTANT-TEXT ====
+**§6(4) CONFIRMED — `order_placer.py:1261`: `entry_price = current_ltp`.** That's *after* the guard (1104–1180) and flows straight to placement at `:1349`. Confirming its enclosing condition.
+
+==== [09-16 21:23:53] TOOL_USE Bash id=covznAi2 ====
+  command: sed -n '1250,1264p' orders/order_placer.py | cat -n | sed 's/^/  /' && echo && echo "=== §6(3): the six strategies that skip M-S1 — where is P set for them? ===" && grep -rn "entry_target_price" --include="*.py" . | grep -v "^./tests" | grep -viE "slippage_recorder|state_store" | head -8 | cut -c1-140
+  description: Confirm FIX-075 condition and trace P source
+
+==== [09-16 21:23:53] TOOL_RESULT id=covznAi2 (1985 chars) ====
+       1	                                        "additional_margin": additional_margin,
+       2	                                        "rejection_reason": top_up_result.reason_if_failed,
+       3	                                    },
+       4	                                )
+       5	                                self._handle_placement_failure(
+       6	                                    trade_id, reservation_id, signal_id, drift_exc,
+       7	                                    final_status="REJECTED_PRICE_DRIFT",
+       8	                                )
+       9	                                raise drift_exc
+      10	
+      11	                            # Top-up succeeded - use current_ltp for placement
+      12	                            entry_price = current_ltp
+      13	                            self._log.info(
+      14	                                "order_placer.price_drift_top_up_success",
+      15	                                extra={
+
+=== §6(3): the six strategies that skip M-S1 — where is P set for them? ===
+./capital/fund_manager.py:2051:            price = float(trade["entry_target_price"])
+./capital/fund_manager.py:2057:                    "entry_target_price": price,
+./capital/fund_manager.py:2281:            price = float(_row_get(trade_row, "entry_target_price") or 0.0)
+./ops_dashboard/backend/readers/db_reader.py:766:            "t.qty_filled, t.qty_planned, t.entry_actual_price, t.entry_target_price, "
+./ops_dashboard/backend/readers/db_reader.py:804:                  "qty_filled*COALESCE(entry_actual_price, entry_target_price))")
+./ops_dashboard/backend/readers/db_reader.py:986:                  "qty_filled*COALESCE(entry_actual_price, entry_target_price))")
+./ops_dashboard/backend/readers/db_reader.py:1308:                  "qty_filled*COALESCE(entry_actual_price, entry_target_price))")
+./ops_dashboard/backend/readers/db_reader.py:1374:            "qty_filled, entry_actual_price, entry_target_price, exit_price, "
+
+==== [09-16 21:24:39] ASSISTANT-TEXT ====
+Confirmed: `entry_price = current_ltp` fires only when drift > 0.5% **and** the margin top-up succeeds (failure → `REJECTED_PRICE_DRIFT`). No upper bound on the replacement.
+
+---
+
+# SLIPPAGE ANCHOR — PRE-BUILD REPORT
+**17-Sep-2026 · no code written · read-only on both VMs · stops at the gate**
+
+## 1 · §3 RESOLVED — FF WAS RIGHT, MY EARLIER READING WAS WRONG
+
+**The guard IS skipped entirely in paper.** I withdraw my §D(e) conflict.
+
+**(b) The zero-count precondition fails, so observation cannot settle it.** Both VMs report `mode = LIVE` on **every** trade (972 prod / 966 test), zero PAPER rows ever, and both units run `--mode live`. Paper never placed an order here, so absent paper slippage events prove nothing. **(c) applies: resolved by construction.**
+
+**The mechanism — and it is not where I looked.** I checked for a paper branch inside `order_placer` and correctly found none. The divergence is one level down:
+
+```
+zerodha_adapter.py:1747-1749   get_quote_raw: "Returns {} in paper mode."
+                               if self._paper: return {}
+order_placer.py:4052           if not raw_quote: return None
+order_placer.py:1111           if _slip_ltp is not None:   ← False in paper
+```
+
+**(d) FF-C/FF-G stand. My conflict is withdrawn and recorded as such** — my error was treating "no branch in this file" as "no divergence", when the branch was in the collaborator.
+
+**🔴 The finding that matters more than the correction:** paper does not skip the guard by decision. It skips it th

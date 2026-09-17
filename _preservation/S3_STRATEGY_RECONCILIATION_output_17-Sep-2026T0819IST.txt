@@ -1,0 +1,96 @@
+################ trading-vm
+host=trading-system now=2026-09-17 08:19:22 IST
+--- identity of the DB file read (stat only) ---
+data_store/trading_system.db 553431040 bytes mtime 2026-09-17 08:15:02.113116185 +0530
+--- (a) trades per strategy: ALL strategies, all rows (no window, no join) ---
+vwap_bounce_long|216|P_notnull=216|S_notnull=216|first=2026-06-15T11:34:17.662157+05:30|last=2026-09-16T10:00:25.440382+05:30
+first_pullback_long|129|P_notnull=129|S_notnull=129|first=2026-06-15T11:34:11.546725+05:30|last=2026-09-15T10:01:13.827915+05:30
+positional_sector_rotation|123|P_notnull=123|S_notnull=123|first=2026-06-15T11:34:16.829535+05:30|last=2026-09-16T10:06:14.350116+05:30
+gap_go_long|120|P_notnull=120|S_notnull=120|first=2026-06-15T11:34:10.903538+05:30|last=2026-09-16T10:01:14.687284+05:30
+open_low_breakout_long|90|P_notnull=90|S_notnull=90|first=2026-06-17T10:01:16.827264+05:30|last=2026-09-03T14:57:20.914619+05:30
+vwap_rejection_short|66|P_notnull=66|S_notnull=66|first=2026-06-19T10:00:22.553324+05:30|last=2026-09-16T14:43:17.978315+05:30
+positional_momentum_long|54|P_notnull=54|S_notnull=54|first=2026-06-29T10:12:11.899572+05:30|last=2026-09-16T10:13:15.737781+05:30
+gap_fade_short|44|P_notnull=44|S_notnull=44|first=2026-06-16T10:00:19.002413+05:30|last=2026-09-11T14:59:13.375314+05:30
+positional_swing_long|37|P_notnull=37|S_notnull=37|first=2026-06-15T11:34:26.989574+05:30|last=2026-09-16T10:08:14.813894+05:30
+first_pullback_short|33|P_notnull=33|S_notnull=33|first=2026-06-15T11:34:13.360346+05:30|last=2026-09-11T14:35:25.847812+05:30
+gap_fade_long|24|P_notnull=24|S_notnull=24|first=2026-06-17T10:00:23.745642+05:30|last=2026-09-11T10:10:25.233806+05:30
+gap_go_short|20|P_notnull=20|S_notnull=20|first=2026-06-16T10:00:16.114171+05:30|last=2026-09-16T10:12:14.356336+05:30
+open_high_breakdown_short|16|P_notnull=16|S_notnull=16|first=2026-07-22T14:30:24.914802+05:30|last=2026-09-16T10:11:15.417392+05:30
+--- (a) total trades, and total in the 16-Sep comparable-row selector (JOIN signals, P and trigger NOT NULL) ---
+trades_total=972
+joined_comparable=972
+--- (a) the three unmeasured strategies, with a CONTROL strategy that has rows (gap_go_short) ---
+  [pb01_breakout_retest] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [range_breakout_long] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [range_breakout_short] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [gap_go_short] trades=20 signals=3169 signals_by_scanner_name=3169 first_signal=2026-06-16T10:00:15.254681+05:30 last_signal=2026-09-16T14:59:14.909697+05:30
+--- (a) signal status breakdown for the three (why no trade) ---
+--- (a) webhook_audit by scanner_name (LIKE), all retained rows, with a CONTROL ---
+gap_go_short|rows=12184|first=2026-06-19T13:25:15.742115+05:30|last=2026-09-16T15:20:28.219890+05:30|codes=200,403
+pb01_breakout_retest|rows=36|first=2026-07-27T17:00:03.955288+05:30|last=2026-09-16T17:00:07.165570+05:30|codes=200
+webhook_audit_span=2026-06-19T09:17:13.790571+05:30..2026-09-16T17:00:07.165570+05:30 rows=230103
+--- (b) pb01 YAML on this VM ---
+d7af9068ec0abad615453a1b61a08ff3  config/strategies/pb01_breakout_retest.yaml
+3ca3d341755188f9f51f07616ecd1289  config/strategies/range_breakout_long.yaml
+954078c9c06531bd5a7dcf0df4eacbd7  config/strategies/range_breakout_short.yaml
+config/strategies/pb01_breakout_retest.yaml:29:intent: "INTRADAY"          # same-day entry+square-off when promoted; delivery stays OFF
+config/strategies/pb01_breakout_retest.yaml:30:enabled: false              # FAIL-CLOSED: never trades until the spec-13 promotion gate
+config/strategies/pb01_breakout_retest.yaml:67:v3_playbook: true           # governed by the V3 decision chain (Step 10b)
+config/strategies/range_breakout_long.yaml:10:intent: "INTRADAY"
+config/strategies/range_breakout_long.yaml:11:enabled: true
+config/strategies/range_breakout_short.yaml:9:intent: "INTRADAY"
+config/strategies/range_breakout_short.yaml:10:enabled: true
+--- (b) today's boot strategy_control.summary + pb01 process activity so far (app log, read-only grep) ---
+{"ts":"2026-09-17T08:15:26.219+05:30","level":"INFO","logger":"main","msg":"strategy_control.summary","force_intraday_only":false,"trade_type":"BOTH","will_trade":["first_pullback_long","first_pullback_short","gap_fade_long","gap_fade_short","gap_go_long","gap_go_short","open_high_breakdown_short","open_low_breakout_long","positional_momentum_long","positional_sector_rotation","positional_swing_long","range_breakout_long","range_breakout_short","vwap_bounce_long","vwap_rejection_short"],"will_trade_count":15,"wont_trade":["pb01_breakout_retest (WON'T TRADE — switch disabled)"],"wont_trade_count":1}
+  pb01_watchlist lines today so far: 2
+  16-Sep: strategy_control.summary lines: 1 · pb01_watchlist lines: 13 · pb01 would-be lines: 2
+{"ts":"2026-09-16T08:15:29.386+05:30","level":"INFO","logger":"main","msg":"strategy_control.summary","force_intraday_only":false,"trade_type":"BOTH","will_trade":["first_pullback_long","first_pullback_short","gap_fade_long","gap_fade_short","gap_go_long","gap_go_short","open_high_breakdown_short","open_low_breakout_long","positional_momentum_long","positional_sector_rotation","positional_swing_long","range_breakout_long","range_breakout_short","vwap_bounce_long","vwap_rejection_short"],"will_trade_count":15,"wont_trade":["pb01_breakout_retest (WON'T TRADE — switch disabled)"],"wont_trade_count":1}
+ssh rc=0
+################ trading-sbx
+host=trading-system-sandbox now=2026-09-17 08:19:26 IST
+--- identity of the DB file read (stat only) ---
+data_store/trading_system.db 565989376 bytes mtime 2026-09-17 08:15:02.394669248 +0530
+--- (a) trades per strategy: ALL strategies, all rows (no window, no join) ---
+vwap_bounce_long|207|P_notnull=207|S_notnull=207|first=2026-06-15T11:34:17.662157+05:30|last=2026-09-11T14:59:18.338474+05:30
+first_pullback_long|129|P_notnull=129|S_notnull=129|first=2026-06-15T11:34:11.546725+05:30|last=2026-09-16T10:07:08.335578+05:30
+gap_go_long|124|P_notnull=124|S_notnull=124|first=2026-06-15T11:34:10.903538+05:30|last=2026-09-15T10:02:08.590657+05:30
+positional_sector_rotation|120|P_notnull=120|S_notnull=120|first=2026-06-15T11:34:16.829535+05:30|last=2026-09-11T10:07:08.663178+05:30
+open_low_breakout_long|90|P_notnull=90|S_notnull=90|first=2026-06-17T10:01:16.827264+05:30|last=2026-09-03T14:57:20.914619+05:30
+vwap_rejection_short|68|P_notnull=68|S_notnull=68|first=2026-06-19T10:00:22.553324+05:30|last=2026-09-16T10:14:08.460397+05:30
+positional_momentum_long|56|P_notnull=56|S_notnull=56|first=2026-06-29T10:12:11.899572+05:30|last=2026-09-16T12:43:08.336886+05:30
+gap_fade_short|43|P_notnull=43|S_notnull=43|first=2026-06-16T10:00:19.002413+05:30|last=2026-09-11T14:42:16.243730+05:30
+positional_swing_long|35|P_notnull=35|S_notnull=35|first=2026-06-15T11:34:26.989574+05:30|last=2026-09-16T10:08:08.516061+05:30
+first_pullback_short|33|P_notnull=33|S_notnull=33|first=2026-06-15T11:34:13.360346+05:30|last=2026-09-16T10:03:09.003490+05:30
+gap_fade_long|30|P_notnull=30|S_notnull=30|first=2026-06-17T10:00:23.745642+05:30|last=2026-09-16T10:13:09.309237+05:30
+gap_go_short|19|P_notnull=19|S_notnull=19|first=2026-06-16T10:00:16.114171+05:30|last=2026-09-15T10:12:15.176787+05:30
+open_high_breakdown_short|12|P_notnull=12|S_notnull=12|first=2026-07-22T14:30:24.914802+05:30|last=2026-09-04T10:01:14.615972+05:30
+--- (a) total trades, and total in the 16-Sep comparable-row selector (JOIN signals, P and trigger NOT NULL) ---
+trades_total=966
+joined_comparable=966
+--- (a) the three unmeasured strategies, with a CONTROL strategy that has rows (gap_go_short) ---
+  [pb01_breakout_retest] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [range_breakout_long] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [range_breakout_short] trades=0 signals=0 signals_by_scanner_name=0 first_signal=- last_signal=-
+  [gap_go_short] trades=19 signals=3140 signals_by_scanner_name=3140 first_signal=2026-06-16T10:00:15.254681+05:30 last_signal=2026-09-16T14:55:09.790504+05:30
+--- (a) signal status breakdown for the three (why no trade) ---
+--- (a) webhook_audit by scanner_name (LIKE), all retained rows, with a CONTROL ---
+gap_go_short|rows=12072|first=2026-06-19T13:25:15.742115+05:30|last=2026-09-16T15:20:14.488023+05:30|codes=200,403,400,401
+pb01_breakout_retest|rows=35|first=2026-07-27T17:00:03.955288+05:30|last=2026-09-16T17:00:05.134303+05:30|codes=200
+webhook_audit_span=2026-06-19T09:17:13.790571+05:30..2026-09-16T17:00:05.134303+05:30 rows=229445
+--- (b) pb01 YAML on this VM ---
+d7af9068ec0abad615453a1b61a08ff3  config/strategies/pb01_breakout_retest.yaml
+3ca3d341755188f9f51f07616ecd1289  config/strategies/range_breakout_long.yaml
+954078c9c06531bd5a7dcf0df4eacbd7  config/strategies/range_breakout_short.yaml
+config/strategies/pb01_breakout_retest.yaml:29:intent: "INTRADAY"          # same-day entry+square-off when promoted; delivery stays OFF
+config/strategies/pb01_breakout_retest.yaml:30:enabled: false              # FAIL-CLOSED: never trades until the spec-13 promotion gate
+config/strategies/pb01_breakout_retest.yaml:67:v3_playbook: true           # governed by the V3 decision chain (Step 10b)
+config/strategies/range_breakout_long.yaml:10:intent: "INTRADAY"
+config/strategies/range_breakout_long.yaml:11:enabled: true
+config/strategies/range_breakout_short.yaml:9:intent: "INTRADAY"
+config/strategies/range_breakout_short.yaml:10:enabled: true
+--- (b) today's boot strategy_control.summary + pb01 process activity so far (app log, read-only grep) ---
+{"ts":"2026-09-17T08:15:35.954+05:30","level":"INFO","logger":"main","msg":"strategy_control.summary","force_intraday_only":false,"trade_type":"BOTH","will_trade":["first_pullback_long","first_pullback_short","gap_fade_long","gap_fade_short","gap_go_long","gap_go_short","open_high_breakdown_short","open_low_breakout_long","positional_momentum_long","positional_sector_rotation","positional_swing_long","range_breakout_long","range_breakout_short","vwap_bounce_long","vwap_rejection_short"],"will_trade_count":15,"wont_trade":["pb01_breakout_retest (WON'T TRADE — switch disabled)"],"wont_trade_count":1}
+  pb01_watchlist lines today so far: 2
+  16-Sep: strategy_control.summary lines: 1 · pb01_watchlist lines: 13 · pb01 would-be lines: 2
+{"ts":"2026-09-16T08:15:37.916+05:30","level":"INFO","logger":"main","msg":"strategy_control.summary","force_intraday_only":false,"trade_type":"BOTH","will_trade":["first_pullback_long","first_pullback_short","gap_fade_long","gap_fade_short","gap_go_long","gap_go_short","open_high_breakdown_short","open_low_breakout_long","positional_momentum_long","positional_sector_rotation","positional_swing_long","range_breakout_long","range_breakout_short","vwap_bounce_long","vwap_rejection_short"],"will_trade_count":15,"wont_trade":["pb01_breakout_retest (WON'T TRADE — switch disabled)"],"wont_trade_count":1}
+ssh rc=0

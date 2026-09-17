@@ -1,0 +1,43 @@
+=== SCRIPT OUTPUT: sr_corp_action_spotcheck.main(['--symbol', 'V2RETAIL', '--around', '2026-03-25', '--window', '20']) ===
+V2RETAIL around 2026-03-25: 25 daily candles
+largest overnight close ratio = 1.054 at (datetime.datetime(2026, 3, 23, 0, 0, tzinfo=tzoffset(None, 19800)), datetime.datetime(2026, 3, 24, 0, 0, tzinfo=tzoffset(None, 19800)))
+VERDICT: ADJUSTED (continuous) — historical_data returns split/bonus-adjusted candles. ✅
+=== SCRIPT rc=0 ===
+=== CAPTURED EVIDENCE ===
+broker calls: instruments=1 historical_data=1
+instrument records with tradingsymbol=V2RETAIL: 1
+  record: {'exchange': 'NSE', 'exchange_token': '14766', 'expiry': '', 'instrument_token': 3780097, 'instrument_type': 'EQ', 'last_price': 0.0, 'lot_size': 1, 'name': 'V2 RETAIL', 'segment': 'NSE', 'strike': 0.0, 'tick_size': 0.01, 'tradingsymbol': 'V2RETAIL'}
+historical_data request: {'args': [], 'instrument_token': '3780097', 'from_date': '2026-03-05 00:00:00', 'to_date': '2026-04-14 00:00:00', 'interval': 'day'}
+rows returned: 25
+first session: 2026-03-05
+last session : 2026-04-13
+sessions BEFORE 2026-03-25: 14
+sessions ON/AFTER 2026-03-25: 11
+duplicate dates: 0
+date        open      high      low       close     volume
+2026-03-05  193.6     196.5     191.3     195.8     493080
+2026-03-06  197       197       192.5     193.8     420310
+2026-03-09  189.9     192       186.1     190.8     1127620
+2026-03-10  194       196.2     191.6     195.6     1098460
+2026-03-11  196.6     199.5     194.8     196.7     633570
+2026-03-12  198.9     200       190       198.9     572500
+2026-03-13  200.3     200.3     190       192.8     912270
+2026-03-16  194.4     194.4     184       189.7     1289930
+2026-03-17  191.8     191.8     187.1     190.1     492260
+2026-03-18  189       198       189       192.3     791480
+2026-03-19  189.5     193.7     189       190.3     489500
+2026-03-20  191.8     195.5     190       191.2     745560
+2026-03-23  190.5     191.7     172       182.8     1587660
+2026-03-24  184.1     193.9     183.9     192.7     836890
+2026-03-25  195       218       193.2     196.3     1998378
+2026-03-27  193.7     204.7     186.1     197.3     2265591
+2026-03-30  193.4     195.1     184.6     189.1     1386451
+2026-04-01  198.2     198.99    187       189.42    1959738
+2026-04-02  187.2     193.1     180       191.71    1179189
+2026-04-06  190       196.9     189.24    194.47    1026230
+2026-04-07  195.25    198.34    188.95    190.35    584033
+2026-04-08  196.69    200.27    194.17    198.6     861852
+2026-04-09  196.05    201.63    193.27    194.28    1006039
+2026-04-10  194.45    199.2     194.45    197.13    1046059
+2026-04-13  194.6     194.98    190.49    194.17    690033
+=== END ===

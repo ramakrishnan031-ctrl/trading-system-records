@@ -1,0 +1,96 @@
+trading days in signals: 63 2026-06-12 -> 2026-09-11  last-20 window: 2026-08-17 -> 2026-09-11
+                                            n       first        last  days  n_last20d
+fam                                                                                   
+REJECTED_SCORE_*                       161989  2026-07-09  2026-09-11    45      81034
+REJECTED_STRATEGY_CONTROL               23481  2026-07-13  2026-09-04    17       2051
+REJECTED_CIRCUIT_PROXIMITY              12906  2026-07-09  2026-09-11    45       7612
+REJECTED_STRATEGY_CIRCUIT_BREAKER        9269  2026-07-09  2026-09-09    10       4485
+SKIPPED_QUOTE_UNAVAILABLE                8757  2026-06-12  2026-09-11    56       3666
+REJECTED_DAILY_TRADES                    5146  2026-07-09  2026-07-10     2          0
+REJECTED_SHADOW_INNING_ACTIVE            4168  2026-07-09  2026-07-24    11          0
+REJECTED_SIZING_CONCENTRATION            4084  2026-07-09  2026-09-11    45        418
+REJECTED_ENTRY_THROTTLED                 1080  2026-07-09  2026-09-11    45        549
+PROCESSED                                 767  2026-06-15  2026-09-11    62        282
+REJECTED_OPEN_POSITIONS                   658  2026-07-09  2026-09-09    28        136
+REJECTED_STRATEGY_POSITION_LIMIT          418  2026-07-09  2026-09-11    38        111
+REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT     385  2026-08-03  2026-09-11    29        244
+PLACEMENT_FAILED                          186  2026-06-16  2026-09-11    59         50
+REJECTED_DUPLICATE_SYMBOL                 185  2026-07-09  2026-09-11    32         78
+REJECTED_SIZING_CAPITAL                   103  2026-08-05  2026-09-10    17         63
+REJECTED_CONSECUTIVE_LOSSES                13  2026-07-20  2026-08-25     5          8
+REJECTED_SIZING_RISK                        3  2026-08-14  2026-08-14     1          0
+RESERVED                                    2  2026-06-18  2026-06-18     1          0
+
+-- REJECTED_SIZING_CONCENTRATION (4084): latest reasons
+    2026-09-11T14:41:14 LIQUIDBETF positional_sector_rotation | qty=0: CONCENTRATION exhausted for LIQUIDBETF (risk_qty=4 capital_qty=2 conc_qty=0)
+    2026-09-11T14:47:13 LIQUIDBETF positional_sector_rotation | qty=0: CONCENTRATION exhausted for LIQUIDBETF (risk_qty=4 capital_qty=2 conc_qty=0)
+    2026-09-11T14:59:14 LIQUIDBETF positional_sector_rotation | qty=0: CONCENTRATION exhausted for LIQUIDBETF (risk_qty=4 capital_qty=2 conc_qty=0)
+
+-- REJECTED_ENTRY_THROTTLED (1080): latest reasons
+    2026-09-11T14:21:14 ONGC first_pullback_short | Entry throttled: per_symbol ONGC 175s < 300s
+    2026-09-11T14:36:14 ONGC gap_fade_short | Entry throttled: per_symbol ONGC 239s < 300s
+    2026-09-11T14:59:16 ONGC vwap_rejection_short | Entry throttled: min_gap 10.7s < 20s
+
+-- REJECTED_SYMBOL_DIRECTION_DAILY_LIMIT (385): latest reasons
+    2026-09-11T10:10:24 SUNTV gap_fade_long | SUNTV LONG already traded today in the intraday book (1 executed trade(s)); one completed trade per symbol+direction per day, per pipeline
+    2026-09-11T10:11:15 RAYMOND positional_momentum_long | RAYMOND LONG already traded today in the delivery book (1 executed trade(s)); one completed trade per symbol+direction per day, per pipeline
+    2026-09-11T10:13:13 MOBIKWIK vwap_bounce_long | MOBIKWIK LONG already traded today in the intraday book (1 executed trade(s)); one completed trade per symbol+direction per day, per pipeline
+
+-- REJECTED_STRATEGY_POSITION_LIMIT (418): latest reasons
+    2026-09-11T10:09:14 PINELABS positional_sector_rotation | positional_sector_rotation at cap: 2/2 open+in-flight (open_partial=2, reserved=0, active_incl_pending=2)
+    2026-09-11T10:11:13 RAYMOND positional_sector_rotation | positional_sector_rotation at cap: 2/2 open+in-flight (open_partial=2, reserved=0, active_incl_pending=2)
+    2026-09-11T10:13:13 SMSPHARMA positional_sector_rotation | positional_sector_rotation at cap: 2/2 open+in-flight (open_partial=2, reserved=0, active_incl_pending=2)
+
+-- REJECTED_DUPLICATE_SYMBOL (185): latest reasons
+    2026-09-10T10:02:14 HLEGLAS vwap_bounce_long | Active position or in-flight order already exists for symbol
+    2026-09-10T10:07:15 HLEGLAS open_low_breakout_long | Active position or in-flight order already exists for symbol
+    2026-09-11T10:11:14 SMSPHARMA vwap_bounce_long | Active position or in-flight order already exists for symbol
+
+-- REJECTED_SIZING_CAPITAL (103): latest reasons
+    2026-09-10T10:24:14 NOVARTIND positional_sector_rotation | qty=0: CAPITAL exhausted for NOVARTIND (risk_qty=2 capital_qty=0 conc_qty=0)
+    2026-09-10T12:10:24 ACUTAAS positional_sector_rotation | qty=0: CAPITAL exhausted for ACUTAAS (risk_qty=1 capital_qty=0 conc_qty=0)
+    2026-09-10T13:42:14 ACUTAAS positional_sector_rotation | qty=0: CAPITAL exhausted for ACUTAAS (risk_qty=1 capital_qty=0 conc_qty=0)
+
+-- REJECTED_DAILY_TRADES (5146): latest reasons
+    2026-07-10T14:59:15 ICICIPRULI vwap_bounce_long | Daily trade limit reached: 10 (db_today=10, settled_today=10, live_reservations=0), max=10
+    2026-07-10T14:59:15 IEX vwap_bounce_long | Daily trade limit reached: 10 (db_today=10, settled_today=10, live_reservations=0), max=10
+    2026-07-10T14:59:15 TIMETECHNO vwap_bounce_long | Daily trade limit reached: 10 (db_today=10, settled_today=10, live_reservations=0), max=10
+
+-- REJECTED_OPEN_POSITIONS (658): latest reasons
+    2026-09-08T10:11:18 MMP gap_go_long | Position cap reached: 6 active (db_active[open+partial+pending_fill]=4, open_partial=4, live_reservations=1, processor_in_flight=2), max=5
+    2026-09-08T10:11:20 CRAMC vwap_rejection_short | Position cap reached: 6 active (db_active[open+partial+pending_fill]=4, open_partial=4, live_reservations=1, processor_in_flight=2), max=5
+    2026-09-09T10:06:17 ELLEN vwap_bounce_long | Position cap reached: 6 active (db_active[open+partial+pending_fill]=0, open_partial=0, live_reservations=5, processor_in_flight=5), max=5
+
+-- REJECTED_CONSECUTIVE_LOSSES (13): latest reasons
+    2026-08-19T12:51:15 PRABHA gap_fade_long | Consecutive loss limit reached: 4 straight losses, max=4
+    2026-08-19T13:11:13 PRABHA positional_sector_rotation | Consecutive loss limit reached: 4 straight losses, max=4
+    2026-08-25T14:53:14 GROWW positional_sector_rotation | Consecutive loss limit reached: 4 straight losses, max=4
+
+-- REJECTED_SIZING_RISK (3): latest reasons
+    2026-08-14T13:56:13 SCHAEFFLER first_pullback_short | qty=0: RISK exhausted for SCHAEFFLER (risk_qty=0 capital_qty=4 conc_qty=0)
+    2026-08-14T14:13:12 SCHAEFFLER first_pullback_short | qty=0: RISK exhausted for SCHAEFFLER (risk_qty=0 capital_qty=4 conc_qty=0)
+    2026-08-14T14:57:13 SCHAEFFLER first_pullback_short | qty=0: RISK exhausted for SCHAEFFLER (risk_qty=0 capital_qty=4 conc_qty=0)
+
+-- PLACEMENT_FAILED (186): latest reasons
+    2026-09-10T10:12:14 ITDC vwap_bounce_long | slippage_exceeded: trigger=701.45 ltp=703.20 | slippage ₹1.75 > tolerance ₹1.39 (mode=sl_fraction, SL_dist=₹6.31, 28% of SL)
+    2026-09-10T13:54:15 INDOCO vwap_bounce_long | slippage_exceeded: trigger=260.81 ltp=261.98 | slippage ₹1.17 > tolerance ₹0.52 (mode=sl_fraction, SL_dist=₹2.35, 50% of SL)
+    2026-09-11T10:10:24 PINELABS gap_fade_long | slippage_exceeded: trigger=186.51 ltp=187.50 | slippage ₹0.99 > tolerance ₹0.25 (mode=sl_fraction, SL_dist=₹1.12, 88% of SL)
+
+-- REJECTED_STRATEGY_CONTROL (23481): latest reasons
+    2026-09-04T14:59:15 DOLPHIN positional_momentum_long | WON'T TRADE — switch disabled
+    2026-09-04T14:59:15 DEEPINDS positional_momentum_long | WON'T TRADE — switch disabled
+    2026-09-04T14:59:15 WELENT positional_momentum_long | WON'T TRADE — switch disabled
+
+-- REJECTED_STRATEGY_CIRCUIT_BREAKER (9269): latest reasons
+    2026-09-09T14:58:16 KRSNAA vwap_bounce_long | strategy paused today by circuit breaker
+    2026-09-09T14:59:16 EXICOM vwap_bounce_long | strategy paused today by circuit breaker
+    2026-09-09T14:59:16 KROSS vwap_bounce_long | strategy paused today by circuit breaker
+
+-- REJECTED_SHADOW_INNING_ACTIVE (4168): latest reasons
+    2026-07-24T14:57:15 SPANDANA vwap_rejection_short | Symbol SPANDANA has an active shadow inning; skip new entry to avoid overlapping real+simulated trades
+    2026-07-24T14:58:12 SPANDANA first_pullback_short | Symbol SPANDANA has an active shadow inning; skip new entry to avoid overlapping real+simulated trades
+    2026-07-24T14:58:12 SPANDANA gap_go_short | Symbol SPANDANA has an active shadow inning; skip new entry to avoid overlapping real+simulated trades
+
+-- RESERVED (2): latest reasons
+    2026-06-18T11:13:11 REDINGTON gap_go_long | nan
+    2026-06-18T11:13:11 NYKAA gap_go_long | nan

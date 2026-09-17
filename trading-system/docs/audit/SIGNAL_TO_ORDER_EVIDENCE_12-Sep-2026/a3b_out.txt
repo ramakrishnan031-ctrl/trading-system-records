@@ -1,0 +1,66 @@
+
+===== trades created 2026-09-11 =====
+                      created_at     symbol                   strategy direction        status       sig_status entry_mode order_protocol  qty_planned  trigger_price  entry_target_price  entry_actual_price order_type product  price  status_o rejection_reason exit_reason closure_source
+2026-09-11T10:00:23.024711+05:30      BSOFT             gap_fade_short     SHORT        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         275.65           275.77550              275.80      LIMIT     MIS    NaN  COMPLETE              NaN      SL_HIT         OWN_SL
+2026-09-11T10:01:15.164550+05:30  SMSPHARMA positional_sector_rotation      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            1         446.05           445.50720                 NaN      LIMIT     CNC    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T10:05:24.969248+05:30    RAYMOND positional_sector_rotation      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         919.70           916.51330              916.50      LIMIT     CNC    NaN  COMPLETE              NaN    GTT_EXIT            NaN
+2026-09-11T10:07:15.341657+05:30  SMSPHARMA positional_sector_rotation      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         463.10           463.52110              463.50      LIMIT     CNC    NaN  COMPLETE              NaN    GTT_EXIT            NaN
+2026-09-11T10:09:14.802097+05:30      SUNTV        first_pullback_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         468.00           467.53200              467.45      LIMIT     MIS    NaN  COMPLETE              NaN     TGT_HIT        OWN_TGT
+2026-09-11T10:10:25.233806+05:30   PINELABS              gap_fade_long      LONG      REJECTED PLACEMENT_FAILED       FULL   LIMIT_TRIPLE            2         186.51           187.26255                 NaN        NaN     NaN    NaN       NaN              NaN         NaN            NaN
+2026-09-11T10:12:14.372752+05:30   MOBIKWIK        first_pullback_long      LONG CLOSED_MANUAL        PROCESSED       FULL   LIMIT_TRIPLE            2         204.75           204.54525              204.48      LIMIT     MIS    NaN  COMPLETE              NaN      MANUAL         OWN_SL
+2026-09-11T12:57:19.484727+05:30       ONGC       vwap_rejection_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         235.67           235.90567                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T13:18:14.267675+05:30    NIITMTS        first_pullback_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.39           234.15561              233.85      LIMIT     MIS    NaN  COMPLETE              NaN      SL_HIT         OWN_SL
+2026-09-11T13:25:21.553336+05:30       ONGC             gap_fade_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.73           234.95472                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T13:30:21.420823+05:30       ONGC             gap_fade_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.75           234.93470                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T13:37:15.079280+05:30       ONGC       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         233.95           234.18395                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T13:42:15.227562+05:30       ONGC       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         233.59           233.82359                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T13:53:16.326784+05:30       ONGC       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         233.60           233.83360                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:06:20.225945+05:30       ONGC       vwap_rejection_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         233.78           234.01378                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:12:20.324904+05:30       ONGC       vwap_rejection_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.09           234.32409                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:18:20.563179+05:30       ONGC             gap_fade_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.02           234.23400                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:27:13.082688+05:30       ONGC       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         233.88           234.11388                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:32:15.915849+05:30       ONGC       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.12           234.35412                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:35:25.847812+05:30 CSLFINANCE       first_pullback_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         220.00           220.22000                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:42:21.202091+05:30       ONGC             gap_fade_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.08           234.31408                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-11T14:59:13.375314+05:30       ONGC             gap_fade_short     SHORT        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         234.49           234.67444                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+
+===== trades created 2026-09-10 =====
+                      created_at     symbol                   strategy direction        status       sig_status entry_mode order_protocol  qty_planned  trigger_price  entry_target_price  entry_actual_price order_type product  price  status_o rejection_reason exit_reason closure_source
+2026-09-10T10:00:26.057695+05:30    HLEGLAS      positional_swing_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         390.25           387.47350              387.45      LIMIT     CNC    NaN  COMPLETE              NaN    GTT_EXIT            NaN
+2026-09-10T10:01:15.332753+05:30 SHAREINDIA                gap_go_long      LONG CLOSED_MANUAL        PROCESSED       FULL   LIMIT_TRIPLE            2         210.32           209.99979              210.00      LIMIT     MIS    NaN  COMPLETE              NaN      MANUAL         OWN_SL
+2026-09-10T10:04:14.884088+05:30  GARFIBRES           vwap_bounce_long      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            1         818.30           817.48170                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-10T10:06:16.650033+05:30       VSSL           vwap_bounce_long      LONG      REJECTED PLACEMENT_FAILED       FULL   LIMIT_TRIPLE            1         384.90           384.51510                 NaN        NaN     NaN    NaN       NaN              NaN         NaN            NaN
+2026-09-10T10:07:17.723004+05:30      KROSS positional_sector_rotation      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         231.00           230.73760                 NaN      LIMIT     CNC    NaN CANCELLED              NaN         NaN            NaN
+2026-09-10T10:08:18.965475+05:30 SHAREINDIA   positional_momentum_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            2         211.23           210.95724              210.96      LIMIT     CNC    NaN  COMPLETE              NaN    GTT_EXIT            NaN
+2026-09-10T10:09:15.963003+05:30  GARFIBRES           vwap_bounce_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         821.60           820.77840              820.80      LIMIT     MIS    NaN  COMPLETE              NaN      SL_HIT         OWN_SL
+2026-09-10T10:12:15.896103+05:30       ITDC           vwap_bounce_long      LONG      REJECTED PLACEMENT_FAILED       FULL   LIMIT_TRIPLE            1         701.45           700.74855                 NaN        NaN     NaN    NaN       NaN              NaN         NaN            NaN
+2026-09-10T10:13:16.015021+05:30       VSSL positional_sector_rotation      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         390.60           389.12020              389.10      LIMIT     CNC    NaN  COMPLETE              NaN    GTT_EXIT            NaN
+2026-09-10T12:49:19.094731+05:30      KROSS           vwap_bounce_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            2         237.41           237.17259              237.17      LIMIT     MIS    NaN  COMPLETE              NaN      SL_HIT         OWN_SL
+2026-09-10T12:50:24.216984+05:30    JUNIPER      positional_swing_long      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            2         229.13           228.81146                 NaN      LIMIT     CNC    NaN CANCELLED              NaN         NaN            NaN
+2026-09-10T13:27:16.305733+05:30    GENESYS           vwap_bounce_long      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            1         308.51           308.20149                 NaN      LIMIT     MIS    NaN CANCELLED              NaN         NaN            NaN
+2026-09-10T13:32:22.379321+05:30    GENESYS           vwap_bounce_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            1         307.89           307.58211              307.58      LIMIT     MIS    NaN  COMPLETE              NaN     TGT_HIT        OWN_TGT
+2026-09-10T13:54:18.342169+05:30     INDOCO           vwap_bounce_long      LONG      REJECTED PLACEMENT_FAILED       FULL   LIMIT_TRIPLE            2         260.81           260.54919                 NaN        NaN     NaN    NaN       NaN              NaN         NaN            NaN
+2026-09-10T14:09:17.909119+05:30    GENESYS positional_sector_rotation      LONG        FAILED        PROCESSED       FULL   LIMIT_TRIPLE            1         308.27           307.65346                 NaN      LIMIT     CNC    NaN CANCELLED              NaN         NaN            NaN
+2026-09-10T14:14:14.810050+05:30     INDOCO        first_pullback_long      LONG        CLOSED        PROCESSED       FULL   LIMIT_TRIPLE            2         258.41           258.15159              258.15      LIMIT     MIS    NaN  COMPLETE              NaN      SL_HIT         OWN_SL
+
+=== all-time trades.status ===
+status
+FAILED           471
+CLOSED           311
+REJECTED         100
+CLOSED_MANUAL     64
+CANCELLED          9
+
+=== all-time ENTRY order status by trade status ===
+status_entry   CANCELLED  COMPLETE  NO_ENTRY_ROW
+status                                          
+CANCELLED              9         0             0
+CLOSED                 0       311             0
+CLOSED_MANUAL          1        63             0
+FAILED               385         0            86
+REJECTED               0         0           100
+
+ENTRY order_type x product:
+product     CNC  MIS
+order_type          
+LIMIT       135  634

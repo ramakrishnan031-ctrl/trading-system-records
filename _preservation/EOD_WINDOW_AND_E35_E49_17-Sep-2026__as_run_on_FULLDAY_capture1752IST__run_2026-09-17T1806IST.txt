@@ -1,0 +1,31 @@
+validator md5: 8c354fd7322d104b15e6bc9246b864c9 (want 8c354fd7322d104b15e6bc9246b864c9)
+fullday md5: 3b3da54f37f5c58e08ddb34aa941f8f2 (want 3b3da54f37f5c58e08ddb34aa941f8f2)
+== REAL: eod on the 17-Sep full-day capture
+WINDOW VALIDATOR  kind=eod  file=FULLDAY_system_17-Sep-2026__captured_2026-09-17T1752IST.log
+  provenance: start main.py:1631 / end main.py:1839 -- sr_shadow.stop() at main.py:1705 lies between them
+  start marker 'Shutdown initiated'               count=1 at lines [60316]
+  end marker(s) 'Shutdown complete'               count=1 at lines [60392]
+
+WINDOW_OK  lines 60316..60392  (77 events in window)
+rc=0
+== CONTROL (must be WINDOW_INVALID rc 3): eod on the 08:16 boot-window extract (no shutdown markers)
+WINDOW VALIDATOR  kind=eod  file=GATE78_bootwindow_17-Sep-2026__from_capture_0816IST.jsonl
+  provenance: start main.py:1631 / end main.py:1839 -- sr_shadow.stop() at main.py:1705 lies between them
+  start marker 'Shutdown initiated'               count=0 at lines -
+  end marker(s) 'Shutdown complete'               count=0 at lines -
+
+*** WINDOW_INVALID ***
+  - start marker count is 0, must be EXACTLY 1 (0 = window never opened; >=2 = two eod events in one day)
+  - end marker count is 0 -- the eod NEVER REACHED ITS TERMINATOR. That is ITSELF THE FINDING; the window would otherwise run to end of file and the comparison would produce enormous residuals that look like a normalizer or window fault.
+
+  >>> THE FIRST FINDING IS **WINDOW_INVALID**, never NORMALIZER_RESIDUAL.
+  >>> Do NOT run the comparison and then interpret the residuals. STOP and report.
+rc=3
+== E3.5 / E4.9 inside the EOD window (Python, exact JSON fields, ASCII anchors)
+events 60392 | Shutdown initiated idx(1-based) [60316] | Shutdown complete idx [60392]
+EOD window L60316..L60392 = 77 events
+E3.5 lines containing worker stopped in window: 1
+   (60376, '17:35:00.726', 'sr_shadow', 'INFO', 'sr_shadow: worker stopped counters={"captured": 81, "capture_duplicates": 0, "capture_failures": 0, "rows_written": 66, "rows_existing": 0, "attempt_failures": 75, "spool_failed": 15, "invariant_violations": 0} history={"cache_hits": 52, "cache_misses": 14, "fetch_calls": 28}')
+E4.9 stop_invariant_violated in window: 0 | whole day: 0
+POSITIVE CONTROL same method: Shutdown complete in window: 1 | sr_shadow logger lines in window: 1
+py_rc=0

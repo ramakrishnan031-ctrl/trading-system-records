@@ -1,0 +1,10 @@
+import sys, os, yaml, glob
+sys.dont_write_bytecode = True
+root = sys.argv[1]
+cols = ["enabled","intent","direction","order_protocol","entry_method","entry_offset_pct","sl_method","sl_pct","sl_atr_multiplier","sl_min_pct","sl_max_pct","sl_gap_buffer_pct","tgt_method","tgt_pct","tgt_risk_reward","tgt_atr_multiplier","smart_tgt_enabled","pullback_wait_enabled","pullback_wait_tolerance_pct","pullback_wait_timeout_sec","min_score","min_volume_surge","min_adr_pct","max_spread_pct","max_concurrent_positions","entry_start_time","entry_end_time","trailing_sl_enabled","v3_playbook"]
+files = sorted(glob.glob(os.path.join(root, "config", "strategies", "*.yaml")))
+print("n_files", len(files))
+print("strategy|nkeys|" + "|".join(cols))
+for f in files:
+    d = yaml.safe_load(open(f, encoding="utf-8"))
+    print(os.path.basename(f)[:-5] + "|" + str(len(d)) + "|" + "|".join(str(d.get(c, "<ABSENT>")) for c in cols))

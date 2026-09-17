@@ -1,0 +1,21 @@
+import sys, ast, re
+sys.dont_write_bytecode = True
+lines = open("vm_queries_out.txt", encoding="utf-8").read().splitlines()
+mode = None
+for ln in lines:
+    s = ln.rstrip()
+    if s.startswith("## [per-step distribution"):
+        print(s); mode = "steps"; continue
+    if s.startswith("=== S11.4"):
+        mode = None
+    if mode == "steps" and s.startswith("    ") and " [(" in s:
+        name, rest = s.strip().split(" ", 1)
+        vals = ast.literal_eval(rest)
+        tot = sum(c for v, c in vals)
+        nums = [v for v, c in vals if isinstance(v, (int, float))]
+        top = sorted(vals, key=lambda vc: -vc[1])[:6]
+        print("   %-16s rows=%d distinct=%d min=%s max=%s top=%s" % (name, tot, len(vals), min(nums) if nums else None, max(nums) if nums else None, top))
+        continue
+    if mode == "steps":
+        continue
+    print(s[:300])

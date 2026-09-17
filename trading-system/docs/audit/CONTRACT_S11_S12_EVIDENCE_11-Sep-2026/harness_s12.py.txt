@@ -1,0 +1,82 @@
+"""
+S12 harness -- READ-ONLY. Imports the S&R detector's own functions from the
+970aabf export and exercises them on (a) the values production recorded in
+sr_detector_results id 574 (INDOCO, 02-Sep-2026 14:09:26) and (b) synthetic
+inputs for property checks. No DB, no network, no broker. Writes nothing except
+the stdout the caller redirects into this temp dir.
+
+This is NOT a replay of the detector's input: the 180-day day/60m/30m candle
+series it fetched is not stored anywhere (sr_detector/detector.py:18).
+"""
+import sys
+from datetime import datetime, timedelta, timezone
+
+SRC = r"C:/Users/rama/.claude/jobs/6e6242ba/tmp/src_970aabf"
+sys.path.insert(0, SRC)
+
+from sr_detector.flags import FlagParams, compute_flags_and_retest, _nearest  # noqa: E402
+from sr_detector.models import Candidate, Candle, ScoredZone  # noqa: E402
+from sr_detector.pivots import find_swing_pivots  # noqa: E402
+import sr_detector.flags as _f  # noqa: E402
+
+IST = timezone(timedelta(hours=5, minutes=30))
+print("python", sys.version.split()[0], "| flags module:", _f.__file__)
+
+# Config values at 970aabf (config/system_config.yaml:513,517,518)
+FP = FlagParams(entry_proximity_pct=1.0, volume_surge_mult=1.5,
+                weak_breakout_frac=0.25, retest_sl_buffer_pct=0.3)
+
+# --- (a) the two zones production recorded as nearest for id 574 -------------
+R270 = ScoredZone(band_low=270.0, band_high=270.0, kind="RESISTANCE", score=6.0,
+                  confidence="HIGH", touches=3, timeframes=("30minute", "60minute", "day"),
+                  evidence=(("swing_pivots", 3.0), ("multi_tf", 3.0)))
+S258 = ScoredZone(band_low=258.22, band_high=258.22, kind="SUPPORT", score=2.2155,
+                  confidence="LOW", touches=1, timeframes=("30minute",),
+                  evidence=(("swing_pivots", 1.0), ("multi_tf", 1.0), ("recency", 0.2155)))
+ENTRY = 276.82524  # sr_detector_results.intended_entry, id 574
+cand = Candidate(signal_id="sig_cf1906208c494704961cb9024eaf7f3e", symbol="INDOCO",
+                 strategy="positional_sector_rotation", direction="LONG",
+                 intended_entry=ENTRY, sl_price=271.2887352, tgt_price=285.1299972,
+                 qty=1, intent="DELIVERY", mode="live",
+                 ts=datetime(2026, 9, 2, 14, 9, 26, tzinfo=IST), score=62)
+
+fr = compute_flags_and_retest(cand, [R270, S258], None, FP)
+print("\n[A1] recorded nearest zones re-fed (breakout=None):")
+print("     nearest_res=%s dist_res=%.6f  nearest_sup=%s dist_sup=%.6f  flags=%s retest=%s" % (
+    (fr.nearest_resistance.band_low, fr.nearest_resistance.band_high), fr.dist_to_resistance_pct,
+    (fr.nearest_support.band_low, fr.nearest_support.band_high), fr.dist_to_support_pct,
+    list(fr.flags), fr.retest))
+print("     production recorded: dist_res=-2.46554107566203 dist_sup=6.72093339465721 flags=[]")
+
+# [A2] property of _nearest(prefer_above=True): it returns a zone BELOW entry only
+#      when no resistance zone has band_high >= entry. Mutation: add one above.
+only_below = _nearest([R270], ENTRY, prefer_above=True)
+Z2878 = ScoredZone(band_low=287.80, band_high=287.80, kind="RESISTANCE", score=6.0,
+                   confidence="HIGH", touches=3, timeframes=("30minute", "60minute", "day"),
+                   evidence=(("swing_pivots", 3.0), ("multi_tf", 3.0)))
+with_above = _nearest([R270, Z2878], ENTRY, prefer_above=True)
+print("\n[A2] _nearest(prefer_above=True) with [270.00] ->", (only_below.band_low, only_below.band_high),
+      "| with [270.00, 287.80 SYNTHETIC] ->", (with_above.band_low, with_above.band_high))
+
+# [A3] synthetic: had a HIGH 287.80 resistance existed, what would the CURRENT
+#      flag rule have returned for this entry? (measurement of current code only)
+fr3 = compute_flags_and_retest(cand, [R270, Z2878, S258], None, FP)
+print("\n[A3] SYNTHETIC HIGH zone at 287.80 added: nearest_res=%s dist_res=%.4f%% flags=%s retest=%s" % (
+    (fr3.nearest_resistance.band_low, fr3.nearest_resistance.band_high),
+    fr3.dist_to_resistance_pct, list(fr3.flags), fr3.retest))
+pad = 287.80 * (FP.entry_proximity_pct / 100.0)
+print("     _is_into_zone needs entry >= band_low - pad = %.4f ; entry = %.5f" % (287.80 - pad, ENTRY))
+
+# --- (b) pivots.py SR-P2: the last `right` bars are never pivots -------------
+def mk(highs):
+    t0 = datetime(2026, 9, 1, 9, 15, tzinfo=IST)
+    return [Candle(ts=t0 + timedelta(minutes=30 * i), open=h - 1, high=h, low=h - 2, close=h - 0.5, volume=1000)
+            for i, h in enumerate(highs)]
+
+series = [250, 252, 251, 253, 255, 254, 256, 258, 257, 259, 261, 260, 262, 287.8]  # max in LAST bar
+p_last = [p for p in find_swing_pivots(mk(series), left=5, right=5) if p.kind == "HIGH"]
+print("\n[B1] SYNTHETIC series, max (287.8) in the last bar, n=5: HIGH pivots =", [(p.bar_index, p.price) for p in p_last])
+for extra in (3, 4, 5):
+    s2 = series + [280.0 - k for k in range(extra)]
+    p2 = [p for p in find_swing_pivots(mk(s2), left=5, right=5) if p.kind == "HIGH" and p.price == 287.8]
+    print("     + %d lower bars after it -> 287.8 is a HIGH pivot? %s" % (extra, bool(p2)))

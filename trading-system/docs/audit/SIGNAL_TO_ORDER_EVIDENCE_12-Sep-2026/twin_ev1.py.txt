@@ -1,0 +1,44 @@
+"""D1.1 twin evidence inspection -- READ-ONLY. Piped over ssh stdin to the TESTING VM.
+Reads the evidence JSONL and opens the DB with mode=ro + PRAGMA query_only. Imports no project module. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json, sqlite3
+from collections import Counter
+
+BASE = "/home/ubuntu/systems/trading-system/data_store"
+F = BASE + "/evidence/signal_evidence_VBB097_2026-09-11.jsonl"
+recs = [json.loads(l) for l in open(F, encoding="utf-8")]
+cp = Counter(r.get("capture_point") for r in recs)
+print("records", len(recs), dict(cp))
+seen = set()
+for r in recs:
+    k = r.get("capture_point")
+    if k not in seen:
+        seen.add(k)
+        print("\n== keys for", k, "==\n", sorted(r.keys()))
+        pl = r.get("payload") if isinstance(r.get("payload"), dict) else None
+        if pl:
+            print("   payload keys:", sorted(pl.keys()))
+# P1 summary
+print("\n== P1 records ==")
+for r in recs:
+    if r.get("capture_point") != "P1_ACCEPT":
+        continue
+    p = r.get("payload", r)
+    print(json.dumps({k: p.get(k) for k in ("signal_id", "symbol", "strategy", "triggered_at", "trigger_price",
+                                              "entry_price_final", "reanchored", "sl_price", "tgt_price", "qty",
+                                              "binding_constraint", "score_total", "tier")}, default=str))
+print("\n== P2 reasons ==")
+print(Counter((r.get("payload", r).get("rejected_step")) for r in recs if r.get("capture_point") == "P2_REJECT"))
+print("\n== P3 status families ==")
+print(Counter(str(r.get("payload", r).get("status"))[:15] for r in recs if r.get("capture_point") == "P3_SCREEN"))
+
+c = sqlite3.connect("file:%s/trading_system.db?mode=ro" % BASE, uri=True, timeout=5)
+c.execute("PRAGMA query_only=1")
+print("\n== twin trades 2026-09-11 ==")
+for row in c.execute("SELECT trade_id, signal_id, symbol, strategy, direction, status, qty_planned, entry_target_price, "
+                     "entry_actual_price, sl_initial, tgt_initial, created_at, entry_time, exit_price, exit_reason, net_pnl, "
+                     "binding_constraint, qty_by_risk, qty_by_capital, qty_by_concentration, tier_weight_applied, perf_weight_applied, "
+                     "margin_reserved, risk_amount, tgt_risk_reward_applied, signal_to_order_ms, order_to_fill_ms "
+                     "FROM trades WHERE created_at LIKE '2026-09-11%' ORDER BY created_at"):
+    print("  ", row)

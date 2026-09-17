@@ -1,0 +1,62 @@
+feat(sizing): tier thresholds 62/61 and multipliers 0.85/0.75 (extract of 3cf3729)
+
+EXTRACTED, not cherry-picked. 3cf3729 does not apply to this base: two of its
+four files do not exist at 08b462b and one of its three config hunks targets a
+block that is absent here. This commit carries its LIVE value changes only.
+
+WHAT MOVED -- and only this:
+  config/scoring_weights.yaml   high_score_threshold    80 -> 62
+                                medium_score_threshold  65 -> 61
+  config/system_config.yaml     tier_multipliers.MEDIUM 0.70 -> 0.85
+                                tier_multipliers.LOW    0.50 -> 0.75
+
+All five live values are IDENTICAL to 3cf3729's, proven key by key.
+min_pass_score is UNTOUCHED at 60 -- the entry gate does not move, only the SIZE
+of a signal that already passed. No max_qty, no value cap, no bases, counts,
+loss limits or concentration caps. No source file is touched.
+
+DROPPED, with the reason measured at the base:
+  tests/unit/test_order_sizing_allocation.py  -- ABSENT at 08b462b (created by 65b7196)
+  tests/unit/test_two_pipeline_split.py       -- ABSENT at 08b462b
+  system_config.yaml delivery_tier_multipliers LOW 0.70 -> 0.75
+                                              -- the whole block is ABSENT at 08b462b
+
+WHY: the screener's measured ceiling is 65, so HIGH at 80 was UNREACHABLE and
+MEDIUM at 65 reachable only at the exact ceiling. MEASURED over the last 60 days
+on the live DB: max score across 118,250 screener rows = 65 (HIGH assigned zero
+times), and 604 of 605 trades were sized at tier_weight_applied = 0.5.
+
+EXPOSURE, measured, with its base -- 2,681 screener rows with score >= 60 over
+the last 60 days:
+  score 60  n=1,951  72.77%  LOW    x0.50 -> LOW    x0.75   +50.0%
+  score 61  n=   12   0.45%  LOW    x0.50 -> MEDIUM x0.85   +70.0%
+  score 62  n=  526  19.62%  LOW    x0.50 -> HIGH   x1.00  +100.0%
+  score 63  n=    4   0.15%  LOW    x0.50 -> HIGH   x1.00  +100.0%
+  score 64  n=  177   6.60%  LOW    x0.50 -> HIGH   x1.00  +100.0%
+  score 65  n=   11   0.41%  MEDIUM x0.70 -> HIGH   x1.00   +42.9%
+  mean tier multiplier 0.50082 -> 0.81740  =  +63.21%
+
+BOTH BOOKS, and 3cf3729's own message is wrong about this ON THIS BASE. It calls
+the delivery line "INERT BY CONSTRUCTION" because on 65b7196's tree the delivery
+pipeline owns separate thresholds and multipliers. At 08b462b there is NO
+two-pipeline split: config/scoring_weights.yaml has zero delivery keys,
+system_config.yaml has no delivery_tier_multipliers block, and
+capital/position_sizer.py holds exactly one multiplier dict (self._tier_multipliers,
+:155/:445/:467) with no delivery branch. Delivery is live today
+(delivery_enabled: true, force_intraday_only: false, three positional strategies
+in will_trade), so this change raises DELIVERY sizing as well as intraday.
+
+M-C2 COUPLING (N11-23), re-derived under the multipliers this commit ships:
+  positional_bucket_pct 0.30 / max_open_delivery_positions 3 = 0.10
+                                        = max_concentration_pct 0.10, exactly.
+  This commit changes none of the three, so the identity HOLDS. The tier
+  multiplier is applied AFTER min(risk, capital, conc) (position_sizer.py:216-220),
+  so raising it moves size UP toward the 10%-of-total cap and never past it.
+  Identity holds AND positions move up => M-C2's reach SHRINKS; at full size
+  3 x 10% = 30% = the whole positional bucket, so the 3-slot cap is
+  self-enforcing. Measurement only -- M-C2 is NOT implemented here.
+
+KNOWN STALE COMMENT, deliberately NOT fixed to keep this diff minimal:
+  config/scoring_weights.yaml still says tier weights are "(0.70/0.50)" three
+  lines above the new block. It now names the pre-change values. Recorded here
+  rather than changed, so the unit stays provably value-only.

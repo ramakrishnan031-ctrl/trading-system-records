@@ -1,0 +1,4 @@
+APPLOG BEFORE size=10945945 mtime=2026-09-17 17:35:04.412233980 +0530 | md5=3b3da54f37f5c58e08ddb34aa941f8f2 | is-active=inactive
+APPLOG AFTER  size=10945945 mtime=2026-09-17 17:35:04.412233980 +0530 | md5=3b3da54f37f5c58e08ddb34aa941f8f2 | is-active=inactive
+APPLOG LOCAL  10945945 B md5 3b3da54f37f5c58e08ddb34aa941f8f2 -> FULLDAY_system_17-Sep-2026__captured_2026-09-17T1752IST.log
+JOURNAL LOCAL 157324 B 636 lines md5 7dc4515a0e7e6e542baf131cd8c417ad -> FULLDAY_journal_trading-system_17-Sep-2026__captured_2026-09-17T1752IST.txt

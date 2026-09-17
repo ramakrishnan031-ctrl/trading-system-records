@@ -1,0 +1,63 @@
+"""READ-ONLY scan: for every StrategyConfig field, list every non-test, non-doc
+source line in a source tree that names it. Writes nothing but stdout."""
+import os
+import re
+import sys
+
+sys.dont_write_bytecode = True
+ROOT = sys.argv[1]
+
+FIELDS = [
+    "name", "display_name", "description", "direction", "intent", "order_protocol",
+    "pipeline", "horizon", "enabled", "entry_method", "entry_offset_pct",
+    "sl_method", "sl_pct", "sl_atr_multiplier", "sl_min_pct", "sl_max_pct",
+    "sl_gap_buffer_pct", "tgt_method", "tgt_pct", "tgt_risk_reward",
+    "tgt_atr_multiplier", "smart_tgt_enabled", "smart_tgt_trail_trigger_pct",
+    "smart_tgt_trail_step_pct", "trailing_sl_enabled",
+    "trailing_sl_breakeven_trigger_pct", "trailing_sl_partial_lock_trigger_pct",
+    "trailing_sl_partial_lock_sl_pct", "pullback_wait_enabled",
+    "pullback_wait_tolerance_pct", "pullback_wait_timeout_sec", "min_score",
+    "min_volume_surge", "min_adr_pct", "max_spread_pct", "lot_size",
+    "max_concurrent_positions", "v3_playbook", "entry_start_time",
+    "entry_end_time", "active_days",
+]
+# fields whose bare names are too generic to grep usefully as attributes
+GENERIC = {"name", "description", "direction", "intent", "enabled", "pipeline", "horizon"}
+
+SKIP_DIRS = {os.path.join(ROOT, d) for d in ("tests", "docs", ".git")}
+EXTS = (".py", ".js", ".ts", ".tsx", ".jsx", ".html", ".sql")
+
+files = []
+for dp, dns, fns in os.walk(ROOT):
+    if any(dp == s or dp.startswith(s + os.sep) for s in SKIP_DIRS):
+        continue
+    if os.sep + "tests" in dp or "/tests" in dp.replace("\\", "/"):
+        continue
+    for fn in fns:
+        if fn.endswith(EXTS):
+            files.append(os.path.join(dp, fn))
+files.sort()
+
+cache = {}
+for f in files:
+    try:
+        with open(f, "r", encoding="utf-8", errors="replace") as fh:
+            cache[f] = fh.read().splitlines()
+    except OSError:
+        pass
+
+for field in FIELDS:
+    if field in GENERIC:
+        pat = re.compile(r"(strategy|strat|cfg|strategy_obj|_strategy|s|sc|scfg|st)\." + field + r"\b|[\"']" + field + r"[\"']")
+    else:
+        pat = re.compile(r"\b" + re.escape(field) + r"\b")
+    hits = []
+    for f, lines in cache.items():
+        rel = os.path.relpath(f, ROOT).replace("\\", "/")
+        for i, line in enumerate(lines, 1):
+            if pat.search(line):
+                hits.append("%s:%d: %s" % (rel, i, line.strip()[:170]))
+    print("#### %s  (%d hits)" % (field, len(hits)))
+    for h in hits:
+        print("   " + h)
+    print()

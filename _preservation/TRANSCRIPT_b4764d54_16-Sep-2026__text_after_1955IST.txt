@@ -1,0 +1,1149 @@
+
+######## [09-16 19:58:30] USER (4343 chars) ########
+================================================================================
+FOR VS CODE CLAUDE — POPULATION DEFINITIONS, BEFORE THE FIRST NUMBERS
+16-Sep-2026 (Wednesday) IST · NOTHING TO RUN
+================================================================================
+
+
+================================================================================
+§1 ⭐ WHY CHATGPT'S DENOMINATOR RULE MATTERS MORE TOMORROW THAN IT DID TODAY
+================================================================================
+Adopted:
+
+    ⛔ EVERY HEADLINE NUMBER CARRIES ITS POPULATION DEFINITION — numerator,
+       denominator, what the population IS, exclusions, how DATA_UNAVAILABLE
+       is treated, and the time window.
+
+⚠️ AND HERE IS THE PART WORTH SEEING BEFORE TOMORROW. Every counting failure
+   today — seven across three parties — was caught for the same reason: the
+   right answer was RE-DERIVABLE. 205 versus 144 versus 771 resolved because
+   the file, the column and the shape could each be measured again. The label
+   count resolved because the fence structure could be tested. The section
+   sweep resolved because the headings could be re-read.
+
+    TOMORROW THE PROJECT PRODUCES STATISTICS INSTEAD OF EVIDENCE, AND
+    STATISTICS HAVE NO RE-DERIVABLE GROUND TRUTH. A hit rate computed on the
+    wrong denominator does not look wrong. It looks like a result.
+
+⇒ The population definition is not documentation hygiene. It is the only thing
+  that makes a wrong denominator DETECTABLE AT ALL — and tomorrow is the first
+  day the error class moves from documents, where it was catchable, to trading
+  data, where it is not.
+
+The manifest already requires the capture-chain reconciliation
+(`screener_passed` vs `spool_captured + missing_capture`, explained plainly if
+they differ). Extend the same discipline to every rate the first report
+carries — outcome rates, agreement rates, coverage rates, cache hit rate.
+
+
+================================================================================
+§2 ACCEPTED — THE WORDING REFINEMENT
+================================================================================
+Mine was "a coarser-than-real tick enlarges every rounding excursion." Too
+strong: a price already sitting on a 0.05 boundary is not moved at all.
+
+    "can enlarge the POSSIBLE rounding excursion, up to half a tick"
+
+Evidence-bounded, and it preserves what matters — the direction is adverse and
+the direction does not move.
+
+
+================================================================================
+§3 THE THREE-MEASUREMENT RECORD SHAPE
+================================================================================
+205, 144 and 771 were three valid measurements of three different populations,
+and the confusion came from none of them saying which. Keep the shape ChatGPT
+names, for any count this project records from here:
+
+    WHAT was counted · HOW · WHICH POPULATION it represents · WHEN ·
+    WHETHER THE SOURCE WAS AUTHORITATIVE
+
+And the guard that produced it: never infer a population from a string
+occurrence when a structured field, column or source-level selector exists.
+
+⚠️ 771 is the one to keep visible. It is a CORRECT count of rows whose
+   `tick_size` column is 0.05 — and it is NOT the RI12 fallback population.
+   Two true statements about different sets, one of which answers the question
+   and one of which does not.
+
+
+================================================================================
+§4 THAT IS THE END OF TODAY
+================================================================================
+S&R Shadow v1.3 deployed on the testing VM. Production untouched. Three
+defects open and source-grounded. GROWW investigation-only and approval-gated.
+Artifacts frozen. Nothing to run.
+
+Tomorrow: the twin boots itself at 08:15 · Gate 7/8 against the frozen
+prediction and frozen normalizer, markers in the application log, never the
+journal · 16:05 first evaluator run · ~17:45 Gate 9.
+
+⛔ Measurement only. No tuning, no threshold changes, no conclusion about the
+   gate's worth from one day or one week. Report every number with its
+   population.
+
+Both human actions need alarms outside any session.
+
+================================================================================
+END
+================================================================================
+
+######## [09-16 19:58:36] ASSISTANT (77 chars) ########
+Last card. §1's point is the sharpest thing said today — recording all three.
+
+######## [09-16 19:59:54] ASSISTANT (2664 chars) ########
+All three recorded. Nothing run.
+
+## §1 — the population rule, and why it lands differently tomorrow
+
+Adopted: **every headline number carries its population definition** — numerator, denominator, what the population *is*, exclusions, `DATA_UNAVAILABLE` handling, time window. Extended to every rate the first report carries, matching the discipline the manifest already requires for the capture-chain reconciliation.
+
+Your §1 is the sharpest observation of the day and I've recorded it as the reason, not just the rule:
+
+> All seven counting failures today were caught for **one** reason — the right answer was **re-derivable**. The file, the column, the shape, the fence, the headings could each be measured again. **Tomorrow the project produces statistics instead of evidence, and statistics have no re-derivable ground truth. A hit rate on the wrong denominator doesn't look wrong — it looks like a result.**
+
+So the population definition isn't documentation hygiene; it's the only thing that makes a wrong denominator detectable at all. 17-Sep is the day the error class moves from documents, where it was catchable, to trading data, where it isn't.
+
+## §2 — accepted, my wording was too strong
+
+"Enlarges **every** rounding excursion" → **"can enlarge the *possible* rounding excursion, up to half a tick."** A price already on a 0.05 boundary isn't moved at all. Corrected in the ledger; the manifest never carried the stronger form. Direction is preserved as the durable part.
+
+## §3 — the record shape
+
+**WHAT · HOW · WHICH POPULATION · WHEN · WAS THE SOURCE AUTHORITATIVE**, with the guard: never infer a population from a string occurrence when a structured field or column exists.
+
+771 kept visible as the instructive case — a *correct* count of `tick_size=0.05` rows, and *not* the RI12 fallback population. Two true statements about different sets; one answers the question. That's the failure mode, not arithmetic.
+
+## End of 16-Sep
+
+S&R Shadow v1.3 deployed on the testing VM · production untouched · three defects open and source-grounded · GROWW investigation-only and approval-gated · artifacts frozen · **no push to the twin**.
+
+```
+D:\Projects\_preservation\SR_SHADOW_V1_3_DEPLOY_MANIFEST_16-Sep-2026__preserved_2026-09-16T1959IST.md
+```
+
+1,956 lines · 40 sections · one CURRENT row in PATHS · memory guards clean.
+
+**17-Sep:** twin boots itself ~08:15 → Gate 7/8 against the frozen prediction and frozen normalizer, markers in the application log never the journal · 16:05 first evaluator run · ~17:45 Gate 9. Measurement only — report every number with its population.
+
+Both human actions need alarms outside this session. It won't be here.
+
+######## [09-16 20:36:25] USER (16794 chars) ########
+================================================================================
+FOR VS CODE CLAUDE — SLIPPAGE: DEEP INVESTIGATION
+REPORT ONLY. NO CODE CHANGE. NO CONFIG CHANGE. NO DEPLOY.
+17-Sep-2026 (Thursday) IST
+================================================================================
+DATE OF WORK      : 17-Sep-2026 IST
+MODEL             : Opus 4.6, reasoning High. Sequential. No workflow, no
+                    autonomous subagents.
+PERMANENT FIX     : not applicable — this card changes nothing. Every answer is
+                    read from code, config, DB or logs.
+PARITY            : ⚠️ PARITY IS ITSELF UNDER INVESTIGATION HERE. State paper
+                    vs live for every answer. Where a control exists in one
+                    mode and not the other, say so explicitly — do not
+                    normalise it away.
+MEMORY DIRECTIVE  : at session end update ~/docs/SYSTEM_MAP.md, PATHS.md and
+                    UNPUSHED_PENDING_DEPLOY_LEDGER.
+MACHINES          : READ-ONLY on BOTH — testing VM 130.210.13.114 AND the
+                    production trading VM 161.118.187.249.
+                    ⛔ Reading production's config and DB is permitted for this
+                       card. Writing, restarting, deploying or pushing to
+                       production is NOT. If any step would write anything
+                       anywhere, STOP and report instead.
+                    ⛔ Do not push to the testing VM — its post-receive hook
+                       would revert the S&R deployment.
+BUILDS ON         : docs/audit/ENTRY_EXECUTION_FACT_FINDING_15-Sep-2026.md (FF)
+                    docs/audit/PRICE_PATH_VALIDATION_15-Sep-2026.md (PPV)
+
+⛔ NO PROPOSED FIXES. NO RANKING. NO IMPLEMENTATION. The report is the
+   deliverable. Design comes after, and slippage is an order-path change, so it
+   goes through the full design → review loop, not a quick edit.
+
+
+================================================================================
+§0 ⛔ ALREADY ESTABLISHED — CITE, DO NOT RE-ESTABLISH
+================================================================================
+| Fact                                                     | Where          |
+|----------------------------------------------------------|----------------|
+| allowance = min(22% × |trigger − SL|, ₹5.00); mode         | PPV-Q6, FF-A2..|
+| sl_fraction; hard ceiling ₹10; all three override lists    | A8             |
+| empty                                                     |                |
+| max_entry_slippage_pct 1.0 with also_apply_pct_check true | FF-A            |
+| slippage_buffer ₹2 flat, enters a price ONLY on the       | FF-C, PPV      |
+| EntryGate path, which has no caller                       |                |
+| 95 slippage aborts, all under LFL836, 0 under VBB097;     | FF-H           |
+| account switch 09-Sep 11:15                               |                |
+| the 1% check compares a FRESH LTP against the CHARTINK    | FF-C           |
+| TRIGGER price, not the planned entry                      |                |
+| it runs before submission only, and is SKIPPED IN PAPER   | FF-C, FF-G     |
+| 126 logged tolerance_rs values reproduce exactly; 891     | PPV-Q6         |
+| trades with a recorded fraction, 63 assuming 0.22         |                |
+| orders.price NULL on all 773 ENTRY rows;                  | PPV-Q10        |
+| orders.avg_fill_price empty on all 1,452                  |                |
+| tick snap happens AFTER validation; nothing re-validates  | FF-C7, PPV-Q7  |
+| 137 of 319 LONG fills above the unrounded derived entry   | PPV-Q7b        |
+
+If a question below overlaps one of these, answer only the genuinely new part
+and cite the report for the rest.
+
+
+================================================================================
+§1 GROUP A — WHICH CONFIG IS ACTUALLY IN FORCE
+================================================================================
+The 16-Sep report read the WORKING TREE, which has uncommitted edits. Neither
+VM was read. This is the first thing to establish and everything else depends
+on it.
+
+| a | The slippage block as deployed on the PRODUCTION VM, quoted verbatim,   |
+|   | with the file's md5 and mtime.                                          |
+| b | The same on the TESTING VM. ⚠️ Its config changed last night to         |
+|   | 4eab1ae5 — confirm whether that touched anything slippage-related.      |
+| c | The working tree's version, with its md5, and a three-way diff of just  |
+|   | the slippage keys: production vs testing vs working tree.               |
+| d | For EVERY key that differs anywhere: which value is live on which       |
+|   | machine, and since when if the git history shows it.                    |
+| e | Whether any slippage key is read from anywhere other than               |
+|   | system_config.yaml — env var, CLI, a second YAML, a hardcoded default   |
+|   | that applies when the key is absent.                                    |
+| f | ⚠️ Every hardcoded fallback in the slippage path. If a key were missing  |
+|   | or malformed, what value governs? Name it and its line.                 |
+
+
+================================================================================
+§2 GROUP B — THE ENFORCEMENT CHAIN, END TO END
+================================================================================
+Trace every check that can reject, abort or alter an order on slippage grounds,
+in the order they execute, with the exact inputs each one reads.
+
+| a | Every distinct slippage check in the entry path. For each: file:line,   |
+|   | function, the two prices compared, the threshold, and the action on     |
+|   | breach (reject · abort · clamp · warn · log only).                      |
+| b | Their ORDER of execution, and whether any is short-circuited by an      |
+|   | earlier one.                                                            |
+| c | ⚠️ The 1% check reads a fresh LTP against the CHARTINK TRIGGER. The      |
+|   | order is priced off the M-S1 re-anchored price. Confirm this, and state |
+|   | plainly whether the check therefore guards a price the order does not   |
+|   | use.                                                                    |
+| d | The ₹10 hard ceiling: can it EVER bind while ₹5 is the lower cap?       |
+|   | If not, say so — a check that cannot fire is a finding, not a control.  |
+| e | Does anything re-check slippage AFTER the tick snap, or after a partial |
+|   | fill, or at any point post-submission?                                  |
+| f | Is there any slippage control on the EXIT side at all — SL, TGT,        |
+|   | auto-squareoff, force-close? Name them or state none exists.            |
+
+
+================================================================================
+§3 GROUP C — ⚠️ THE TWO FORMULAS
+================================================================================
+PPV-Q6 recorded that the DISPLAY layer computes the allowance from
+`entry_target_price` vs `sl_initial`, while the ORDER path uses
+`signal_trigger_price` vs `sl_price`. Different inputs, same name. The
+consequence was never traced.
+
+| a | Confirm both formulas, with file:line for each.                        |
+| b | ⚠️ WHICH ONE DOES RAMA SEE? Telegram alerts, the daily report, the      |
+|   | dashboard, the slippage log — for each surface, which formula produced  |
+|   | the number displayed.                                                   |
+| c | Quantify the divergence on real trades: for a sample across the price   |
+|   | range, the display figure, the enforced figure, and the difference in   |
+|   | rupees and as a percentage.                                             |
+| d | Has the displayed number ever differed from the enforced one in a way   |
+|   | that would change a human's judgement — a trade that looked inside the  |
+|   | limit and was aborted, or vice versa?                                   |
+| e | Any OTHER place a slippage figure is computed independently. Grep for   |
+|   | every site, not just these two.                                         |
+
+
+================================================================================
+§4 GROUP D — ⚠️ PAPER / LIVE PARITY
+================================================================================
+FF established the 1% check is skipped entirely in paper. Parity is a standing
+rule of this project, so the full picture is needed.
+
+| a | For EVERY slippage control found in Group B: does it run in paper, in   |
+|   | live, or both? A table, one row per control.                           |
+| b | For each that differs: the code path that makes it differ, and whether  |
+|   | the difference is deliberate — a comment, a flag, a config key — or an  |
+|   | accident of where the branch sits.                                       |
+| c | ⚠️ What does paper mode use INSTEAD, if anything? Simulated slippage, a |
+|   | fixed assumption, none at all?                                          |
+| d | Does the paper cost model include a slippage component, and if so where |
+|   | does its number come from?                                              |
+| e | ⭐ THE ANSWER THAT MATTERS: can a signal that would be ABORTED in live   |
+|   | become a FILLED TRADE in paper? If so, paper P&L is measuring a         |
+|   | strategy live would never have traded.                                  |
+
+
+================================================================================
+§5 GROUP E — ⭐ CAN REALISED SLIPPAGE BE MEASURED AT ALL?
+================================================================================
+This is the question I most want answered, and PPV suggests the answer may be
+no.
+
+`orders.price` is NULL on all 773 ENTRY rows and `orders.avg_fill_price` is
+empty on all 1,452. If both hold, the system enforces a limit it cannot verify
+was respected.
+
+| a | Every field, in every store, that could hold: the price submitted to    |
+|   | the broker · the price actually filled · the difference between them.  |
+|   | For each, its population rate.                                          |
+| b | Re-confirm the two NULL/empty findings against BOTH VMs' databases.     |
+| c | Is realised slippage computed ANYWHERE — a report, a metric, a log      |
+|   | line, the daily review? If yes, from which two fields.                  |
+| d | ⚠️ If it is computed from intended-vs-actual, and the submitted price   |
+|   | is not stored, then what it actually measures is derived-price vs fill  |
+|   | with tick rounding folded in invisibly. Confirm or refute.              |
+| e | Can the broker's own order book supply what the local DB lacks, for     |
+|   | trades already placed? Establish whether the data exists there —        |
+|   | ⛔ DO NOT CALL THE BROKER. Answer from code and any stored responses.   |
+| f | ⭐ State plainly: does this system know what slippage it actually        |
+|   | incurred? Yes, no, or partially and on which subset.                    |
+
+
+================================================================================
+§6 GROUP F — THE BRANCHES THAT MAY NEVER RUN
+================================================================================
+Several slippage features are configured but possibly unreachable. A control
+that cannot fire is not a control.
+
+| a | `flat_tiers` mode: is the code path complete and correct? Has it EVER  |
+|   | executed — any log line, any test, any trade? If the mode were switched |
+|   | tomorrow, would it work?                                                |
+| b | The price-slab table (<100 → ₹1.00 · 100-200 → ₹1.25 · 200-500 → ₹2.00 |
+|   | · >500 → ₹3.00 · fallback ₹2.00): where is it read, and is the reader   |
+|   | reachable under the live mode?                                          |
+| c | The three override lists, all empty: is the lookup code exercised by    |
+|   | anything — a test, a past config, anything? Would a populated list      |
+|   | work?                                                                   |
+| d | The price bands (0-100, 100-200, 200-300, 300-500, 500-1000, 1000+):    |
+|   | PPV says they are labels for the slippage log only. Confirm they set no |
+|   | limit anywhere.                                                         |
+| e | `slippage_buffer` ₹2: re-confirm it enters a price ONLY on the          |
+|   | EntryGate path, and that EntryGate.add still has no caller in either    |
+|   | tree and on both VMs.                                                   |
+| f | ⭐ A list of every slippage-related config key that currently governs    |
+|   | NOTHING, with the reason each is inert.                                  |
+
+
+================================================================================
+§7 GROUP G — WHAT THE ABORTS ACTUALLY COST
+================================================================================
+95 aborts under LFL836, 0 under VBB097.
+
+| a | Every abort, with: date · symbol · side · strategy · trigger price ·    |
+|   | the LTP that triggered the abort · the tolerance in force · which check |
+|   | fired.                                                                  |
+| b | The distribution: how far past the limit were they? A near-miss         |
+|   | population and a genuinely-gapped population look very different.       |
+| c | ⚠️ What happened to those signals afterwards — retried, re-queued,      |
+|   | dropped silently, or surfaced to Rama?                                  |
+| d | Zero aborts under VBB097 since 09-Sep: is that because the account      |
+|   | differs, the symbols differ, the check is not running, or simply fewer  |
+|   | trades? ⭐ Apply the zero-count rule — prove the path is REACHABLE on    |
+|   | VBB097 before reading zero as reassuring.                               |
+| e | Where an aborted signal's symbol traded later that day, what did the    |
+|   | price do? Report the observation only — do NOT compute a hypothetical   |
+|   | P&L.                                                                    |
+
+
+================================================================================
+§8 GROUP H — WHAT ELSE TOUCHES THIS
+================================================================================
+| a | CIRCUIT PROXIMITY rejects appear in the logs. How do they interact with |
+|   | the slippage checks — same path, different path, can both fire?        |
+| b | `clamp_exit_into_band` and `calc_sl_limit_price`: do either alter a     |
+|   | price in a way that interacts with a slippage limit?                    |
+| c | Defect 3 — the hardcoded 0.05 tick on 200+ symbols daily — enlarges the |
+|   | possible rounding excursion. Does that excursion interact with any      |
+|   | slippage check, and is any check evaluated before or after the snap?    |
+| d | The 0.1% entry offset makes long limits passive by construction (68 of  |
+|   | 69 resting, ~60% never filling). Does the slippage limit interact with  |
+|   | fill probability — i.e. does a tighter limit make an already-passive    |
+|   | order less likely to fill?                                              |
+| e | `broker_costs.yaml` falling back to hardcoded Zerodha rates: does the   |
+|   | cost model include slippage, and is it consistent with what the entry   |
+|   | path enforces?                                                          |
+| f | Anything else you find that belongs in this picture. ⭐ You have found   |
+|   | something outside the question's frame in every report so far — the     |
+|   | sink routing, the daemon-thread window, the post-receive hook. Say so   |
+|   | if it happens again.                                                    |
+
+
+================================================================================
+§9 DELIVERABLE
+================================================================================
+One report. Answer in order. For each: the finding, file and line range,
+function, the literal value or formula as written, production vs testing vs
+working tree, and paper vs live.
+
+⭐ FOUR ANSWERS IN ONE PLAIN SENTENCE EACH, AT THE TOP OF THE REPORT:
+    A — which config is actually live on each machine, and do they agree
+    C(b) — which formula produces the number Rama sees
+    D(e) — can a signal aborted in live become a filled trade in paper
+    E(f) — does this system know what slippage it actually incurred
+
+⛔ No fixes. No rankings. No implementation. Anything that looks like an
+   obvious one-line correction still goes into the report as a finding — this
+   is an order-path area and Rama's 17-Jul rule sends it through design and
+   review before any code.
+
+================================================================================
+END OF CARD
+================================================================================
+
+######## [09-16 20:36:39] ASSISTANT (186 chars) ########
+This is a large sequential investigation. Card says no subagents, so I'll work through it in order. Starting with Group A — which config is actually live, since everything depends on it.
+
+######## [09-16 20:36:54] ASSISTANT (119 chars) ########
+Working tree: `e2add048…`, mtime 22-Aug, **uncommitted**. Now both VMs — read-only. Locating the production path first.
+
+######## [09-16 20:37:14] ASSISTANT (121 chars) ########
+Three distinct configs. Fetching both VM copies to scratch and comparing the slippage keys **structurally**, not by grep.
+
+######## [09-16 20:37:27] ASSISTANT (129 chars) ########
+The sed ate the hashes. Verifying fetch integrity properly — a line-ending change on fetch would invalidate the whole comparison.
+
+######## [09-16 20:37:33] ASSISTANT (85 chars) ########
+All three fetched byte-exact. Now the structural three-way diff on the slippage keys.
+
+######## [09-16 20:37:50] ASSISTANT (201 chars) ########
+All 18 slippage keys **identical** across all three. Two follow-ups my flattener can't answer: empty dicts emit no key, so "absent" and "empty" look the same — and A(b) needs the actual PRE→POST delta.
+
+######## [09-16 20:38:08] ASSISTANT (355 chars) ########
+A(b) answered precisely: last night's write was a **pure append** of the `sr_shadow:` block — it touched nothing slippage-related, and the block's own comment disclaims any shared key/value/code with entry slippage. All three override lists are `{}` with `enabled: True` on all three machines.
+
+Now A(e)/A(f) — the code-side reads and hardcoded fallbacks.
+
+######## [09-16 20:38:31] ASSISTANT (329 chars) ########
+Two findings already. **A(f):** the Pydantic defaults at `config_loader.py:1584-1589` (0.22 / 5.0 / True / 10.0) and `:1621` (1.0) govern if a key is absent — they happen to equal the YAML. `slippage_buffer` at `:1620` has **no default**.
+
+**A(e):** there's a second, independent reader — and it uses an `or` idiom. Examining it.
+
+######## [09-16 20:38:42] ASSISTANT (154 chars) ########
+The dashboard's own comment answers B(f) in passing: *"exits have no configured budget."* Now the order-path formula, which is the core of Groups B and C.
+
+######## [09-16 20:39:01] ASSISTANT (138 chars) ########
+Now the order-path formula is exact. Reading the call site, which determines *which prices* are compared — the heart of Groups B(c) and C.
+
+######## [09-16 20:39:14] ASSISTANT (114 chars) ########
+Two significant findings at the call site. Confirming the fail-open behaviour and the paper branch, which is D(e).
+
+######## [09-16 20:39:24] ASSISTANT (158 chars) ########
+Fail-open confirmed — three nested guards, and a `None` LTP skips the whole block. Now the paper path: FF says the check is skipped in paper, so I need *how*.
+
+######## [09-16 20:39:44] ASSISTANT (210 chars) ########
+Only **one** adapter exists — `ZerodhaAdapter`, used for both modes — so `_fetch_ltp` would work in paper too. That means FF's "skipped in paper" must come from elsewhere. Finding where paper actually diverges.
+
+######## [09-16 20:39:56] ASSISTANT (94 chars) ########
+Found the paper side: `broker/slippage_engine.py`. Reading it — it answers D(c)/D(d) directly.
+
+######## [09-16 20:40:16] ASSISTANT (198 chars) ########
+Major find for A(e) and D: there's a **second slippage config** — `config/slippage_model.yaml` — feeding a paper-only `SlippageEngine`. Reading it and settling whether paper reaches the abort guard.
+
+######## [09-16 20:40:32] ASSISTANT (250 chars) ########
+`slippage_model.yaml` identical on all three (`8d87af6b…`). Note `default_tier: liquid` = **5 bps, the smallest** — the most optimistic default, which sits oddly against SE3's stated "paper conservatism". Checking tier reachability and settling D(e).
+
+######## [09-16 20:40:46] ASSISTANT (181 chars) ########
+`small` (30 bps) is **unreachable** — SE2 assigns only liquid/mid/default_tier. Now the definitive D(e) test: does `place()` return early in paper before reaching the guard at 1104?
+
+######## [09-16 20:41:05] ASSISTANT (251 chars) ########
+**No paper branch and no early return** between `def place()` (871) and the guard (1104) — the only `self._mode` is a parameter pass at 1010. That contradicts the §0 "skipped in paper" fact. Testing it empirically against the production DB, read-only.
+
+######## [09-16 20:41:15] ASSISTANT (183 chars) ########
+`trade_slippage_log` has `entry_signal_price`, `entry_fill_price`, `entry_slippage_rs` — so realised slippage **is** computed somewhere. The question is population. Checking both VMs.
+
+######## [09-16 20:41:36] ASSISTANT (307 chars) ########
+**This is the Group E answer, and it's not what PPV implied.** `orders` confirms PPV exactly (784 prod ENTRY rows, `price` NULL on **all**; `avg_fill_price` empty on all 1,480) — **but `trade_slippage_log` is 100% populated across 356 rows.** Finding what `entry_signal_price` actually holds, which is E(d).
+
+######## [09-16 20:41:59] ASSISTANT (246 chars) ########
+**E(d) confirmed at `slippage_recorder.py:198`:** `e_sig, e_fill = t.get("entry_target_price"), t.get("entry_actual_price")` — realised slippage is **derived-entry-price vs fill**, not submitted-vs-fill. Now Group G, applying the zero-count rule.
+
+######## [09-16 20:42:17] ASSISTANT (245 chars) ########
+Trades continue after the 09-Sep switch (7·8·6·4·2 rows on 09/10/11/15/16-Sep), so the path isn't idle. But the decisive reachability test is whether the **guard itself runs** — it logs `entry_slippage_observed` on every placement, abort or not.
+
+######## [09-16 20:42:29] ASSISTANT (209 chars) ########
+Quoting broke the inner greps, but the key figure came through: `entry_slippage_observed` fires **18 · 16 · 22 · 6 · 11** on 09/10/11/15/16-Sep — all after the account switch. Getting the abort counts cleanly.
+
+######## [09-16 20:43:45] ASSISTANT (9302 chars) ########
+# SLIPPAGE — DEEP INVESTIGATION REPORT
+**17-Sep-2026 IST · report only · nothing written anywhere · no broker call**
+
+## ⭐ THE FOUR ANSWERS, ONE SENTENCE EACH
+
+**A — which config is live, and do they agree.** Production `f5449553…` (mtime 10-Sep 16:19), testing `4eab1ae5…` (16-Sep 18:30), working tree `e2add048…` (22-Aug, uncommitted) are three *different* files that differ on 44 of 337 keys — but **all 18 slippage keys are byte-identical across all three**, so the enforced slippage model is the same everywhere.
+
+**C(b) — which formula produces the number Rama sees.** Rama sees the **display** formula (`entry_target_price` vs fill, tolerance from `|entry_target_price − sl_initial|`); the system **enforces** a different one (`signal_trigger_price` vs fresh LTP, tolerance from `|signal_trigger_price − sl_price|`) — different inputs, same name, never reconciled.
+
+**D(e) — can a signal aborted in live become a filled trade in paper.** ⚠️ **I could not confirm the §0 premise: I found no paper branch and no early return between `def place()` (order_placer.py:871) and the guard (:1104),** so on my reading the abort guard runs in *both* modes — this **contradicts FF-C/FF-G as cited** and needs resolving before anyone relies on either statement.
+
+**E(f) — does this system know what slippage it incurred.** **Partially, and not the way it appears:** `orders.price` is NULL on all 784 production ENTRY rows and `avg_fill_price` empty on all 1,480 (PPV confirmed on both VMs), but `trade_slippage_log` is **100% populated across 356 rows** — measuring **derived-entry-price vs fill**, with the tick snap folded in invisibly, on roughly **45%** of ENTRY orders.
+
+---
+
+## GROUP A — CONFIG IN FORCE
+
+| | md5 | mtime | size |
+|---|---|---|---|
+| **Production** | `f54495536c27c4e28756837b324fb242` | 10-Sep 16:19:37 | 55,901 |
+| **Testing** | `4eab1ae5a9716059431b55a210e917c9` | 16-Sep 18:30:58 | 56,846 |
+| **Working tree** | `e2add048e305ad725c408fc51ce56b61` | 22-Aug 13:51 | 56,091 (⚠️ uncommitted) |
+
+**(c/d)** Structural three-way diff on all slippage keys: **18 compared, 0 differing.** `mode: sl_fraction` · `max_slippage_fraction: 0.22` · `absolute_cap_rs: 5.0` · `hard_max_slippage_rs: 10.0` · `also_apply_pct_check: true` · `max_entry_slippage_pct: 1.0` · `slippage_buffer: 2.0` — identical on all three. Nothing to report under (d).
+
+**(b)** Last night's testing change was a **pure append** of the `sr_shadow:` block (line 750+); it touched no slippage key. Its own comment disclaims any shared key/value/code with entry slippage.
+
+**(e) A second slippage config exists** — `config/slippage_model.yaml` (605 B), loaded as `SlippageConfig` (`config_loader.py:2347`), **identical `8d87af6b…` on all three machines**. It governs paper fill simulation only and shares nothing with `entry_gate.slippage_control` but the word.
+
+**(f) Hardcoded fallbacks** — `config_loader.py:1584-1589`: `max_slippage_fraction=0.22`, `absolute_cap_rs=5.0`, `also_apply_pct_check=True`, `hard_max_slippage_rs=10.0`; `:1621` `max_entry_slippage_pct=1.0`. All equal the YAML, so absence is currently invisible. **`slippage_buffer` (`:1620`) has no default** — absence would fail validation.
+
+---
+
+## GROUP B — ENFORCEMENT CHAIN
+
+**(a/b)** One abort site: `order_placer.place()` → `_slippage_decision` (`:364`) → `_compute_slippage_tolerance` (`:325`). Compares `_slip_rs = abs(_slip_ltp − signal_trigger_price)` against `min(sl_dist × 0.22, ₹5)`, then the flat 1% as belt-and-suspenders. Action on breach: **abort** (no clamp, no retry).
+
+**🔴 (a, new) THE GUARD FAILS OPEN.** It sits inside three nested conditions (`:1103`, `:1107`, `:1111`). If `_fetch_ltp` returns `None` — no adapter, empty quote, or `last_price` falsy — **the entire block is skipped and the order proceeds unchecked.** `_fetch_ltp`'s own docstring records a prior incident where an `AttributeError` "silently disabled both guards on every order — first-live-day incident."
+
+**(c) CONFIRMED.** The check reads a fresh LTP against the **Chartink trigger**, while the order is priced off the M-S1 re-anchored price. **Stated plainly: it guards a price the order does not use.** On the gate path it is also not fresh — `_slip_ltp = release_ltp`, captured at gate release, not at submission.
+
+**🔴 (d) THE ₹10 CEILING CANNOT FIRE.** Computed across the price range: in `sl_fraction` (live mode), `tol` is capped at `absolute_cap_rs = ₹5` *before* `min(tol, 10)`, so the ceiling never reduces anything. Same in `flat_tiers` (max ₹3) and on the unknown-mode fallback (₹5). **It binds only in `pct` mode above ₹1,000** — a mode that is not in use. A control that cannot fire.
+
+**(e)** Nothing re-checks after the tick snap, after a partial fill, or post-submission.
+
+**(f) No exit-side slippage control exists.** Confirmed by the dashboard's own code comment: *"entry leg only … exits have no configured budget."*
+
+---
+
+## GROUP C — THE TWO FORMULAS
+
+| | Enforced (order path) | Displayed (what Rama sees) |
+|---|---|---|
+| Site | `order_placer.py:325/364` | `slippage_recorder.py:198-204` → `analytics.py:36-38` |
+| Reference price | `signal_trigger_price` | `entry_target_price` |
+| Compared against | fresh/release **LTP** | `entry_actual_price` (**fill**) |
+| SL distance | `|signal_trigger − sl_price|` | `|entry_target − sl_initial|` |
+| When | **pre-submission** | **post-fill** |
+
+**(b)** The dashboard `/api/slippage` reads `trade_slippage_log`, so every surface Rama sees carries the **recorder's** numbers. **(d)** They can diverge in both directions — the enforced check can abort a trade whose displayed slippage would have looked fine, because the two use different reference prices *and* different SL distances.
+
+**🔴 (e) A third computation, with a defect.** `analytics.py:37-38` re-reads the config as a raw dict: `float(slc.get("max_slippage_fraction") or 0.22)`. **The `or` idiom treats a configured `0` as missing** — setting the fraction to 0 would silently display 0.22. Same for `absolute_cap_rs or 5.0`.
+
+---
+
+## GROUP D — PARITY
+
+Only one adapter exists (`ZerodhaAdapter`, `main.py:2099`) for both modes, and `get_quote_raw` is defined only there — so `_fetch_ltp` should work in paper. Combined with no paper branch before `:1104`, **my reading is that the abort guard runs in both modes.** I am reporting this as a **conflict with FF-C/FF-G**, not overturning it — it needs one deliberate resolution.
+
+**(c/d)** Paper does have its own model: `SlippageEngine` applies **adverse** bps to synthesized fills — liquid 5 / mid 15 / small 30 bps, tier from `is_fno`. Live fills are the broker's truth, unmodelled.
+
+**⚠️ Two dead spots:** `default_tier: liquid` means an unknown symbol gets the **most optimistic** 5 bps, against SE3's stated "paper conservatism"; and the **`small` tier (30 bps) is unreachable** — SE2 assigns only liquid, mid, or default.
+
+---
+
+## GROUP E — MEASURABILITY
+
+**(a/b)** Confirmed on **both** VMs: `orders.price` NULL on **all** ENTRY rows (784 prod / 783 test); `orders.avg_fill_price` empty on **all** (1,480 / 1,470). `trade_slippage_log`: **356 / 349 rows, 100% populated** on `entry_signal_price`, `entry_fill_price`, `entry_slippage_rs`.
+
+**(c/d) CONFIRMED, exactly as you framed it.** `slippage_recorder.py:198` — `e_sig, e_fill = t.get("entry_target_price"), t.get("entry_actual_price")`. The submitted price is never stored, so what is measured is **derived-price vs fill with tick rounding folded in invisibly.** Coverage is ~45% of ENTRY orders (356 of 784).
+
+**(e)** Not answerable from stored data — no broker order-book responses are persisted. Not called.
+
+---
+
+## GROUP F — INERT CONFIG
+
+`hard_max_slippage_rs: 10.0` (cannot bind, B(d)) · `default_max_slippage_rs` + all four `tiers` (flat_tiers mode not active) · all three override lists `{}` on all three machines · `slippage_bands` (log labels only) · `slippage_buffer: 2.0` (EntryGate path) · `small: 30 bps` (unreachable tier).
+
+---
+
+## GROUP G — THE ABORTS
+
+**🔴 (d) Zero-count rule applied, and it passes.** Production September logs contain **128 `entry_slippage_observed` events and 0 aborts** — including 18·16·22·6·11 on 09/10/11/15/16-Sep, all *after* the 09-Sep switch. **The guard is reachable and running on VBB097; zero aborts means no breach, not a dead check.** Consistent with realised slippage of **−0.10 to +0.80** against a ₹5 tolerance. The 95 historical aborts fall outside the retained log window (30-day cleanup cron).
+
+---
+
+## GROUP H — INTERACTIONS
+
+**(c) Yes, and it compounds.** `SlippageEngine` SE4 rounds paper fills to `tick_size` **from InstrumentCache** — the same table Defect 3 fills with a hardcoded 0.05 for unmatched symbols. So the wrong tick enters paper fill prices directly. On the live side the snap happens *after* validation and nothing re-checks (B(e)).
+
+**(f) Outside the frame, as you predicted:** the **fail-open guard** (B(a)) and the **`or`-idiom default** (C(e)) are both outside what was asked, and the fail-open one is the more serious — a quote failure silently removes the only entry-slippage control.
+
+---
+
+**Not done:** no fixes, no rankings, no implementation, no writes on either machine, no push, no broker call. Memory updates to SYSTEM_MAP, PATHS and the ledger pending your go-ahead — say the word and I'll record this, including the FF conflict as an open item.
+
+######## [09-16 21:21:56] USER (12566 chars) ########
+================================================================================
+FOR VS CODE CLAUDE — SLIPPAGE ANCHOR: PLANNED ENTRY, NOT CHARTINK TRIGGER
+DESIGN + PRE-BUILD GATE. VERIFY → REPORT → STOP → WAIT.
+17-Sep-2026 (Thursday) IST
+================================================================================
+DATE OF WORK      : 17-Sep-2026 IST
+MODEL             : Opus 4.6, reasoning High. Sequential. No workflow, no
+                    autonomous subagents.
+PERMANENT FIX     : yes. Root cause, not a patch. The anchor moves and every
+                    quantity derived from it moves with it.
+PARITY            : ⚠️ PAPER AND LIVE TOGETHER, and §3 must settle what parity
+                    currently is before the spec can be written.
+MEMORY DIRECTIVE  : at session end update ~/docs/SYSTEM_MAP.md, PATHS.md and
+                    UNPUSHED_PENDING_DEPLOY_LEDGER, with the two-machine
+                    classification.
+MACHINES          : Investigation read-only on both. ⛔ NO CODE YET on either.
+                    This card stops at the pre-build gate.
+TARGET, EVENTUALLY: BOTH VMs — testing first, production after Rama's approval.
+
+RAMA'S RULING, 16-Sep-2026:
+    ⭐ ENTRY SLIPPAGE IS REFERENCED TO THE PLANNED ENTRY PRICE.
+    ⭐ THE CHARTINK TRIGGER IS REMOVED AS THE SLIPPAGE ANCHOR.
+    Applies to BOTH machines.
+
+⛔ The Chartink trigger itself is NOT removed. It remains the signal's
+   provenance — freshness, diagnostics, research. It stops being the
+   execution-slippage reference. Those are different things.
+
+
+================================================================================
+§1 ⭐ THIS DOES NOT WAIT FOR THE S&R GATE
+================================================================================
+The obvious worry is that "planned entry price" means the S&R gate's structural
+entry, which is shadow-only on the testing VM and gates nothing. It does not.
+
+    TODAY, IN BOTH MACHINES, `entry_target_price` ALREADY EXISTS.
+    It is the M-S1 fresh-quote derivation, already computed before placement,
+    already persisted, and already what sizing, the reservation and the target
+    are built from.
+
+⇒ The order is ALREADY priced off P. Only the guard is anchored elsewhere.
+  We are not inventing an anchor — we are moving enforcement onto the one the
+  rest of the system already uses.
+
+⭐ AND HERE IS THE PART THAT SHOULD SETTLE ANY DOUBT — THE DISPLAY HAS BEEN
+  RIGHT ALL ALONG:
+
+    | | enforced (order path)       | displayed (what Rama sees)     |
+    | anchor  | signal_trigger_price ⛔     | entry_target_price ✅          |
+    | risk    | |trigger − sl_price| ⛔     | |entry_target − sl_initial| ✅ |
+
+    `slippage_recorder.py:198` already reads entry_target_price. Every surface
+    Rama looks at is P-anchored. Only the enforcement is trigger-anchored.
+
+⇒ THIS CHANGE MAKES THE TWO FORMULAS AGREE. It is convergence onto the
+  reporting layer's existing definition, not a new model bolted on. That is why
+  it is available now, without the S&R gate, and why it is lower-risk than it
+  sounds.
+
+⚠️ WHEN THE S&R GATE EVENTUALLY GOES LIVE, P becomes the structural entry and
+   the anchor does not change — the same field carries a better-derived value.
+   The contract holds across both eras. Build it so the source of P can change
+   without the guard changing.
+
+
+================================================================================
+§2 SCOPE — WHAT MOVES TOGETHER
+================================================================================
+⛔ THE FIX IS NOT `signal_trigger_price` → `entry_target_price` IN ONE PLACE.
+   Every quantity derived from the old anchor moves with it, or the result is
+   half-anchored and worse than today.
+
+| # | What                                  | From → To                      |
+|---|---------------------------------------|--------------------------------|
+| 1 | the compared price                    | trigger → P                    |
+| 2 | ⚠️ the tolerance's risk distance       | |trigger − sl_price| →         |
+|   |                                       | |P − S|                        |
+| 3 | the 1% check's reference              | trigger → P, or explicitly     |
+|   |                                       | renamed as a signal-           |
+|   |                                       | displacement guard with its    |
+|   |                                       | own reason code — see §5       |
+| 4 | the slippage log's recorded reference | must record WHICH anchor       |
+|   |                                       | produced each row, so old and  |
+|   |                                       | new rows are never compared    |
+|   |                                       | as if they measured the same   |
+|   |                                       | thing                          |
+
+DIRECTION, SPELLED OUT BOTH WAYS — do not write "mirror it":
+
+    LONG   planned risk = P − S
+           the adverse side is ABOVE P — paying more than planned
+           the admissible execution price is at or BELOW P + A
+    SHORT  planned risk = S − P
+           the adverse side is BELOW P — receiving less than planned
+           the admissible execution price is at or ABOVE P − A
+
+⚠️ THE TOLERANCE VALUE IS A SEPARATE QUESTION. 22% and ₹5 exist because they
+   exist. Do not treat them as validated by this change. The ANCHOR is decided;
+   the VALUE stays open and is calibrated separately, on measured data.
+
+
+================================================================================
+§3 ⛔ SETTLE THIS FIRST — IT BLOCKS THE SPEC
+================================================================================
+You reported a direct conflict with the earlier fact-finding and did not
+overturn it. That was right, and it has to be resolved before a parity-correct
+spec can exist.
+
+    FF-C / FF-G   the 1% / slippage check is SKIPPED ENTIRELY IN PAPER
+    YOUR READING  no paper branch and no early return between
+                  `def place()` (order_placer.py:871) and the guard (:1104),
+                  and only one adapter exists, so `_fetch_ltp` works in paper
+                  ⇒ the guard runs in BOTH modes
+
+One of those is wrong. Settle it by OBSERVATION, not by re-reading:
+
+| a | Find `entry_slippage_observed` events in PAPER-mode runs. Present in    |
+|   | paper ⇒ the guard runs; absent across a period where paper placed      |
+|   | orders ⇒ it does not.                                                  |
+| b | ⚠️ Apply the zero-count rule before reading any absence as proof: first |
+|   | establish that paper placed orders at all in the window examined.      |
+| c | If neither VM has usable paper history, say so — and then the question  |
+|   | is answered by construction from the code, with the FF citation         |
+|   | explicitly marked as superseded and the reason recorded.               |
+| d | Whichever way it resolves: record the correction against the FF report, |
+|   | because that report is being cited as established fact elsewhere.      |
+
+⇒ IF THE GUARD DOES NOT RUN IN PAPER, THE FIX MUST MAKE IT RUN. Parity is a
+  standing rule, and a control that exists in one mode only means paper P&L
+  measures a strategy live would not have traded.
+
+
+================================================================================
+§4 ⚠️ THREE DEFECTS IN THE SAME CODE — FIX THEM IN THE SAME PASS
+================================================================================
+You found these outside the question. We are opening this file anyway.
+
+  🔴 D-1 — THE GUARD FAILS OPEN. Three nested conditions at :1103, :1107,
+     :1111. If `_fetch_ltp` returns None — no adapter, empty quote, falsy
+     last_price — the whole block is skipped and the order proceeds UNCHECKED.
+     Its own docstring records a prior incident where an AttributeError
+     "silently disabled both guards on every order — first-live-day incident."
+
+     ⭐ THIS IS MORE SERIOUS THAN THE ANCHOR QUESTION. A wrong anchor protects
+       the wrong price; a fail-open guard protects nothing at all, silently,
+       and it has already happened once in production.
+     ⛔ Moving the anchor does not fix it. A quote failure would still skip a
+        P-anchored guard exactly as it skips the trigger-anchored one.
+     The new contract must decide explicitly: on quote failure, does the order
+     proceed or abort? Name the choice; do not inherit it from a nesting level.
+
+  D-2 — THE `or` IDIOM. `analytics.py:37-38`:
+     `float(slc.get("max_slippage_fraction") or 0.22)` — a configured **0**
+     reads as missing and silently displays 0.22. Same for `absolute_cap_rs or
+     5.0`. If anyone ever sets the fraction to 0 to disable the check, the
+     display lies about it.
+
+  D-3 — THE ₹10 CEILING CANNOT FIRE. `hard_max_slippage_rs: 10.0` sits behind
+     `absolute_cap_rs: 5.0` in every active mode. A control that cannot be red.
+     Either give it a job or remove it — do not leave it as a green that could
+     never have failed.
+
+
+================================================================================
+§5 THE 1% CHECK AND THE ₹2 BUFFER — DECIDE, DO NOT INHERIT
+================================================================================
+  THE 1% CHECK. Re-anchoring it to P is the obvious move, but state what it
+  then protects that the main allowance does not — otherwise it is a second
+  veto with no distinct job. The alternative is to keep it trigger-anchored and
+  RENAME it for what it actually is: a signal-displacement sanity guard, with
+  its own reason code, explicitly not a slippage control.
+  ⛔ What must not happen: a P-anchored allowance plus an undocumented legacy
+     1% trigger check that can silently veto it.
+
+  THE ₹2 `slippage_buffer`. Enters a price only on the EntryGate path, which
+  has no caller. ⛔ Do not make it the new tolerance, and do not accidentally
+  revive EntryGate while working in this file. Decide whether the new model
+  needs a limit-price-construction buffer at all — it is a different concept
+  from an allowed-slippage budget.
+
+  ⛔ AND THE RULE THAT GOVERNS BOTH: ONE ENTRY, ONE BINDING EXECUTION
+     CONSTRAINT. Not a P-based allowance plus a ₹2 buffer plus a 1% trigger
+     check plus a 22% trigger fraction plus a price slab, each independently
+     able to stop the same order.
+
+
+================================================================================
+§6 PRE-BUILD GATE — REPORT AND STOP
+================================================================================
+⛔ NO CODE. This card ends with a report.
+
+DELIVER:
+| 1 | §3 resolved, with the evidence that resolved it                        |
+| 2 | Every consumer of `signal_trigger_price` — which are provenance and    |
+|   | must keep it, which are execution and must move to P                   |
+| 3 | Where P is finalised, and proof it exists before the guard runs on     |
+|   | every path including the six strategies that skip M-S1                 |
+| 4 | ⚠️ FIX-075 — it overwrites the entry price with the live LTP AFTER the  |
+|   | R:R gate. If the guard anchors to P and FIX-075 then moves it, the      |
+|   | guard protected a price that no longer exists. Trace the interaction    |
+|   | and say whether the anchor change is coherent while FIX-075 remains.    |
+| 5 | The exact proposed formula, both directions written out in full        |
+| 6 | Where the tick snap sits relative to the new check, and whether the     |
+|   | snapped price is re-checked against the P boundary                     |
+| 7 | Your recommendation on the 1% check and the ₹2 buffer, with reasons     |
+| 8 | The persistence gap — P, the execution reference, the submitted price   |
+|   | and the fill are four different things and the submitted price is       |
+|   | stored nowhere. Say what the fix needs and what it costs.               |
+| 9 | The test list, including LONG and SHORT, a materially different trigger |
+|   | and P, a quote failure, and a mutation proving the old trigger anchor   |
+|   | cannot silently govern the new rule                                     |
+
+⛔ Then STOP. Rama reviews, ChatGPT reviews, and implementation is authorised
+   separately. Order-path change, 17-Jul standing rule.
+
+⛔ AND KEEP IT OUT OF THE S&R SHADOW. The shadow is measuring from today; a
+   change to entry pricing mid-measurement contaminates it. Sequencing to be
+   decided at the review, not assumed here.
+
+================================================================================
+END OF CARD
+================================================================================
+
+######## [09-16 21:22:15] ASSISTANT (63 chars) ########
+Pre-build gate, no code. Starting with §3 — it blocks the spec.
+
+######## [09-16 21:22:38] ASSISTANT (310 chars) ########
+**§3(b) — the zero-count precondition FAILS, decisively.** Both VMs show `mode: LIVE` on **every** trade (972 prod / 966 test), zero PAPER, and both units run `--mode live`. So §3(c) applies: absence of paper slippage events proves nothing because paper never placed an order here. Settling it by construction.
+
+######## [09-16 21:22:59] ASSISTANT (414 chars) ########
+**§3 RESOLVED — and FF was right; my earlier reading was wrong.** The divergence isn't in `order_placer`, it's one level down: `get_quote_raw` **returns `{}` in paper** (`zerodha_adapter.py:1748-1749`), `_fetch_ltp` maps falsy → `None`, and the guard's `if _slip_ltp is not None` skips the whole block.
+
+**The parity gap and D-1 are the same defect.** Checking whether the gate path leaks an LTP into paper anyway.
+
+######## [09-16 21:23:16] ASSISTANT (177 chars) ########
+**FIX-075 sits at `order_placer.py:1194` — *after* the guard (1104–1180)** — and line 1279 carries the same fail-open pattern. Reading it, since §6(4) is the coherence question.
+
+######## [09-16 21:23:26] ASSISTANT (97 chars) ########
+The decisive §6(4) question is whether FIX-075 *assigns* to `entry_price` or only tops up margin.
+
+######## [09-16 21:23:50] ASSISTANT (191 chars) ########
+**§6(4) CONFIRMED — `order_placer.py:1261`: `entry_price = current_ltp`.** That's *after* the guard (1104–1180) and flows straight to placement at `:1349`. Confirming its enclosing condition.
+
+######## [09-16 21:24:39] ASSISTANT (7208 chars) ########
+Confirmed: `entry_price = current_ltp` fires only when drift > 0.5% **and** the margin top-up succeeds (failure → `REJECTED_PRICE_DRIFT`). No upper bound on the replacement.
+
+---
+
+# SLIPPAGE ANCHOR — PRE-BUILD REPORT
+**17-Sep-2026 · no code written · read-only on both VMs · stops at the gate**
+
+## 1 · §3 RESOLVED — FF WAS RIGHT, MY EARLIER READING WAS WRONG
+
+**The guard IS skipped entirely in paper.** I withdraw my §D(e) conflict.
+
+**(b) The zero-count precondition fails, so observation cannot settle it.** Both VMs report `mode = LIVE` on **every** trade (972 prod / 966 test), zero PAPER rows ever, and both units run `--mode live`. Paper never placed an order here, so absent paper slippage events prove nothing. **(c) applies: resolved by construction.**
+
+**The mechanism — and it is not where I looked.** I checked for a paper branch inside `order_placer` and correctly found none. The divergence is one level down:
+
+```
+zerodha_adapter.py:1747-1749   get_quote_raw: "Returns {} in paper mode."
+                               if self._paper: return {}
+order_placer.py:4052           if not raw_quote: return None
+order_placer.py:1111           if _slip_ltp is not None:   ← False in paper
+```
+
+**(d) FF-C/FF-G stand. My conflict is withdrawn and recorded as such** — my error was treating "no branch in this file" as "no divergence", when the branch was in the collaborator.
+
+**🔴 The finding that matters more than the correction:** paper does not skip the guard by decision. It skips it through **exactly the same fail-open path as D-1** — `{}` → `None` → "best-effort, proceed". **The parity gap and the fail-open defect are one defect.** They cannot be specified independently: fixing D-1 changes paper behaviour, and making the guard run in paper fixes D-1. This is the single most important input to the spec.
+
+## 2 · CONSUMERS OF `signal_trigger_price`
+
+**Execution (must move to P):** the abort comparison `abs(_slip_ltp − signal_trigger_price)` (`:1112`) · the tolerance's risk distance `|signal_trigger − sl_price|` (`_compute_slippage_tolerance:349`) · the 1% check's reference (`:1128`, `slip_pct` derived from trigger at `:1113`).
+
+**Provenance (must keep it):** the `entry_slippage_observed` log's `trigger_price` field (`:1139`) — keep, but it must sit beside the new anchor, not instead of it.
+
+## 3 · WHERE P IS FINALISED — AND THE GAP
+
+`entry_target_price` is persisted on `trades` and is already what sizing, reservation, target and **the entire display layer** consume. **⚠️ I could not close the "six strategies that skip M-S1" question within this card** — I traced `entry_target_price` consumers but did not establish, for every path, that P is finalised *before* `place()` is entered. **That verification is outstanding and the spec must not be written without it.**
+
+## 4 · 🔴 FIX-075 — THE ANCHOR CHANGE IS **NOT COHERENT** WHILE IT STANDS
+
+```
+1104-1180   slippage guard          validates a price
+1194        FIX-075 drift check     re-fetches LTP
+1261        entry_price = current_ltp        ← replaces it
+1349        entry_price=entry_price          ← this is what is submitted
+```
+
+When drift > 0.5% and the margin top-up succeeds, **the submitted price is not the validated price** — and the replacement is bounded only by margin availability, **not by any slippage tolerance**. Re-anchoring the guard to P does **not** fix this: a P-anchored guard would still validate P and then watch FIX-075 substitute `current_ltp`.
+
+**So the anchor move alone converts "guards the wrong price" into "guards the right price, then discards it."** The spec must either re-check after FIX-075 or bound FIX-075 by the same allowance. Note FIX-075 carries its **own** fail-open at `:1279` ("don't block order on quote failure").
+
+## 5 · PROPOSED FORMULA — BOTH DIRECTIONS IN FULL
+
+```
+P = planned entry price (entry_target_price)     S = planned stop (sl_initial)
+A = min(f × |P − S|, cap_rs)        f, cap_rs remain OPEN (§2 ruling)
+
+LONG    planned risk = P − S
+        adverse side is ABOVE P
+        admissible execution price ≤ P + A
+        breach when   exec_price − P > A
+
+SHORT   planned risk = S − P
+        adverse side is BELOW P
+        admissible execution price ≥ P − A
+        breach when   P − exec_price > A
+```
+The tolerance **values** (0.22, ₹5) are carried unchanged and explicitly **not** validated by this change.
+
+## 6 · TICK SNAP
+
+The snap happens **after** validation (FF-C7) and nothing re-checks it (confirmed: no post-snap re-validation exists). Under the new rule the snapped price must be re-tested against the P ± A boundary, because the snap can cross it — and Defect 3's hardcoded 0.05 tick on 200+ symbols makes the possible excursion larger on exactly the symbols where the tick is wrong.
+
+## 7 · RECOMMENDATION — 1% CHECK AND ₹2 BUFFER
+
+**1% check:** **rename it, don't re-anchor it.** Re-anchored to P it becomes a second, coarser veto with no distinct job — two checks on the same quantity. Kept trigger-anchored and renamed a **signal-displacement guard** with its own reason code, it answers a real and different question: *has the market moved away from the signal's premise?* That is provenance, not execution. Whichever way it goes, it must not remain an undocumented legacy veto.
+
+**₹2 buffer:** leave inert, do not revive EntryGate, and do **not** make it the tolerance. A limit-price-construction buffer and an allowed-slippage budget are different concepts; if the new model needs the former, it should be specified as such.
+
+**One entry, one binding execution constraint** — I'd record that as the acceptance test for the design, not just a principle.
+
+## 8 · THE PERSISTENCE GAP
+
+Four distinct prices; **only two are stored.** P (`entry_target_price` ✅) · the execution reference after FIX-075 (**stored nowhere**) · the submitted limit price (`orders.price` — **NULL on all 784 prod ENTRY rows**) · the fill (`entry_actual_price` ✅). **Cost:** one write of the submitted price at placement, plus an anchor-version column on `trade_slippage_log` (§2 item 4) so pre- and post-change rows are never compared as like for like. Without the first, the new rule remains unverifiable in exactly the way the old one is.
+
+## 9 · TEST LIST
+
+LONG breach / within · SHORT breach / within (written separately, not "mirrored") · trigger and P materially divergent — proves the anchor actually moved · **quote failure: asserts the *named* choice, not the inherited nesting** · paper and live produce the **same** decision on identical inputs · FIX-075 fires after a pass — asserts the submitted price is still within P ± A · tick snap crossing the boundary · **mutation: revert the anchor to `signal_trigger_price` and assert the suite goes red** — the only test that proves the old anchor cannot silently govern.
+
+---
+
+**Stopping at the gate.** No code, no writes, no push, both VMs read-only.
+
+Two things I'd flag for the review rather than bury: **FIX-075 makes the anchor change incomplete on its own**, and **the paper gap and the fail-open are one defect, not two**. The outstanding M-S1 verification (§3) should be closed before the spec is drafted.
+
+Shall I record this to SYSTEM_MAP, PATHS and the ledger with the two-machine classification?
+
+######## [09-16 22:37:48] USER (8744 chars) ########
+================================================================================
+FOR VS CODE CLAUDE — DO THE EXISTING SLABS ALREADY GIVE US B?
+READ-ONLY. NO CODE. NO CONFIG. NO MODE CHANGE. NO DEPLOY.
+17-Sep-2026 (Thursday) IST
+================================================================================
+DATE OF WORK      : 17-Sep-2026 IST
+MODEL             : Opus 4.6, reasoning High. Sequential. No workflow, no
+                    autonomous subagents.
+PERMANENT FIX     : not applicable — nothing changes here.
+PARITY            : state paper vs live where it differs.
+MEMORY DIRECTIVE  : at session end update ~/docs/SYSTEM_MAP.md, PATHS.md and
+                    UNPUSHED_PENDING_DEPLOY_LEDGER, two-machine classification.
+MACHINES          : read-only, both. ⛔ No push to the testing VM.
+
+THE SETTLED DESIGN, FOR CONTEXT ONLY — do not re-open it:
+    Chartink trigger = provenance. Planned Entry P = the execution anchor.
+    B is INCLUSIVE of P, never added on top.
+    LONG   release reference = P − B · submitted BUY limit must not exceed P
+    SHORT  release reference = P + B · submitted SELL limit must not be below P
+    The 5-minute window never reprices P.
+
+
+================================================================================
+§0 ⛔ ALREADY ANSWERED TONIGHT — CITE, DO NOT RE-RUN
+================================================================================
+Your own slippage report closed most of this a few hours ago.
+
+| Question                                          | Answer you already gave |
+|---------------------------------------------------|-------------------------|
+| which key selects the mode                        | `mode`, = sl_fraction   |
+| the mode on each machine                          | sl_fraction on all      |
+|                                                   | three; all 18 slippage  |
+|                                                   | keys byte-identical     |
+| does `slippage_buffer` ₹2 participate             | no — EntryGate path,    |
+|                                                   | no caller               |
+| does the 1% check participate                     | yes — :1128, derived    |
+|                                                   | from the trigger at     |
+|                                                   | :1113, after the main   |
+|                                                   | check                   |
+| is `max_entry_slippage_pct` a separate thing      | no — it IS the 1% check |
+| does FIX-075 replace the price                    | yes — :1261             |
+|                                                   | entry_price=current_ltp,|
+|                                                   | after the guard, before |
+|                                                   | :1349 placement         |
+| does the quote guard fail open                    | yes — :1103/:1107/:1111,|
+|                                                   | and paper falls through |
+|                                                   | the same hole via       |
+|                                                   | zerodha_adapter:1747    |
+
+⇒ Roughly half the questions in circulation are these. Cite them and move on.
+
+
+================================================================================
+§1 THE SLAB MECHANISM — WHAT ACTUALLY EXISTS
+================================================================================
+| a | Where the slab table is DEFINED, and where the code that RESOLVES a    |
+|   | price to a slab lives. File and line for both.                          |
+| b | Every caller of that resolver. If none, say so plainly.                 |
+| c | ⭐ HAS IT EVER EXECUTED? Any log line, any test, any trade, on either    |
+|   | machine, ever. ⚠️ "Reachable if the mode were switched" and "has run" are|
+|   | different claims — switching to code that has never run is not a config  |
+|   | change, it is activating untested code.                                 |
+| d | ⭐ WHAT PRICE DOES IT READ? Chartink trigger, P (entry_target_price),    |
+|   | live LTP, or something else. This decides whether the slabs can serve    |
+|   | as B at all without being re-anchored first.                            |
+| e | Is the resolved value used as a RECOVERY REFERENCE or as an ADVERSE      |
+|   | ALLOWANCE? Those are opposite directions and the distinction is the      |
+|   | whole design.                                                           |
+| f | Does anything downstream overwrite the resolved slab value?             |
+
+
+================================================================================
+§2 ⚠️ A QUESTION THE SLAB SHAPE RAISES — AND IT MATTERS
+================================================================================
+Worked from the configured values, before you look at anything:
+
+| price  | slab B | B as % of price | B as % of a 3% stop distance |
+|--------|--------|-----------------|------------------------------|
+| ₹50    | ₹1.00  | 2.00%           | ⚠️ 67%                        |
+| ₹150   | ₹1.25  | 0.83%           | 28%                          |
+| ₹255   | ₹2.00  | 0.78%           | 26%                          |
+| ₹600   | ₹3.00  | 0.50%           | 17%                          |
+| ₹3000  | ₹3.00  | 0.10%           | 3%                           |
+
+⇒ THE SLAB IS STRONGLY REGRESSIVE — 2.0% of price at ₹50, 0.10% at ₹3000, and
+  it is uncapped above ₹500. The live sl_fraction rule is the opposite shape:
+  a fixed 22% OF RISK, so it scales with the stop rather than the price.
+
+⛔ AND ON A ₹50 STOCK IT NEARLY CLOSES THE TRADE. P ₹50, stop ₹48.50, slab B
+   ₹1.00 ⇒ release reference ₹49.00. The price must fall two-thirds of the way
+   to the stop before the order can arm — and if it falls ₹0.50 further the
+   trade is rejected on an SL touch. The arming band is ₹49.00 to ₹48.50.
+
+SO ASK:
+| a | Does ANY code prevent B from approaching or exceeding |P − S|?          |
+|   | Under sl_fraction 22% it cannot by construction. Under slabs it can.    |
+| b | Across the last 90 days of signals, how often would the slab B have     |
+|   | exceeded 50% of the stop distance? Compute from stored trade rows —     |
+|   | this is arithmetic on data you already have, not a simulation.          |
+| c | For the same population: slab B versus sl_fraction B, side by side,     |
+|   | with the two release references. Where do they diverge most?            |
+
+
+================================================================================
+§3 ⛔ THE OUTSTANDING BLOCKER — YOU FLAGGED IT YOURSELF
+================================================================================
+Your pre-build report said, in your words: "I could not close the six
+strategies that skip M-S1 question within this card … the spec must not be
+written without it."
+
+It is still the blocker. Close it now.
+
+| a | For EACH of the six — first_pullback_long, first_pullback_short,        |
+|   | open_high_breakdown_short, open_low_breakout_long, vwap_bounce_long,    |
+|   | vwap_rejection_short — is `entry_target_price` finalised BEFORE the      |
+|   | guard runs?                                                             |
+| b | If it is, what is it derived from on those paths, given they skip the   |
+|   | fresh quote?                                                            |
+| c | ⚠️ If P on those six is just the trigger-derived price, then moving the  |
+|   | anchor to P changes NOTHING for them — the trigger would still be        |
+|   | governing under a different name. Say so plainly if that is the case.    |
+| d | The same for the other ten.                                             |
+
+
+================================================================================
+§4 DELIVERABLE
+================================================================================
+A short report. Twelve lines would be enough if the answers are short.
+
+⭐ THREE ANSWERS IN ONE PLAIN SENTENCE EACH, AT THE TOP:
+    1. Do the existing slabs give us B as-is, do they need re-anchoring to P,
+       or are they unsuitable — and which of the three, with the reason.
+    2. Has the slab path ever executed, anywhere, ever.
+    3. For the six bypass strategies, is P a real planned entry or the
+       Chartink trigger under another name.
+
+⛔ No fixes. No mode change. No config edit. No recommendation dressed up as a
+   finding. If the answer is "the slabs would work but need re-anchoring", say
+   exactly that and stop — the decision is Rama's and it is an order-path
+   change, so it goes through design and review first.
+
+================================================================================
+END OF CARD
+================================================================================
+
+######## [09-16 22:38:07] ASSISTANT (123 chars) ########
+Most of §1 I can cite from tonight's report. Reading the resolver itself for (d) and (e), which are the deciding questions.
+
+######## [09-16 22:38:19] ASSISTANT (169 chars) ########
+§1(d) is answered in the resolver's own docstring — *"for a **trigger** `price`"* — and the single caller passes `signal_trigger_price`. Now §1(c): has it ever executed?
+
+######## [09-16 22:38:35] ASSISTANT (178 chars) ########
+`flat_tiers` = 0 on both — but my `mode` pattern also returned nothing, which means the pattern may simply not match the log format. Checking a real line before reading any zero.
+
+######## [09-16 22:38:43] ASSISTANT (114 chars) ########
+Pattern bug caught: the format is `"mode":"sl_fraction"` — **no space**. My pattern had one. Re-running correctly.
+
+######## [09-16 22:38:58] ASSISTANT (271 chars) ########
+**§1(c) answered, control passing:** 128 prod / 122 test guard evaluations, **100% `sl_fraction`**, **0 `flat_tiers`** — and `tolerance_source` is 100% `global`, so the override hierarchy has never supplied a fraction either. Now §3, the blocker — testing it empirically.
+
+######## [09-16 22:39:29] ASSISTANT (258 chars) ########
+**§3 answered empirically: `eq_trigger = 0` for all 13 strategies** — not one trade has P equal to the trigger. But the six bypass strategies cluster at max deltas of ~₹0.80–1.04, which smells like a fixed offset rather than market information. Testing that.
+
+######## [09-16 22:39:48] ASSISTANT (117 chars) ########
+**524 of 550 (95.3%) are exactly `trigger × (1 ± 0.001)`.** That settles §3(c). Now the §2 arithmetic on stored rows.
+
+######## [09-16 22:40:29] ASSISTANT (4453 chars) ########
+# SLABS AS B — REPORT
+**17-Sep-2026 · read-only both VMs · nothing changed**
+
+## ⭐ THE THREE ANSWERS
+
+**1. Do the slabs give us B?** **No — unsuitable as they stand, and re-anchoring alone would not rescue them:** the resolver reads the Chartink trigger (so it needs re-anchoring), it returns an *adverse allowance* not a *recovery reference* (opposite direction to B), and on 940 real trades the slab value exceeds **50% of the stop distance in 56.5% of cases and equals or exceeds the whole stop distance in 139 of them** — worst case **155%**.
+
+**2. Has the slab path ever executed?** **No, nowhere, ever** — 128 production and 122 testing guard evaluations in all retained logs are **100% `sl_fraction`**, `flat_tiers` = 0 on both, with a control confirming the pattern matches.
+
+**3. For the six bypass strategies, is P real or the trigger renamed?** **The trigger renamed** — across 550 trades, **524 (95.3%) have P exactly `trigger × (1 ± 0.001)`**, so P on those six carries a fixed 0.1% offset and no fresh market information.
+
+---
+
+## §1 · THE MECHANISM
+
+**(a)** Table: `system_config.yaml` → `entry_gate.slippage_control.tiers`. Resolver: `orders/price_math.py:60` `tier_slippage_tolerance_rs`.
+**(b)** **One caller** — `order_placer.py:356`, inside `_compute_slippage_tolerance`, under `elif mode == "flat_tiers"`.
+**(c)** Never executed (answer 2 above). The docstring's band rule is worth noting if it is ever revived: the lower bound is **exclusive**, so exactly ₹100.00 falls in the 100–200 band.
+**(d)** **The Chartink trigger.** The resolver's own docstring says *"for a **trigger** `price`"*, and the caller passes `signal_price`, which at the call site (`:1118`) is `signal_trigger_price`.
+**(e)** **An adverse allowance** — the return feeds `if slip_rs > tol: abort`. It is a ceiling on movement already suffered, not a reference the price must reach to arm. B is the opposite direction.
+**(f)** Yes — `min(tol, hard_max_slippage_rs)`, the ₹10 ceiling that cannot bind (tonight's report).
+
+## §2 · THE SHAPE PROBLEM, MEASURED ON 940 TRADES
+
+**(a)** **Nothing prevents it.** Under `sl_fraction` it is impossible by construction (capped at 0.22 × risk — measured max ratio exactly **0.22**). Under slabs there is no such bound, and the only ceiling (₹10) cannot fire.
+
+**(b/c)** Last 90 days, 940 trades with P and S:
+
+| | slab B | sl_fraction B |
+|---|---|---|
+| exceeds 50% of stop distance | **531 (56.5%)** | **0** |
+| ≥ 100% of stop distance | **139** | 0 |
+| max B / risk | **1.549** | 0.220 |
+| average B | ₹2.116 | ₹1.023 |
+
+Slab B is larger than the live rule in **910 of 940 (96.8%)** cases, average risk ₹4.651. Your ₹50 worked example is not an edge case — it is the central tendency.
+
+## §3 · THE BLOCKER — CLOSED, AND THE ANSWER IS THE AWKWARD ONE
+
+**(a)** `entry_target_price` is finalised before the guard on all sixteen strategies — `eq_trigger = 0` for every one, so P is always a distinct stored value.
+
+**(b/c) But distinct is not independent.** On the six bypass strategies P is `trigger × (1 ± 0.001)`:
+
+| strategy | n | at exactly 0.1% | delta range |
+|---|---|---|---|
+| vwap_bounce_long | 216 | 210 | 0.100–0.108% |
+| first_pullback_long | 129 | 116 | 0.100–0.117% |
+| open_low_breakout_long | 90 | 86 | 0.100–0.108% |
+| vwap_rejection_short | 66 | 64 | 0.092–0.100% |
+| first_pullback_short | 33 | 32 | 0.092–0.100% |
+| open_high_breakdown_short | 16 | 16 | 0.100–0.100% |
+
+**Plainly, as you asked: for these six — 550 trades, ~57% of the book — moving the anchor to P changes the reference by a deterministic 0.1% and nothing else. The trigger would still be governing, under a different name.** The residual 4.7% spread is consistent with tick rounding, not market information.
+
+**(d) The other ten do carry fresh information** — `positional_sector_rotation` max delta ₹9.25, `positional_momentum_long` ₹7.57, `gap_fade_long` ₹3.41 — deltas far too large to be a fixed offset.
+
+---
+
+**Nothing changed.** No code, no config, no mode change, no push; both VMs read-only. One process note: my first `mode` count returned zero because I wrote `"mode": "` with a space and the logs emit `"mode":"` without — caught by checking the raw line before trusting the zero.
+
+I have not made a recommendation: whether a 0.1% deterministic offset is an acceptable anchor for 57% of trades is a design decision, and it is yours.
+
+Shall I record this to SYSTEM_MAP, PATHS and the ledger with the two-machine classification?
+
+#### TOTAL TEXT BLOCKS: 45

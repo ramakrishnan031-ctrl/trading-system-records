@@ -1,0 +1,88 @@
+## now: 2026-09-17T09:54:15+0530
+## md5 of the drift path files on the VM
+3d43f51c1b92b2d697389bcdd735c01a  scripts/check_cron_drift.py
+24fe535dd6f410bcb1c52c31a5f266aa  core/logger.py
+db8a67089fbe76688ab00535d2b561a0  scripts/cron_officer.py
+6c53830e9a969258984e15fb018ac816  alerts/telegram_notifier.py
+564adf9c1cb9da9c8754f255bca6cfbd  scripts/generate_crontab.py
+4b3898a8173ca5e77258baa1649a4114  core/cron_registry.py
+6983f92ac5b5e3e3ac779c8af7f5eeaf  utils/cron_heartbeat.py
+ae9b22a15e69ca786c718c9c893a3ca4  config/cron_registry.yaml
+10518306f9b8e408fea04ff9eb62a57c  core/account_registry.py
+45d83a94766e8879fccbeecf6dece9f5  core/state_store.py
+## cron-drift-check.log: stat, line count
+2026-09-16 18:00:02.631433374 +0530 12347 logs/cron-drift-check.log
+248
+## cron-drift-check.log: last 45 lines
+   - gemini_weekly_patterns (18:00 Sunday)
+⏰ Monitored, due-today jobs with NO heartbeat in 24h:
+   - gemini_premarket_brief (expected: 08:55 Mon-Fri)
+   - gemini_log_review (expected: 16:20 Mon-Fri)
+   - gemini_trade_coach (expected: 16:40 Mon-Fri)
+   - gemini_data_integrity_check (expected: 17:00 Mon-Fri)
+[VBB097] CRON INTEGRITY CRITICAL
+🔴 ENABLED in registry, ABSENT from live crontab (CRITICAL):
+   - gemini_premarket_brief (08:55 Mon-Fri)
+   - gemini_log_review (16:20 Mon-Fri)
+   - gemini_trade_coach (16:40 Mon-Fri)
+   - gemini_data_integrity_check (17:00 Mon-Fri)
+   - gemini_weekly_patterns (18:00 Sunday)
+⏰ Monitored, due-today jobs with NO heartbeat in 24h:
+   - evidence_backup (expected: 01:10 daily)
+   - gemini_premarket_brief (expected: 08:55 Mon-Fri)
+   - gemini_log_review (expected: 16:20 Mon-Fri)
+   - gemini_trade_coach (expected: 16:40 Mon-Fri)
+   - gemini_data_integrity_check (expected: 17:00 Mon-Fri)
+[VBB097] CRON INTEGRITY CRITICAL
+🔴 ENABLED in registry, ABSENT from live crontab (CRITICAL):
+   - gemini_premarket_brief (08:55 Mon-Fri)
+   - gemini_log_review (16:20 Mon-Fri)
+   - gemini_trade_coach (16:40 Mon-Fri)
+   - gemini_data_integrity_check (17:00 Mon-Fri)
+   - gemini_weekly_patterns (18:00 Sunday)
+⏰ Monitored, due-today jobs with NO heartbeat in 24h:
+   - evidence_backup (expected: 01:10 daily)
+   - gemini_premarket_brief (expected: 08:55 Mon-Fri)
+   - gemini_log_review (expected: 16:20 Mon-Fri)
+   - gemini_trade_coach (expected: 16:40 Mon-Fri)
+   - gemini_data_integrity_check (expected: 17:00 Mon-Fri)
+[VBB097] CRON INTEGRITY CRITICAL
+🔴 ENABLED in registry, ABSENT from live crontab (CRITICAL):
+   - gemini_premarket_brief (08:55 Mon-Fri)
+   - gemini_log_review (16:20 Mon-Fri)
+   - gemini_trade_coach (16:40 Mon-Fri)
+   - gemini_data_integrity_check (17:00 Mon-Fri)
+   - gemini_weekly_patterns (18:00 Sunday)
+⏰ Monitored, due-today jobs with NO heartbeat in 24h:
+   - evidence_backup (expected: 01:10 daily)
+   - gemini_premarket_brief (expected: 08:55 Mon-Fri)
+   - gemini_log_review (expected: 16:20 Mon-Fri)
+   - gemini_trade_coach (expected: 16:40 Mon-Fri)
+   - gemini_data_integrity_check (expected: 17:00 Mon-Fri)
+## syslog CRON CMD lines for check_cron_drift (all rotated plain syslogs)
+2026-09-11T18:00:01.322898+05:30 trading-system-sandbox CRON[236851]: (ubuntu) CMD (cd /home/ubuntu/systems/trading-system && set -a && . ./.env && set +a && PYTHONPATH=. /home/ubuntu/systems/venv/bin/python scripts/check_cron_drift.py >> logs/cron-drift-check.log 2>&1)
+2026-09-11T19:30:05.448312+05:30 trading-system-sandbox systemd[1]: Starting cron-watchdog.service - Cron Watchdog (Trading System) — assert cron_officer_eod + check_cron_drift ran today...
+2026-09-11T19:30:05.525100+05:30 trading-system-sandbox python[240192]: cron_watchdog: ok — cron_officer_eod, check_cron_drift both heartbeated today
+2026-09-11T19:30:05.540793+05:30 trading-system-sandbox systemd[1]: Finished cron-watchdog.service - Cron Watchdog (Trading System) — assert cron_officer_eod + check_cron_drift ran today.
+2026-09-12T19:30:05.452082+05:30 trading-system-sandbox systemd[1]: Starting cron-watchdog.service - Cron Watchdog (Trading System) — assert cron_officer_eod + check_cron_drift ran today...
+2026-09-12T19:30:05.537692+05:30 trading-system-sandbox systemd[1]: Finished cron-watchdog.service - Cron Watchdog (Trading System) — assert cron_officer_eod + check_cron_drift ran today.
+## app log 16-Sep: stat + last 2 lines (first 300 chars each)
+2026-09-16 17:35:05.545898173 +0530 16798379 logs/system_2026-09-16.log
+{"ts":"2026-09-16T17:35:05.545+05:30","level":"INFO","logger":"main","msg":"WAL checkpoint_wal on shutdown: busy=0 log=182 checkpointed=182"}
+{"ts":"2026-09-16T17:35:05.546+05:30","level":"INFO","logger":"main","msg":"Shutdown complete"}
+## app log 16-Sep: count of lines mentioning check_cron_drift / CRON INTEGRITY
+0
+0
+## positive control: same grep -c on a line known to be in that file
+1
+## app log 15-Sep and 14-Sep: same two counts (other days)
+2026-09-15 check_cron_drift=0
+2026-09-15 CRON_INTEGRITY=0
+2026-09-14 check_cron_drift=grep: logs/system_2026-09-14.log: No such file or directory
+2026-09-14 CRON_INTEGRITY=grep: logs/system_2026-09-14.log: No such file or directory
+## crontab: line count, md5, evaluator lines
+151
+d0b9a184da7dc8aeea507f7dc80d7073  -
+150:# sr_shadow_evaluate  [16:05 Mon-Fri]  S&R SHADOW v1.3 EOD evaluator — HAND-ADDED, TESTING VM ONLY
+151:5 16 * * 1-5 cd /home/ubuntu/systems/trading-system && set -a && . ./.env && set +a && PYTHONPATH=. /home/ubuntu/systems/venv/bin/python scripts/sr_shadow_evaluate.py >> logs/cron-sr-shadow-evaluate.log 2>&1
+## END

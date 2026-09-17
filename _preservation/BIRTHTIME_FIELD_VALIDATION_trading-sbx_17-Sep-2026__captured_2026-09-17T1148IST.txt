@@ -1,0 +1,8 @@
+now=2026-09-17 11:48:57 +0530
+stat (GNU coreutils) 9.4
+/dev/sda1      ext4  59848952 24095788  35736780  41% /
+FILE /home/ubuntu/systems/trading-system/logs/system_2026-09-17.log | birth(%w)=2026-09-17 08:15:26.843154095 +0530 | ctime(%z)=2026-09-17 11:48:56.467813302 +0530 | mtime(%y)=2026-09-17 11:48:56.467813302 +0530 | size(%s)=4174885
+FILE /home/ubuntu/systems/trading-system/logs/cron-drift-check.log | birth(%w)=2026-09-08 13:59:28.048421609 +0530 | ctime(%z)=2026-09-16 18:00:02.631433374 +0530 | mtime(%y)=2026-09-16 18:00:02.631433374 +0530 | size(%s)=12347
+KNOWN CREATION MOMENT of system_2026-09-17.log = its first event:
+{"ts":"2026-09-17T08:15:26.844+05:30","level":"I
+##### END

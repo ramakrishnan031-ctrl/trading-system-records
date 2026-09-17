@@ -1,0 +1,43 @@
+ENV: cwd=/d/Projects/wt-sr-shadow-15sep branch=feat/twin-force-qty-17sep HEAD=e7bf477 + uncommitted build (sizer b2b27684 · loader 2030714e · main 277b0702 · test bae27e10) python=C:\python311\python.exe PYTHONPATH(unset for run) start=18:59:23
+tests/integration/test_q9_sizing_floors_caps_wired.py: 21 warnings
+  D:\Projects\wt-sr-shadow-15sep\screening\quality_scorer.py:62: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    self._step_names: list[str] = list(weights.steps.model_fields.keys())
+
+tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_live_mode_adds_webhook_secret_to_required_secrets
+tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_live_mode_keeps_original_secrets
+  C:\python311\Lib\site-packages\_pytest\threadexception.py:58: PytestUnhandledThreadExceptionWarning: Exception in thread broker_clock_skew_probe
+  
+  Traceback (most recent call last):
+    File "C:\python311\Lib\threading.py", line 1045, in _bootstrap_inner
+      self.run()
+    File "C:\python311\Lib\threading.py", line 982, in run
+      self._target(*self._args, **self._kwargs)
+    File "D:\Projects\wt-sr-shadow-15sep\broker\clock_skew_probe.py", line 107, in _run_loop
+      self._stop_event.wait(timeout=self._config.probe_interval_sec)
+    File "C:\python311\Lib\threading.py", line 629, in wait
+      signaled = self._cond.wait(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\python311\Lib\threading.py", line 330, in wait
+      if timeout > 0:
+         ^^^^^^^^^^^
+  TypeError: '>' not supported between instances of 'MagicMock' and 'int'
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnhandledThreadExceptionWarning(msg))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/unit/test_closure_source_contract.py::test_no_module_restates_the_vocabulary_literals
+FAILED tests/unit/test_fix181.py::TestStep4_ReconcilerInflightOrphan::test_inflight_orphan_flattened_when_kill_active
+FAILED tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_paper_mode_does_not_require_webhook_secret
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_price_hit_calls_placer_with_correct_prices
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_no_placer_releases_reservation_and_updates_status
+FAILED tests/unit/test_main.py::TestContinueFromGate::test_stats_placed_incremented_on_success
+FAILED tests/unit/test_phase17_batch2.py::test_fix077_flask_max_content_length
+FAILED tests/unit/test_t4_deploy_preflight.py::test_ist_now_emits_valid_ist
+FAILED tests/unit/test_t4_deploy_preflight.py::test_check_tz_fails_on_broken_utc_form
+FAILED tests/unit/test_t4_deploy_preflight.py::test_check_tz_passes_on_agreement
+10 failed, 6437 passed, 5 skipped, 281 warnings in 1202.71s (0:20:02)
+rc=1 end=19:21:14
+POST-RUN md5: b2b27684244691d2fdcd15eae7d97837 2030714e78d55b0a8a4ea8db58a987ae 277b07028d5e265aab74ce026787ecc8 bae27e105bd1f610f3233d5d1874dd8e

@@ -1,0 +1,42 @@
+"""D1.1 pass B -- the ten steps: validate the score formula against every stored row, then per-step distributions.
+Reads scratchpad extracts only."""
+import json, os, sys
+import pandas as pd, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from a1_load import load
+
+W = {"volume_surge": 15, "vwap_position": 10, "atr_filter": 10, "rsi_range": 10, "price_action": 15,
+     "sector_strength": 10, "time_of_day": 5, "spread_check": 5, "circuit_check": 10, "signal_age": 10}
+STEPS = list(W)
+
+s, sc = load()
+steps = sc["step_results"].fillna("{}").map(json.loads)
+st = pd.DataFrame(list(steps), index=sc.index)
+sc = pd.concat([sc, st.add_prefix("st_")], axis=1)
+has_all = st.reindex(columns=STEPS).notna().all(axis=1)
+print("screener rows", len(sc), " rows with all 10 steps:", int(has_all.sum()))
+print("status of rows WITHOUT all 10 steps:\n", sc.loc[~has_all, "status"].str.replace(r"REJECTED_SCORE_\d+", "REJECTED_SCORE_*", regex=True).value_counts())
+
+x = sc.loc[has_all].copy()
+raw = sum(x["st_" + k].astype(float) * w for k, w in W.items())
+x["recomputed"] = [min(100, int(round(v))) for v in raw]
+x["score_i"] = x["score"].astype(int)
+print("\nformula check: recomputed == stored score on", int((x["recomputed"] == x["score_i"]).sum()), "of", len(x),
+      " mismatches:", int((x["recomputed"] != x["score_i"]).sum()))
+if (x["recomputed"] != x["score_i"]).any():
+    print(x.loc[x["recomputed"] != x["score_i"], ["ts", "score", "recomputed"] + ["st_" + k for k in STEPS]].head(10))
+
+print("\n== per-step value distribution over the", len(x), "rows with all 10 steps ==")
+for k in STEPS:
+    v = x["st_" + k].astype(float)
+    vc = v.round(4).value_counts()
+    if len(vc) <= 6:
+        print(f"{k:16s} w={W[k]:2d} distinct={len(vc)}", {float(a): int(b) for a, b in vc.sort_index().items()})
+    else:
+        q = v.quantile([0, .1, .25, .5, .75, .9, 1]).round(4).tolist()
+        print(f"{k:16s} w={W[k]:2d} distinct={len(vc)} continuous  q0/10/25/50/75/90/100={q}  share==1.0: {float((v >= 0.99995).mean()):.4f}  share==0: {float((v == 0).mean()):.4f}")
+
+# status family
+x["fam"] = x["status"].str.replace(r"REJECTED_SCORE_\d+", "REJECTED_SCORE_*", regex=True)
+print("\nstatus families (all-10 rows):\n", x["fam"].value_counts())
+x.to_pickle(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "screen_all10.pkl"))

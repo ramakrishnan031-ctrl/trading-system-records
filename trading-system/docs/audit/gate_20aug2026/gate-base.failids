@@ -1,0 +1,7 @@
+tests/unit/test_closure_source_contract.py::test_no_module_restates_the_vocabulary_literals
+tests/unit/test_fix181.py::TestStep4_ReconcilerInflightOrphan::test_inflight_orphan_flattened_when_kill_active
+tests/unit/test_main.py::TestBl15WebhookSecretRequired::test_paper_mode_does_not_require_webhook_secret
+tests/unit/test_main.py::TestContinueFromGate::test_no_placer_releases_reservation_and_updates_status
+tests/unit/test_main.py::TestContinueFromGate::test_price_hit_calls_placer_with_correct_prices
+tests/unit/test_main.py::TestContinueFromGate::test_stats_placed_incremented_on_success
+tests/unit/test_phase17_batch2.py::test_fix077_flask_max_content_length

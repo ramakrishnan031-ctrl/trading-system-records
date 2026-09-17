@@ -1,0 +1,9 @@
+#### I2. orders for the two open trades ####
+trade_id                              leg    transaction_type  product  variety  status    qty_requested  qty_filled  avg_fill_price  placed_at                       
+------------------------------------  -----  ----------------  -------  -------  --------  -------------  ----------  --------------  --------------------------------
+trd_010f8e21b28344bc91a10a8ad3a6dc98  ENTRY  BUY               CNC      regular  COMPLETE  1              0                           2026-08-06T10:02:17.114825+05:30
+trd_9e709c501a9e4938a8d01a21ca312398  ENTRY  BUY               CNC      regular  COMPLETE  4              0                           2026-08-07T10:05:23.088362+05:30
+
+#### M. boot margins() payload + boot sequence, 10-Aug ####
+
+#### N. log file inventory 10-Aug ####

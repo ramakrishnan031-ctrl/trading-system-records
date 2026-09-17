@@ -1,0 +1,80 @@
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+A = D:/Projects/_preservation/CALIBRATION_bootwindow_2026-09-16.jsonl : 82 events (0 unparseable)
+B = D:/Projects/_preservation/GATE78_bootwindow_17-Sep-2026__from_capture_0816IST.jsonl : 86 events (0 unparseable)
+distinct A=72  B=75
+
+--- ONLY IN A (6 event-instances, 6 distinct) ---
+  x1  [INFO] core.config_validator | ConfigValidator: 0/396 keys accessed, 0 drift
+  x1  [INFO] main | config_snapshotter: resolved config for <DATE> (mode=LIVE account=VBB097 trade_type=BOTH) hash=1ad58cb445db len=16509B
+  x1  [INFO] main | config_snapshotter: wrote config snapshot id=<ID> for <DATE> (hash=1ad58cb445db)
+  x1  [INFO] main | effect_telemetry: composition OK (62 registered, 62 expected)
+  x1  [WARNING] core.config_validator | CONFIG_UNACCESSED: 396 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.brokerage_pct_intraday', 'broker
+  x1  [WARNING] main | check_ntp_sync: failed to query pool.ntp.org: timed out
+
+--- ONLY IN B (10 event-instances, 10 distinct) ---
+  x1  [INFO] core.config_validator | ConfigValidator: 0/422 keys accessed, 0 drift
+  x1  [INFO] main | check_config_hash: 1 file(s) changed: ['system_config.yaml']
+  x1  [INFO] main | check_ntp_sync: drift 0.084s OK (host=pool.ntp.org)
+  x1  [INFO] main | config_snapshotter: resolved config for <DATE> (mode=LIVE account=VBB097 trade_type=BOTH) hash=d32c52a5677a len=17018B
+  x1  [INFO] main | config_snapshotter: wrote config snapshot id=<ID> for <DATE> (hash=d32c52a5677a)
+  x1  [INFO] main | effect_telemetry: composition OK (63 registered, 63 expected)
+  x1  [INFO] main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+  x1  [INFO] sr_shadow | sr_shadow: worker started (contract=v1.3 schema=1 db=<PATH>/sr_shadow.db)
+  x1  [INFO] telegram_notifier | alert_send
+  x1  [WARNING] core.config_validator | CONFIG_UNACCESSED: 422 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.brokerage_pct_intraday', 'broker
+
+=== RESIDUAL, BY FAMILY (Amendment 15 s1) ===
+  RECOGNITION IS BY FAMILY IDENTITY, NEVER BY COUNT.
+  Ten instances of a known family is ordinary. ONE instance of a new family is NOT.
+    KNOWN-VARIANCE  check_ntp_sync         x2    [logger=main]  (NTP outcome varies; it flips INFO<->WARNING)
+    KNOWN-VARIANCE  email_fallback.sent    x0    [logger=telegram_notifier]  (telegram email fallback fires or does not)
+    UNRECOGNISED FAMILIES: 14
+      >>> INFO | main | config_snapshotter: resolved config for <DATE> (mode=LIVE account=VBB097 trade_type=BOTH) hash=1ad58cb445db len=16509B
+      >>> INFO | main | config_snapshotter: wrote config snapshot id=<ID> for <DATE> (hash=1ad58cb445db)
+      >>> WARNING | core.config_validator | CONFIG_UNACCESSED: 396 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.br
+      >>> INFO | core.config_validator | ConfigValidator: 0/396 keys accessed, 0 drift
+      >>> INFO | main | effect_telemetry: composition OK (62 registered, 62 expected)
+      >>> INFO | main | check_config_hash: 1 file(s) changed: ['system_config.yaml']
+      >>> INFO | main | config_snapshotter: resolved config for <DATE> (mode=LIVE account=VBB097 trade_type=BOTH) hash=d32c52a5677a len=17018B
+      >>> INFO | main | config_snapshotter: wrote config snapshot id=<ID> for <DATE> (hash=d32c52a5677a)
+      >>> INFO | telegram_notifier | alert_send
+      >>> INFO | sr_shadow | sr_shadow: worker started (contract=v1.3 schema=1 db=<PATH>/sr_shadow.db)
+      >>> INFO | main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+      >>> WARNING | core.config_validator | CONFIG_UNACCESSED: 422 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.br
+      >>> INFO | core.config_validator | ConfigValidator: 0/422 keys accessed, 0 drift
+      >>> INFO | main | effect_telemetry: composition OK (63 registered, 63 expected)
+
+  Observed residual sample: 16 event-instances across this comparison.
+  NOT a false-positive rate -- no denominator, no distribution over
+  repeated no-deployment boots. RECORD THE RESIDUAL LIST, NOT THIS rc.
+
+================================================================================
+ THIS TOOL'S EXIT CODE CARRIES NO VERDICT.  (Amendment 16 s1)
+ It reports DIFFERENCES between two event streams. It knows NOTHING about the
+ predicted deployment events.
+   * On a CHANGE pair (17-Sep vs 16-Sep) the rc is INVERTED: a CORRECT
+     deployment emits new events -> unrecognised families -> rc 1.  A
+     deployment where the manager NEVER STARTED emits nothing -> no difference
+     -> rc 0.  DEMONSTRATED 16-Sep: correct=4 unrecognised/rc 1, failed=0/rc 0.
+   * An event absent from BOTH sides produces NO difference, so this tool is
+     STRUCTURALLY BLIND to a MISSING expected event -- which is the E-1 failure
+     mode the prediction exists to catch.
+ Presence, multiplicity and order are tested ONLY by the per-event Gate 7/8
+ table. The Gate 7/8 record has NO FIELD for this tool's pass/fail -- only for
+ its residual list.
+================================================================================
+normalizer rerun rc=1 (no verdict)

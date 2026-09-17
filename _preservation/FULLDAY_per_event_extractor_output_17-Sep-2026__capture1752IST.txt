@@ -1,0 +1,58 @@
+INPUTS
+  baseline whole-day : D:/Projects/_preservation/BASELINE_system_16-Sep-2026.log  events=91091 unparseable=0
+  17-Sep whole-day   : D:/Projects/_preservation/FULLDAY_system_17-Sep-2026__captured_2026-09-17T1752IST.log  events=60392 unparseable=0 []
+  17-Sep last event ts (capture horizon): 2026-09-17T17:35:04.412+05:30
+  boot window: baseline L1..L82 (82 events) | 17-Sep L1..L86 (86 events)
+
+E-1  (BOOT WINDOW, app log; FULL normalized msg; multiplicity exactly 1)
+  E1.1 exact(logger=sr_shadow,INFO,full-norm-msg) : 1  L43@08:15:36.048
+       raw msg: sr_shadow: worker started (contract=v1.3 schema=1 db=data_store/sr_shadow/sr_shadow.db)
+       (diagnostic, NOT the test) any 'worker started' in window: 4  L41@08:15:35.992, L43@08:15:36.048, L47@08:15:36.058, L49@08:15:36.061
+  E1.2 exact(logger=main,INFO,full msg)           : 1  L44@08:15:36.048
+       (diagnostic, NOT the test) msg startswith 'sr_shadow: ENABLED and started': 1  L44@08:15:36.048
+       raw: [INFO] main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+       (diagnostic, the substring trap) any 'ENABLED and started' in window: 2  L42@08:15:35.993, L44@08:15:36.048
+         - [INFO] main | sr_detector: ENABLED and started (mode=LIVE)
+         - [INFO] main | sr_shadow: ENABLED and started (mode=LIVE, log-only)
+  ORDER E1.1 before E1.2: YES (L43 vs L44)
+
+E-2.3 composition (BOOT WINDOW end marker)
+  baseline L82 08:15:41.472 [INFO] main | effect_telemetry: composition OK (62 registered, 62 expected)
+  17-Sep   L86 08:15:39.567 [INFO] main | effect_telemetry: composition OK (63 registered, 63 expected)
+
+E-2.4 config-bearing boot lines (context; the YAML md5 is read on the VM separately)
+  baseline L2 08:15:24.715 | Config loaded from config (8 files)
+  baseline L21 08:15:37.842 | config_snapshotter: resolved config for 2026-09-16 (mode=LIVE account=VBB097 trade_type=BOTH) hash=1ad58cb445db len=16509B
+  baseline L22 08:15:37.847 | config_snapshotter: wrote config snapshot id=56 for 2026-09-16 (hash=1ad58cb445db)
+  17-Sep   L2 08:15:26.909 | Config loaded from config (8 files)
+  17-Sep   L22 08:15:35.194 | config_snapshotter: resolved config for 2026-09-17 (mode=LIVE account=VBB097 trade_type=BOTH) hash=d32c52a5677a len=17018B
+  17-Sep   L23 08:15:35.197 | config_snapshotter: wrote config snapshot id=57 for 2026-09-17 (hash=d32c52a5677a)
+
+E-4 MUST BE ABSENT (app log)
+  E4.6 'sr_shadow wiring failed'   boot window=0 - | whole-day-so-far=0 -
+  E4.7 'composition assertion FAILED' boot window=0 - | whole-day-so-far=0 -
+  E4.8 'sr_shadow: drain error='   whole-day-so-far=0 -
+  E4.9 'stop_invariant_violated'   (EOD window; not yet open) whole-day-so-far=0 -
+  E4.10 CRITICAL so far today: 4 total; NEW vs baseline set (logger + R3-normalized msg): 0
+       [in-baseline-set] L4 08:15:26.927 kill_switch | KILL SWITCH ACTIVE AT STARTUP: state=SOFT_KILL reason=circuit_breaker_force_close_15:15 triggered_by=order_monitor -- operator must call resume() to clear (Audit Issue #18 fix)
+       [in-baseline-set] L58057 15:15:01.694 main | circuit_breaker.force_close_triggered: soft_kill, EOD squareoff handles positions
+       [in-baseline-set] L58058 15:15:01.697 main | KillSwitchActivated: INACTIVE -> SOFT_KILL reason=circuit_breaker_force_close_15:15
+       [in-baseline-set] L58059 15:15:01.697 kill_switch | SOFT_KILL ACTIVATED reason=circuit_breaker_force_close_15:15 triggered_by=order_monitor
+  baseline CRITICAL set size (distinct logger+norm msg): 6
+
+E-5
+  E5.11 kite-handle WARNING boot window: baseline=0 17-Sep=0 -
+  E5.12 sr_shadow capture failed for   boot window=0 | whole-day-so-far=0 -
+  E5.12 sr_shadow.capture_failed       boot window=0 | whole-day-so-far=0 -
+  E5.12 sr_shadow.capture_duplicate    boot window=0 | whole-day-so-far=0 -
+  E5.12 sr_shadow.process_failed       boot window=0 | whole-day-so-far=75 L1835@10:00:12.050, L2092@10:01:12.007, L2093@10:01:12.111, L2393@10:02:10.283, L2415@10:02:12.287, L2416@10:02:12.293 …
+
+OTHER BOOT-WINDOW FACTS (context, not predicted rows)
+  L36 strategy_control.summary will_trade_count=15 wont_trade=["pb01_breakout_retest (WON'T TRADE — switch disabled)"] trade_type=BOTH force_intraday_only=False
+       will_trade=['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+  17-Sep boot window level counts: {'INFO': 83, 'CRITICAL': 1, 'WARNING': 2}
+  baseline boot window level counts: {'INFO': 78, 'CRITICAL': 1, 'WARNING': 3}
+    17-Sep window [CRITICAL] L4 08:15:26.927 kill_switch | KILL SWITCH ACTIVE AT STARTUP: state=SOFT_KILL reason=circuit_breaker_force_close_15:15 triggered_by=order_monitor -- operator must call resume() to clear (Audit Issue #18 fix)
+    17-Sep window [WARNING] L5 08:15:26.932 kill_switch | Kill switch auto-cleared: prior SOFT_KILL from 2026-09-16 (reason=circuit_breaker_force_close_15:15 by=order_monitor) -- new day 2026-09-17 starts clean (HEADLESS); audited to system_events
+    17-Sep window [WARNING] L82 08:15:38.860 core.config_validator | CONFIG_UNACCESSED: 422 config keys never read: ['broker_costs.zerodha.brokerage_flat_intraday', 'broker_costs.zerodha.brokerage_pct_intraday', 'broker_costs.zerodha.exchange_txn_pct', 'broker_costs.ze
+  'Trading System v… starting' whole-day-so-far count: 1 L1@08:15:26.844

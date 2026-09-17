@@ -1,0 +1,166 @@
+"""READ-ONLY production queries for S11.1 / S11.3 / S11.4.
+Piped over ssh stdin; opens the DB with a mode=ro URI + PRAGMA query_only.
+Imports no project module. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json, re, sqlite3, time
+from collections import Counter, defaultdict
+
+DB = "file:/home/ubuntu/systems/trading-system/data_store/trading_system.db?mode=ro"
+c = sqlite3.connect(DB, uri=True, timeout=5)
+c.execute("PRAGMA query_only=1")
+
+
+def q(label, sql, *args):
+    t = time.time()
+    rows = c.execute(sql, args).fetchall()
+    print("## [%s] %.2fs" % (label, time.time() - t))
+    for r in rows:
+        print("   ", r)
+    return rows
+
+
+print("=== S11.1 ===")
+q("gate_state rows", "SELECT COUNT(*) FROM gate_state")
+q("retest_state rows", "SELECT COUNT(*) FROM retest_state")
+q("signals GATE_/RETEST_ statuses (idx_signals_status)",
+  "SELECT status, COUNT(*) FROM signals WHERE status GLOB 'GATE_*' OR status GLOB 'RETEST_*' "
+  "OR status = 'REJECTED_RETEST_DUP' GROUP BY status")
+q("signals range", "SELECT MIN(received_at), MAX(received_at), COUNT(*) FROM signals")
+q("sr_detector_results", "SELECT COUNT(*), SUM(would_wait_for_retest), MIN(ts), MAX(ts) FROM sr_detector_results")
+q("sr_detector_results divert flag",
+  "SELECT COUNT(*) FROM sr_detector_results WHERE flags LIKE '%WAIT_FOR_RETEST_DIVERTED%'")
+q("config_snapshots range", "SELECT COUNT(*), MIN(snapshot_date), MAX(snapshot_date) FROM config_snapshots")
+
+# per-snapshot: wait_for_retest_enabled value + distinct per-strategy min_score / pullback values
+wfr = Counter(); ms = Counter(); pwe = Counter(); gmin = Counter(); nstrat = Counter()
+t = time.time()
+for sid, sdate, cj in c.execute("SELECT snapshot_id, snapshot_date, config_json FROM config_snapshots ORDER BY snapshot_id"):
+    for m in re.findall(r'"wait_for_retest_enabled":\s*(true|false)', cj):
+        wfr[m] += 1
+    try:
+        d = json.loads(cj)
+    except Exception as exc:
+        print("   snapshot", sid, "json error", exc)
+        continue
+    strats = d.get("strategies") if isinstance(d, dict) else None
+    if isinstance(strats, dict):
+        nstrat[len(strats)] += 1
+        for name, s in strats.items():
+            if isinstance(s, dict):
+                ms[(name, s.get("min_score"))] += 1
+                pwe[(name, s.get("pullback_wait_enabled"))] += 1
+    sc = d.get("scoring") if isinstance(d, dict) else None
+    if isinstance(sc, dict):
+        gmin[sc.get("min_pass_score")] += 1
+print("## [config_snapshots scan] %.2fs" % (time.time() - t))
+print("    wait_for_retest_enabled values across snapshots:", dict(wfr))
+print("    strategies-per-snapshot:", dict(nstrat))
+print("    scoring.min_pass_score across snapshots:", dict(gmin))
+print("    distinct (strategy, min_score):", sorted(set(k for k in ms)))
+print("    distinct (strategy, pullback_wait_enabled):", sorted(set(k for k in pwe)))
+
+print("=== S11.3 ===")
+q("screener_results range", "SELECT COUNT(*), MIN(ts), MAX(ts) FROM screener_results")
+q("screener_results by status family",
+  "SELECT CASE WHEN status GLOB 'REJECTED_SCORE_*' THEN 'REJECTED_SCORE_*' ELSE status END s, "
+  "COUNT(*), MIN(score), MAX(score) FROM screener_results GROUP BY s ORDER BY 2 DESC")
+q("eligible_score distribution",
+  "SELECT eligible_score, COUNT(*), MIN(ts), MAX(ts) FROM screener_results GROUP BY eligible_score")
+SCORED = "(r.status = 'PASSED' OR r.status GLOB 'REJECTED_SCORE_*' OR r.status = 'REJECTED_SIGNAL_AGE')"
+q("scored rows: overall max / count",
+  "SELECT COUNT(*), MIN(score), MAX(score), SUM(score>=60), SUM(score>65), SUM(score>=80) "
+  "FROM screener_results r WHERE " + SCORED)
+q("scored score histogram (all strategies)",
+  "SELECT score, COUNT(*) FROM screener_results r WHERE " + SCORED + " GROUP BY score ORDER BY score")
+q("scored rows per strategy (LEFT JOIN signals; NULL = signal row pruned)",
+  "SELECT s.strategy, COUNT(*), MIN(r.score), MAX(r.score), ROUND(AVG(r.score),2), "
+  "SUM(r.score>=60), SUM(r.status='PASSED'), MIN(r.ts), MAX(r.ts) "
+  "FROM screener_results r LEFT JOIN signals s ON s.signal_id = r.signal_id "
+  "WHERE " + SCORED + " GROUP BY s.strategy ORDER BY 2 DESC")
+q("per strategy score>=55 histogram",
+  "SELECT s.strategy, r.score, COUNT(*) FROM screener_results r LEFT JOIN signals s "
+  "ON s.signal_id = r.signal_id WHERE " + SCORED + " AND r.score >= 55 GROUP BY 1,2 ORDER BY 1,2")
+
+# per-step value distribution over scored rows (one streaming pass)
+t = time.time()
+step_vals = defaultdict(Counter)
+n = 0
+for (sr,) in c.execute("SELECT step_results FROM screener_results r WHERE " + SCORED):
+    n += 1
+    try:
+        d = json.loads(sr)
+    except Exception:
+        step_vals["<json_error>"][None] += 1
+        continue
+    for k, v in d.items():
+        step_vals[k][v] += 1
+print("## [per-step distribution over %d scored rows] %.2fs" % (n, time.time() - t))
+for k in sorted(step_vals):
+    print("   ", k, sorted(step_vals[k].items(), key=lambda kv: (str(type(kv[0])), kv[0] if kv[0] is not None else -1)))
+
+print("=== S11.4 ===")
+q("trades range", "SELECT COUNT(*), MIN(created_at), MAX(created_at) FROM trades")
+SLPCT = {
+    "first_pullback_long": 0.015, "first_pullback_short": 0.015,
+    "gap_fade_long": 0.01, "gap_fade_short": 0.01, "gap_go_long": 0.012, "gap_go_short": 0.012,
+    "open_high_breakdown_short": 0.01, "open_low_breakout_long": 0.01, "pb01_breakout_retest": 0.01,
+    "positional_momentum_long": 0.02, "positional_sector_rotation": 0.02, "positional_swing_long": 0.02,
+    "range_breakout_long": 0.01, "range_breakout_short": 0.01,
+    "vwap_bounce_long": 0.008, "vwap_rejection_short": 0.008,
+}
+GAP = {"gap_fade_long": 0.3, "gap_fade_short": 0.3, "gap_go_long": 0.3, "gap_go_short": 0.3}
+agg = defaultdict(Counter)
+dist_rng = {}
+t = time.time()
+for strat, direc, ent, sl, created, status in c.execute(
+        "SELECT strategy, direction, entry_target_price, sl_initial, created_at, status FROM trades"):
+    key = strat
+    if not ent or sl is None:
+        agg[key]["no_price"] += 1
+        continue
+    d = abs(ent - sl) / ent
+    lo, hi = dist_rng.get(key, (9, -9))
+    dist_rng[key] = (min(lo, d), max(hi, d))
+    p = SLPCT.get(strat)
+    agg[key]["n"] += 1
+    if p is None:
+        agg[key]["unknown_strategy"] += 1
+        continue
+    g = GAP.get(strat, 0.0) / 100.0
+    gap_d = 1.0 - (1.0 - p) * (1.0 - g) if direc == "LONG" else (1.0 + p) * (1.0 + g) - 1.0
+    if abs(d - p) < 1e-9:
+        agg[key]["exact_sl_pct"] += 1
+    elif abs(d - p) < 2e-4:
+        agg[key]["within_2e-4_of_sl_pct"] += 1
+    elif g and abs(d - gap_d) < 2e-4:
+        agg[key]["gap_buffer_widened"] += 1
+    else:
+        agg[key]["OTHER"] += 1
+print("## [trades SL-distance check] %.2fs" % (time.time() - t))
+for k in sorted(agg):
+    lo, hi = dist_rng.get(k, (None, None))
+    print("   ", k, "sl_pct=%s" % SLPCT.get(k), dict(agg[k]),
+          "dist_min=%s dist_max=%s" % (None if lo is None else round(lo, 6), None if hi is None else round(hi, 6)))
+
+# broker-side: earliest SL-bearing leg per trade vs trades.sl_initial
+t = time.time()
+legs = Counter(); match = Counter(); tot = Counter()
+first = {}
+for tid, leg, otype, variety, trig, placed in c.execute(
+        "SELECT o.trade_id, o.leg, o.order_type, o.variety, o.trigger_price, o.placed_at FROM orders o "
+        "WHERE o.trigger_price IS NOT NULL AND o.trigger_price > 0"):
+    legs[(leg, otype, variety)] += 1
+    k = (tid, leg)
+    if k not in first or placed < first[k][1]:
+        first[k] = (trig, placed, otype, variety)
+tr = {tid: (strat, sl) for tid, strat, sl in c.execute("SELECT trade_id, strategy, sl_initial FROM trades")}
+for (tid, leg), (trig, placed, otype, variety) in first.items():
+    strat, sl = tr.get(tid, (None, None))
+    tot[(leg, otype, variety)] += 1
+    if sl is not None and abs(trig - sl) < 1e-6:
+        match[(leg, otype, variety)] += 1
+print("## [orders trigger legs] %.2fs" % (time.time() - t))
+print("    all trigger-bearing order rows by (leg, order_type, variety):", dict(legs))
+for k in sorted(tot):
+    print("    earliest leg per trade", k, "trades=%d" % tot[k], "trigger==sl_initial (1e-6): %d" % match[k])

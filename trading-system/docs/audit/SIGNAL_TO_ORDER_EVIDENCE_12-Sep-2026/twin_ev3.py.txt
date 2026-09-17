@@ -1,0 +1,15 @@
+"""READ-ONLY. Two more twin evidence records + their log lines. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json
+BASE = "/home/ubuntu/systems/trading-system"
+F = BASE + "/data_store/evidence/signal_evidence_VBB097_2026-09-11.jsonl"
+WANT = {"sig_8190f13b04c74326a9cdfa01e7d2664e", "sig_8efb220e7359461cb3d3b645237b4256"}
+for l in open(F, encoding="utf-8"):
+    r = json.loads(l)
+    if r.get("signal_id") in WANT:
+        print(json.dumps({k: v for k, v in r.items() if k not in ("code_fingerprint_files", "config_hashes")}, default=str))
+with open(BASE + "/logs/system_2026-09-11.log", encoding="utf-8", errors="replace") as fh:
+    for line in fh:
+        if any(w in line for w in WANT):
+            print(line.rstrip()[:600])

@@ -1,0 +1,63 @@
+"""D1.1 twin: full records for the Section-6 signals -- READ-ONLY. Piped over ssh stdin to the TESTING VM.
+Evidence JSONL read; DB opened mode=ro + query_only; the system log read with plain file reads. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json, sqlite3, re
+
+BASE = "/home/ubuntu/systems/trading-system"
+F = BASE + "/data_store/evidence/signal_evidence_VBB097_2026-09-11.jsonl"
+TRADE_SIG = "sig_63cf7564410449d0985688a7d7e8dd28"   # RAYMOND gap_go_long 14:53
+recs = [json.loads(l) for l in open(F, encoding="utf-8")]
+DROP = ("code_fingerprint_files", "config_hashes")
+
+
+def show(r):
+    print(json.dumps({k: v for k, v in r.items() if k not in DROP}, indent=1, default=str))
+
+
+print("=== P1 (trade) ===")
+for r in recs:
+    if r.get("signal_id") == TRADE_SIG:
+        show(r)
+# rejected candidates around the same time, RAYMOND or any symbol, 14:50-14:56
+print("\n=== P3/P2 records 14:52-14:54, any symbol (summary) ===")
+for r in recs:
+    ta = str(r.get("triggered_at"))
+    if "T14:52" in ta or "T14:53" in ta or "T14:54" in ta:
+        print(r.get("capture_point"), r.get("signal_id"), r.get("symbol"), r.get("strategy"), ta, r.get("status"),
+              r.get("score_total"), r.get("trigger_price"))
+print("\n=== all RAYMOND records ===")
+for r in recs:
+    if r.get("symbol") == "RAYMOND":
+        print(r.get("capture_point"), r.get("signal_id"), r.get("strategy"), r.get("triggered_at"), r.get("status"),
+              r.get("score_total"), r.get("trigger_price"), r.get("ts"))
+
+c = sqlite3.connect("file:%s/data_store/trading_system.db?mode=ro" % BASE, uri=True, timeout=5)
+c.execute("PRAGMA query_only=1")
+c.row_factory = sqlite3.Row
+print("\n=== signals row ===")
+for r in c.execute("SELECT signal_id, symbol, scanner, strategy, triggered_at, received_at, expires_at, status, rejection_reason, "
+                   "trade_id, trigger_price, fingerprint, fingerprint_date FROM signals WHERE signal_id=?", (TRADE_SIG,)):
+    print(dict(r))
+print("\n=== screener_results row ===")
+for r in c.execute("SELECT * FROM screener_results WHERE signal_id=?", (TRADE_SIG,)):
+    print(dict(r))
+print("\n=== trade row ===")
+tid = None
+for r in c.execute("SELECT * FROM trades WHERE signal_id=?", (TRADE_SIG,)):
+    d = dict(r); tid = d["trade_id"]; print(d)
+print("\n=== orders rows ===")
+for r in c.execute("SELECT * FROM orders WHERE trade_id=? ORDER BY placed_at", (tid,)):
+    print(dict(r))
+print("\n=== order_execution_log rows ===")
+try:
+    for r in c.execute("SELECT * FROM order_execution_log WHERE parent_trade_id=? ORDER BY rowid", (tid,)):
+        print(dict(r))
+except Exception as e:
+    print("oel:", e)
+print("\n=== system log lines for the signal / trade / RAYMOND 14:53-14:55 ===")
+pat = re.compile(r"(%s|%s|RAYMOND)" % (TRADE_SIG, tid or "NO_TID"))
+with open(BASE + "/logs/system_2026-09-11.log", encoding="utf-8", errors="replace") as fh:
+    for line in fh:
+        if ("T14:53" in line or "T14:54" in line or "T14:55" in line or " 14:53:" in line or " 14:54:" in line) and pat.search(line):
+            print(line.rstrip()[:700])

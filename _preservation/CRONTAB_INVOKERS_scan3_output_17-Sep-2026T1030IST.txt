@@ -1,0 +1,62 @@
+now=2026-09-17 10:30:47 +0530
+
+##### /home/ubuntu/trading-system.git/hooks/post-receive  (lines mentioning crontab: 7; subprocess/os.system/Popen lines: 0)
+md5=b7166732f1a4cbb70e7e1d2b984e3f88 bytes=2340
+2:# deploy/hooks/post-receive — Phase 3 Option A (AUTO-INSTALL the crontab).
+5:# on the VM and runs on every push to main: checkout, then crontab auto-install.
+9:# push on 17-Jul printed "post-receive: crontab AUTO-INSTALLED from canonical", which
+22:# A crontab swap does NOT disrupt in-flight jobs (only future triggers).
+34:    if "$VENV_PY" scripts/generate_crontab.py --generate | diff -q - deploy/cron/trading-system.cron >/dev/null 2>&1; then
+35:      crontab deploy/cron/trading-system.cron && echo "post-receive: crontab AUTO-INSTALLED from canonical."
+37:      echo "post-receive: WARNING canonical != generate(registry) on the deployed tree — crontab NOT installed."
+
+##### deploy/hooks/post-receive  (lines mentioning crontab: 7; subprocess/os.system/Popen lines: 0)
+md5=b7166732f1a4cbb70e7e1d2b984e3f88 bytes=2340
+2:# deploy/hooks/post-receive — Phase 3 Option A (AUTO-INSTALL the crontab).
+5:# on the VM and runs on every push to main: checkout, then crontab auto-install.
+9:# push on 17-Jul printed "post-receive: crontab AUTO-INSTALLED from canonical", which
+22:# A crontab swap does NOT disrupt in-flight jobs (only future triggers).
+34:    if "$VENV_PY" scripts/generate_crontab.py --generate | diff -q - deploy/cron/trading-system.cron >/dev/null 2>&1; then
+35:      crontab deploy/cron/trading-system.cron && echo "post-receive: crontab AUTO-INSTALLED from canonical."
+37:      echo "post-receive: WARNING canonical != generate(registry) on the deployed tree — crontab NOT installed."
+
+##### core/state_store.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+md5=45d83a94766e8879fccbeecf6dece9f5 bytes=153466
+
+##### ops/control_tower/runner.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+md5=dfcfe0dc74be9f144203f77a9ccea616 bytes=6513
+
+##### scripts/cron_report_render.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+md5=d7f6b53851f28d8e82b0cd280e40503d bytes=29609
+
+##### scripts/monitoring_canary.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 3)
+md5=b0cfd641e6626b59bd64e94f6bfa53ac bytes=17580
+
+##### scripts/preflight/checks/services.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 3)
+md5=2a7603bf31ab7fbdbdbf2b77b3153118 bytes=3633
+
+##### scripts/system_manager.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 7)
+md5=e14ad7b578d87c7617201ed327e925fa bytes=66983
+
+##### strategies/control.py  (lines mentioning crontab: 0; subprocess/os.system/Popen lines: 0)
+md5=c26923ff9f02857456c83bf4dc9878d0 bytes=5552
+
+##### what each of the seven imports from the cron tools (the reason it was on the importer list)
+--- core/state_store.py
+3331:        Used by scripts/check_cron_drift.py to verify all expected jobs ran.
+--- ops/control_tower/runner.py
+17:run is never mis-flagged as a "missed" cron job; check_cron_drift (18:00) is the
+--- scripts/cron_report_render.py
+16:CronReport) lives here so cron_officer.py and the tests share one definition.
+70:    # (morning briefing only). Built in cron_officer.build_report; spliced by the
+346:    L.append(f"Severity : {report.severity} | Module: cron_officer | Mode: {report.mode}")
+538:        f'Severity : {_esc_html(report.severity)}<br>Module&nbsp;&nbsp;: cron_officer<br>'
+--- scripts/monitoring_canary.py
+55:# credentials the canary probes), mirroring scripts/check_cron_drift.py.
+--- scripts/preflight/checks/services.py
+10:Spec-correction (grounding 21-Jun): cron_officer / tgt-retry / reconciler are NOT
+--- scripts/system_manager.py
+913:    CRITICAL days). Mirrors cron_officer's EOD email_backup: the Telegram send
+--- strategies/control.py
+6:(``signals/signal_processor``) and the status table (``scripts/cron_officer`` /
+##### END

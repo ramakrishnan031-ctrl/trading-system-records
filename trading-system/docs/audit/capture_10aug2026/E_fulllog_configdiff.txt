@@ -1,0 +1,67 @@
+#### FULL 10-Aug system log (36 lines) — msg field only ####
+  1 08:15:12.752 INFO     main               Trading System v2.0.0 starting (mode=live)
+  2 08:15:12.810 INFO     main               Config loaded from config (8 files)
+  3 08:15:12.811 INFO     main               service window: may START in [08:00, 18:15) IST; EOD self-exit at 17:35 IST (configured: trading_hours.service_window_end)
+  4 08:15:12.824 CRITICAL kill_switch        KILL SWITCH ACTIVE AT STARTUP: state=SOFT_KILL reason=circuit_breaker_force_close_15:15 triggered_by=order_monitor -- operator must call resume() to c
+  5 08:15:12.829 WARNING  kill_switch        Kill switch auto-cleared: prior SOFT_KILL from 2026-08-07 (reason=circuit_breaker_force_close_15:15 by=order_monitor) -- new day 2026-08-10 starts cle
+  6 08:15:12.829 INFO     main               startup_scenario=COLD: new day (prev=2026-08-07, today=2026-08-10)
+  7 08:15:12.829 INFO     main               Startup scenario: COLD (cold start)
+  8 08:15:12.832 INFO     main               AccountRegistry loaded: 5 accounts (primary: LFL836)
+  9 08:15:12.843 INFO     main               InstrumentCache loaded: 2228 instruments
+ 10 08:15:12.844 INFO     main               startup_scenario=CRASH: same day, no SHUTDOWN event found
+ 11 08:15:20.583 INFO     main               check_instrument_cache_size: OK count=2228 >= min_rows=1000
+ 12 08:15:20.623 INFO     main               check_strategy_configs: OK all strategies validated
+ 13 08:15:20.626 INFO     main               check_holiday_calendar: OK year=2026 count=15
+ 14 08:15:20.627 INFO     main               check_sdk_version: OK kiteconnect==5.1.0
+ 15 08:15:25.633 WARNING  main               check_ntp_sync: failed to query pool.ntp.org: timed out
+ 16 08:15:25.636 INFO     main               check_temp_config: OK no TEMP markers found
+ 17 08:15:25.636 INFO     main               check_disk_space: OK free=75.5GB >= required=2.0GB
+ 18 08:15:25.637 INFO     main               check_db_permissions: OK all files readable/writable
+ 19 08:15:25.637 INFO     main               run_all_startup_checks: OK scenario=CRASH warnings=[]
+ 20 08:15:25.638 INFO     zerodha_adapter    adapter.set_instrument_cache bound
+ 21 08:15:25.639 INFO     main               config_snapshotter: resolved config for 2026-08-10 (mode=LIVE account=LFL836 trade_type=BOTH) hash=79932bde50fe len=16094B
+ 22 08:15:25.642 INFO     main               config_snapshotter: wrote config snapshot id=29 for 2026-08-10 (hash=79932bde50fe)
+ 23 08:15:25.643 INFO     main               capital.bucket_allocation
+ 24 08:15:25.643 INFO     fund_manager       fund_manager.session_start
+ 25 08:15:25.643 INFO     zerodha_adapter    get_margins call_start
+ 26 08:15:25.673 INFO     zerodha_adapter    get_margins call_end
+ 27 08:15:25.676 INFO     fund_manager       fund_manager.initialize
+ 28 08:15:25.678 CRITICAL fund_manager       Capital balance violation: NEGATIVE_MARGIN_AVAILABLE: -844.0800
+ 29 08:15:25.682 CRITICAL kill_switch        HARD_KILL ACTIVATED reason=capital_invariant_violated: Capital balance violation: NEGATIVE_MARGIN_AVAILABLE: -844.0800 triggered_by=fund_manager._chec
+ 30 08:15:25.682 CRITICAL kill_switch        kill_switch: HARD_KILL flatten dispatched to worker thread (hard_kill returns immediately; the fill/commit path is not blocked)
+ 31 08:15:25.683 CRITICAL main               capital_state_inconsistent
+ 32 08:15:25.689 CRITICAL kill_switch        kill_switch: SPARED delivery position DIFFNKG (trade trd_010f8e21b28344bc91a10a8ad3a6dc98, product=CNC, qty=1) — HARD_KILL flattens intraday only (Q4)
+ 33 08:15:25.689 CRITICAL kill_switch        kill_switch: SPARED delivery position MANINFRA (trade trd_9e709c501a9e4938a8d01a21ca312398, product=CNC, qty=4) — HARD_KILL flattens intraday only (Q4
+ 34 08:15:25.690 INFO     zerodha_adapter    get_positions call_start
+ 35 08:15:25.732 INFO     zerodha_adapter    get_positions call_end
+ 36 08:15:25.732 CRITICAL kill_switch        kill_switch: flatten worker finished — all 0 attempted position(s) flat
+
+#### CONFIG_DIFF hunt across ALL logs today ####
+
+#### token_watcher restart logic (lines 130-150) ####
+        sleep "$this_sleep"; continue
+    fi
+
+    active_state="$(systemctl show "$SERVICE" -p ActiveState --value 2>/dev/null)"
+    exit_status="$(systemctl show "$SERVICE" -p ExecMainStatus --value 2>/dev/null)"
+    exit_ts="$(systemctl show "$SERVICE" -p ExecMainExitTimestamp --value 2>/dev/null)"
+    exit_date="$(printf '%s' "$exit_ts" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -n1)"
+    today="$(today_ist)"
+    exited_today=false; [ "$exit_date" = "$today" ] && exited_today=true
+
+    if [ "$active_state" = "active" ] || [ "$active_state" = "activating" ]; then
+        clear_alert_flags
+        # running -- nothing to do
+
+    elif [ "$active_state" = "failed" ]; then
+        case "$exit_status" in
+            4)
+                if [ "$exited_today" = true ]; then
+                    log "HALT detected (exit 4) today -- kill switch active; manual --resume required. NOT restarting."
+                    alert_once_per_day halt "trading-system in HALT (exit 4 / kill switch active) today. Fix root cause, then: main.py --resume"
+                    this_sleep="$LONG_SLEEP"
+                elif token_is_fresh && within_service_window; then
+                    start_service "Prior-day HALT (exit 4); attempting clean start (clear_stale_state auto-clears prior-day kills)."
+
+#### timers / watcher state ####
+active

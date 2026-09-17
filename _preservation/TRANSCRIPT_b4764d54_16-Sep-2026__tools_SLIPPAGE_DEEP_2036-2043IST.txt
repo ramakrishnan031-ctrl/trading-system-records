@@ -1,0 +1,1058 @@
+
+==== [09-16 20:36:25] USER-TEXT (16794 chars, not shown) ====
+
+==== [09-16 20:36:39] ASSISTANT-TEXT ====
+This is a large sequential investigation. Card says no subagents, so I'll work through it in order. Starting with Group A — which config is actually live, since everything depends on it.
+
+==== [09-16 20:36:41] TOOL_USE Bash id=9rq14AqR ====
+  command: echo "=== working tree: locate the slippage block ===" && grep -n "slippage\|entry_slippage\|sl_fraction\|flat_tiers" config/system_config.yaml | head -30 | cut -c1-120
+  description: Locate slippage keys in working tree config
+
+==== [09-16 20:36:41] TOOL_RESULT id=9rq14AqR (2581 chars) ====
+=== working tree: locate the slippage block ===
+171:  emergency_exit_buffer_pct: 0.01  # FIX-181: emergency/kill exits use marketable LIMIT (LTP ± 1%) so they fill but
+667:entry_gate:                   # FIX-025: gate release slippage protection
+668:  slippage_buffer: 2.0        # Rs buffer for limit price adjustment at gate release
+669:  # #5 (BUILD 1): max_entry_slippage_pct and slippage_control are TWO DIFFERENT,
+670:  # complementary guards — keep both. max_entry_slippage_pct is a coarse %-of-price
+671:  # abort (FIX-128); slippage_control (below) is the finer SL-fraction/tiered
+672:  # budget guard. slippage_control.also_apply_pct_check keeps this %-check live
+674:  max_entry_slippage_pct: 1.0 # FIX-128: abort if current LTP deviates > 1% from signal trigger price
+678:  min_effective_rr: 1.0       # FIX-136 Item 54: abort if R:R < 1.0 after slippage
+681:  # Entry-slippage abort (pre-order guard). Aborts if |LTP - signal trigger| > tolerance.
+682:  # mode=sl_fraction (DEFAULT): tolerance = min(SL_distance x max_slippage_fraction, absolute_cap_rs)
+683:  #   -> auto-scales with price AND strategy SL%; caps how much of the risk budget slippage eats.
+684:  #   (SL is fixed/signal-based, TGT recalcs from fill (FIX-013), so slippage directly inflates risk.)
+685:  # Calibrate via max_slippage_fraction + absolute_cap_rs; check entry_slippage_observed logs
+686:  # (fraction_of_sl_used). Restart to apply. flat_tiers/pct modes kept for A/B.
+687:  slippage_control:
+689:    mode: sl_fraction              # sl_fraction | flat_tiers | pct
+690:    max_slippage_fraction: 0.22    # sl_fraction: slippage <= 22% of the SL distance
+691:    absolute_cap_rs: 5.00          # sl_fraction: hard backstop (smaller of the two wins)
+692:    hard_max_slippage_rs: 10.0     # absolute ceiling, ALWAYS applied (any mode)
+693:    also_apply_pct_check: true     # also keep the flat max_entry_slippage_pct (belt + suspenders)
+694:    # --- flat_tiers mode (today's build, kept for A/B) ---
+695:    default_max_slippage_rs: 2.00
+697:      - { max_price: 100,    max_slippage_rs: 1.00 }   # < Rs 100
+698:      - { max_price: 200,    max_slippage_rs: 1.25 }   # Rs 100-200
+699:      - { max_price: 500,    max_slippage_rs: 2.00 }   # Rs 200-500
+700:      - { max_price: 999999, max_slippage_rs: 3.00 }   # > Rs 500
+701:    # --- Phase 3a: MANUAL tolerance override hierarchy (sl_fraction mode only) ---
+703:    #   by_symbol > by_strategy > by_price_band > max_slippage_fraction (global 0.22).
+714:      # Price-band keys MUST match a label in `slippage_bands` (below). Lower % spreads
+
+==== [09-16 20:36:47] TOOL_USE Bash id=gTDPFJRK ====
+  command: echo "=== A(c): working tree slippage block, verbatim (667-740) ===" && sed -n '667,740p' config/system_config.yaml | grep -vE "^\s*#" | grep -v "^$" && echo && echo "=== working tree md5 + mtime ===" && md5sum config/system_config.yaml | cut -c1-32 && ls -l --time-style=+%Y-%m-%d_%H:%M config/system_config.yaml | awk '{print "  mtime "$6}' && git status --porcelain config/system_config.yaml
+  description: Read working tree slippage block
+
+==== [09-16 20:36:47] TOOL_RESULT id=gTDPFJRK (2324 chars) ====
+=== A(c): working tree slippage block, verbatim (667-740) ===
+entry_gate:                   # FIX-025: gate release slippage protection
+  slippage_buffer: 2.0        # Rs buffer for limit price adjustment at gate release
+  max_entry_slippage_pct: 1.0 # FIX-128: abort if current LTP deviates > 1% from signal trigger price
+  max_spread_pct: 0.5         # FIX-134 Item 38: max bid-ask spread % for liquidity check
+  min_depth_qty: 500          # FIX-134 Item 38: min depth quantity at best price
+  liquidity_check_enabled: true  # FIX-134 Item 38: enable/disable liquidity check
+  min_effective_rr: 1.0       # FIX-136 Item 54: abort if R:R < 1.0 after slippage
+  min_pending_rr: 1.0         # FIX-141: cancel pending entry if remaining R:R drops below this (0=disabled)
+  circuit_proximity_reject_enabled: true  # NOCIL fix (22-Jun): reject entries sitting at/beyond the circuit-band exit ceiling (no profitable TGT or valid SL fits the band). Fast-disable lever — set false to admit as before (the post-fill placeability gate is the always-on core safety net).
+  slippage_control:
+    enabled: true
+    mode: sl_fraction              # sl_fraction | flat_tiers | pct
+    max_slippage_fraction: 0.22    # sl_fraction: slippage <= 22% of the SL distance
+    absolute_cap_rs: 5.00          # sl_fraction: hard backstop (smaller of the two wins)
+    hard_max_slippage_rs: 10.0     # absolute ceiling, ALWAYS applied (any mode)
+    also_apply_pct_check: true     # also keep the flat max_entry_slippage_pct (belt + suspenders)
+    default_max_slippage_rs: 2.00
+    tiers:
+      - { max_price: 100,    max_slippage_rs: 1.00 }   # < Rs 100
+      - { max_price: 200,    max_slippage_rs: 1.25 }   # Rs 100-200
+      - { max_price: 500,    max_slippage_rs: 2.00 }   # Rs 200-500
+      - { max_price: 999999, max_slippage_rs: 3.00 }   # > Rs 500
+    overrides:
+      enabled: true
+      by_price_band: {}
+      by_strategy: {}
+      by_symbol: {}
+slippage_bands:
+  - "0-100"
+  - "100-200"
+  - "200-300"
+  - "300-500"
+  - "500-1000"
+  - "1000+"
+paper:                        # H-20/ZA16a: paper-mode fill synthesis
+  auto_fill_delay_sec: 0.5    # daemon thread delay before OSM COMPLETE + OrderFilled (>= 0, <= 10)
+
+=== working tree md5 + mtime ===
+e2add048e305ad725c408fc51ce56b61
+  mtime 2026-08-22_13:51
+ M config/system_config.yaml
+
+==== [09-16 20:36:54] ASSISTANT-TEXT ====
+Working tree: `e2add048…`, mtime 22-Aug, **uncommitted**. Now both VMs — read-only. Locating the production path first.
+
+==== [09-16 20:36:57] TOOL_USE Bash id=8nofQ2Yo ====
+  command: echo "=== production reachable? path? (READ-ONLY) ===" && ssh -o BatchMode=yes -o ConnectTimeout=20 trading-vm 'hostname; echo "--- candidate roots ---"; for d in ~/trading-system ~/systems/trading-system /opt/trading-system; do [ -d "$d" ] && echo "  DIR: $d"; done; echo "--- running service unit WorkingDirectory ---"; systemctl show trading-system -p WorkingDirectory 2>/dev/null' 2>&1 | head -12
+  description: Locate production trading-system root read-only
+
+==== [09-16 20:36:59] TOOL_RESULT id=8nofQ2Yo (228 chars) ====
+=== production reachable? path? (READ-ONLY) ===
+trading-system
+--- candidate roots ---
+  DIR: /home/ubuntu/systems/trading-system
+--- running service unit WorkingDirectory ---
+WorkingDirectory=/home/ubuntu/systems/trading-system
+
+==== [09-16 20:37:04] TOOL_USE Bash id=TtQ9vuLi ====
+  command: echo "=== A(a) PRODUCTION: config identity ===" && ssh -o BatchMode=yes -o ConnectTimeout=20 trading-vm 'cd /home/ubuntu/systems/trading-system && md5sum config/system_config.yaml && stat -c "  mtime %y  size %s" config/system_config.yaml' 2>&1; echo; echo "=== A(b) TESTING: config identity ===" && ssh -o BatchMode=yes -o ConnectTimeout=20 trading-sbx 'cd /home/ubuntu/systems/trading-system && md5sum config/system_config.yaml && stat -c "  mtime %y  size %s" config/system_config.yaml' 2>&1
+  description: Get config md5 and mtime on both VMs
+
+==== [09-16 20:37:06] TOOL_RESULT id=TtQ9vuLi (311 chars) ====
+=== A(a) PRODUCTION: config identity ===
+f54495536c27c4e28756837b324fb242  config/system_config.yaml
+  mtime 2026-09-10 16:19:37.933685786 +0530  size 55901
+
+=== A(b) TESTING: config identity ===
+4eab1ae5a9716059431b55a210e917c9  config/system_config.yaml
+  mtime 2026-09-16 18:30:58.799496498 +0530  size 56846
+
+==== [09-16 20:37:14] ASSISTANT-TEXT ====
+Three distinct configs. Fetching both VM copies to scratch and comparing the slippage keys **structurally**, not by grep.
+
+==== [09-16 20:37:19] TOOL_USE Bash id=aX2Jdo1n ====
+  command: S="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip" && mkdir -p "$S" && ssh -o BatchMode=yes -o ConnectTimeout=20 trading-vm 'cat /home/ubuntu/systems/trading-system/config/system_config.yaml' > "$S/prod.yaml" && ssh -o BatchMode=yes -o ConnectTimeout=20 trading-sbx 'cat /home/ubuntu/systems/trading-system/config/system_config.yaml' > "$S/test.yaml" && cp config/system_config.yaml "$S/work.yaml" && echo "fetched:" && md5sum "$S"/*.yaml | sed 's|.*/||' && echo && echo "=== integrity: do the fetched copies match the VMs? ===" && echo "  prod fetched md5 must equal f5449553... ; test must equal 4eab1ae5..."
+  description: Fetch both VM configs for structural comparison
+
+==== [09-16 20:37:22] TOOL_RESULT id=aX2Jdo1n (167 chars) ====
+fetched:
+prod.yaml
+test.yaml
+work.yaml
+
+=== integrity: do the fetched copies match the VMs? ===
+  prod fetched md5 must equal f5449553... ; test must equal 4eab1ae5...
+
+==== [09-16 20:37:27] ASSISTANT-TEXT ====
+The sed ate the hashes. Verifying fetch integrity properly — a line-ending change on fetch would invalidate the whole comparison.
+
+==== [09-16 20:37:29] TOOL_USE Bash id=2z6WHJFu ====
+  command: S="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip"; for f in prod test work; do printf "  %-6s %s  %s B\n" "$f" "$(md5sum "$S/$f.yaml" | cut -c1-32)" "$(stat -c %s "$S/$f.yaml")"; done; echo; echo "expected: prod f54495536c27c4e28756837b324fb242 (55901) | test 4eab1ae5a9716059431b55a210e917c9 (56846) | work e2add048e305ad725c408fc51ce56b61"
+  description: Verify fetched config integrity
+
+==== [09-16 20:37:29] TOOL_RESULT id=2z6WHJFu (297 chars) ====
+  prod   f54495536c27c4e28756837b324fb242  55901 B
+  test   4eab1ae5a9716059431b55a210e917c9  56846 B
+  work   e2add048e305ad725c408fc51ce56b61  56091 B
+
+expected: prod f54495536c27c4e28756837b324fb242 (55901) | test 4eab1ae5a9716059431b55a210e917c9 (56846) | work e2add048e305ad725c408fc51ce56b61
+
+==== [09-16 20:37:33] ASSISTANT-TEXT ====
+All three fetched byte-exact. Now the structural three-way diff on the slippage keys.
+
+==== [09-16 20:37:39] TOOL_USE Bash id=5aUfUMmm ====
+  command: PYTHONIOENCODING=utf-8 python - <<'PYEOF'
+import yaml, json
+S="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip/"
+d={k: yaml.safe_load(open(S+k+".yaml", encoding="utf-8")) for k in ("prod","test","work")}
+def flat(o, p=""):
+    out={}
+    if isinstance(o,dict):
+        for k,v in o.items(): out.update(flat(v, p+"."+str(k) if p else str(k)))
+    elif isinstance(o,list):
+        out[p]=json.dumps(o, sort_keys=True)
+    else: out[p]=o
+    return out
+F={k:flat(v) for k,v in d.items()}
+KEYS=sorted({k for f in F.values() for k in f
+             if any(t in k.lower() for t in ("slippage","entry_gate","slippage_bands"))})
+print("%-52s %-14s %-14s %-14s" % ("KEY","PROD","TESTING","WORKING"))
+print("-"*98)
+diff=0
+for k in KEYS:
+    v=[F[m].get(k,"<absent>") for m in ("prod","test","work")]
+    same=len({str(x) for x in v})==1
+    if not same: diff+=1
+    print("%-52s %-14s %-14s %-14s %s" % (k[:52], str(v[0])[:14], str(v[1])[:14], str(v[2])[:14], "" if same else "<-- DIFFERS"))
+print("\nslippage-related keys compared: %d   DIFFERING: %d" % (len(KEYS), diff))
+PYEOF
+  description: Three-way structural diff of slippage keys
+
+==== [09-16 20:37:39] TOOL_RESULT id=5aUfUMmm (2050 chars) ====
+KEY                                                  PROD           TESTING        WORKING       
+--------------------------------------------------------------------------------------------------
+entry_gate.circuit_proximity_reject_enabled          True           True           True           
+entry_gate.liquidity_check_enabled                   True           True           True           
+entry_gate.max_entry_slippage_pct                    1.0            1.0            1.0            
+entry_gate.max_spread_pct                            0.5            0.5            0.5            
+entry_gate.min_depth_qty                             500            500            500            
+entry_gate.min_effective_rr                          1.0            1.0            1.0            
+entry_gate.min_pending_rr                            1.0            1.0            1.0            
+entry_gate.slippage_buffer                           2.0            2.0            2.0            
+entry_gate.slippage_control.absolute_cap_rs          5.0            5.0            5.0            
+entry_gate.slippage_control.also_apply_pct_check     True           True           True           
+entry_gate.slippage_control.default_max_slippage_rs  2.0            2.0            2.0            
+entry_gate.slippage_control.enabled                  True           True           True           
+entry_gate.slippage_control.hard_max_slippage_rs     10.0           10.0           10.0           
+entry_gate.slippage_control.max_slippage_fraction    0.22           0.22           0.22           
+entry_gate.slippage_control.mode                     sl_fraction    sl_fraction    sl_fraction    
+entry_gate.slippage_control.overrides.enabled        True           True           True           
+entry_gate.slippage_control.tiers                    [{"max_price": [{"max_price": [{"max_price": 
+slippage_bands                                       ["0-100", "100 ["0-100", "100 ["0-100", "100 
+
+slippage-related keys compared: 18   DIFFERING: 0
+
+==== [09-16 20:37:50] ASSISTANT-TEXT ====
+All 18 slippage keys **identical** across all three. Two follow-ups my flattener can't answer: empty dicts emit no key, so "absent" and "empty" look the same — and A(b) needs the actual PRE→POST delta.
+
+==== [09-16 20:37:56] TOOL_USE Bash id=Yrh6P62n ====
+  command: S="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip" && PYTHONIOENCODING=utf-8 python - <<'PYEOF'
+import yaml
+S="C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip/"
+print("=== F(c): the three override lists, explicitly (empty != absent) ===")
+for m in ("prod","test","work"):
+    c=yaml.safe_load(open(S+m+".yaml",encoding="utf-8"))
+    ov=c.get("entry_gate",{}).get("slippage_control",{}).get("overrides")
+    print("  %-5s overrides=%s" % (m, ov))
+PYEOF
+echo; echo "=== A(b): did last night's write touch ANY slippage key? PRE(351bd82e) vs POST(4eab1ae5) ===" && diff <(cat "D:/Projects/_preservation/TWIN_system_config_PRE-SR-SHADOW_md5-351bd82e__preserved_2026-09-16T0208IST.yaml") "$S/test.yaml" | head -30
+  description: Check override lists and PRE-POST config delta
+
+==== [09-16 20:37:57] TOOL_RESULT id=Yrh6P62n (1776 chars) ====
+=== F(c): the three override lists, explicitly (empty != absent) ===
+  prod  overrides={'enabled': True, 'by_price_band': {}, 'by_strategy': {}, 'by_symbol': {}}
+  test  overrides={'enabled': True, 'by_price_band': {}, 'by_strategy': {}, 'by_symbol': {}}
+  work  overrides={'enabled': True, 'by_price_band': {}, 'by_strategy': {}, 'by_symbol': {}}
+
+=== A(b): did last night's write touch ANY slippage key? PRE(351bd82e) vs POST(4eab1ae5) ===
+749a750,774
+> sr_shadow:                    # S&R SHADOW CONTRACT v1.3 — LOG-ONLY structural shadow (sr_shadow/). GATES NOTHING.
+>   # Contract: docs/design/secondary_filteration/sr-gate/AUTHORITATIVE_SR_SHADOW_CONTRACT_v1.3.txt
+>   # TESTING VM ONLY (v1.3 addendum R12, 15-Sep-2026). Writes data_store/sr_shadow/sr_shadow.db only.
+>   enabled: true               # master flag (paper+live); false = not constructed, sr_shadow=None, zero pipeline change
+>   # ── CALIBRATION register (v1.2 §11) — the contract's values; NOT tuned during the measurement period ──
+>   pivot_window: 2
+>   cluster_width_pct: 0.50       # PERCENT (0.50 == 0.50%)
+>   cluster_total_cap_pct: 1.00   # PERCENT (1.00 == 1.00%)
+>   rejection_ratio_min: 0.50
+>   flip_closes_required: 1
+>   history_coverage_diagnostic_split_years: 3
+>   buffer_slabs:                 # §6.5 step function; NOT the entry-slippage allowance (no shared key/value/code)
+>     - {upper: 100, pct: 1.00}
+>     - {upper: 200, pct: 0.90}
+>     - {upper: 300, pct: 0.80}
+>     - {upper: 450, pct: 0.75}
+>     - {upper: 600, pct: 0.70}
+>     - {upper: 800, pct: 0.65}
+>     - {upper: 1100, pct: 0.55}
+>     - {upper: null, pct: 0.45}
+>   # ── worker plumbing (not model parameters) ──
+>   worker_poll_interval_sec: 2.0
+>   worker_max_attempts: 5
+>   worker_retry_backoff_sec: 60.0
+>
+
+==== [09-16 20:38:08] ASSISTANT-TEXT ====
+A(b) answered precisely: last night's write was a **pure append** of the `sr_shadow:` block — it touched nothing slippage-related, and the block's own comment disclaims any shared key/value/code with entry slippage. All three override lists are `{}` with `enabled: True` on all three machines.
+
+Now A(e)/A(f) — the code-side reads and hardcoded fallbacks.
+
+==== [09-16 20:38:16] TOOL_USE Bash id=EjzVKodj ====
+  command: echo "=== total config key differences (context: they differ, but not in slippage) ===" && PYTHONIOENCODING=utf-8 python -c "
+import yaml,json
+S='C:/Users/rama/AppData/Local/Temp/claude/D--Projects-trading-system/b4764d54-42dd-49f5-9241-5d03ce2cc3f5/scratchpad/slip/'
+def flat(o,p=''):
+    out={}
+    if isinstance(o,dict):
+        if not o: out[p]='{}'
+        for k,v in o.items(): out.update(flat(v,p+'.'+str(k) if p else str(k)))
+    elif isinstance(o,list): out[p]=json.dumps(o,sort_keys=True,default=str)
+    else: out[p]=o
+    return out
+F={k:flat(yaml.safe_load(open(S+k+'.yaml',encoding='utf-8'))) for k in ('prod','test','work')}
+allk=sorted(set().union(*[set(f) for f in F.values()]))
+d=[k for k in allk if len({str(F[m].get(k,'<absent>')) for m in F})>1]
+print('  total keys:',len(allk),' differing anywhere:',len(d))
+sl=[k for k in d if 'slippage' in k.lower() or 'entry_gate' in k.lower()]
+print('  of which SLIPPAGE-related:',len(sl), sl)
+"
+echo; echo "=== A(e)/A(f): every read of the slippage keys, with defaults ===" && grep -rnE "slippage_control|max_entry_slippage_pct|max_slippage_fraction|absolute_cap_rs|hard_max_slippage_rs|also_apply_pct_check|slippage_buffer" --include="*.py" . 2>/dev/null | grep -v "^./tests" | grep -v "^./docs" | head -25 | cut -c1-165
+  description: Total config diff and code reads of slippage keys
+
+==== [09-16 20:38:17] TOOL_RESULT id=EjzVKodj (3014 chars) ====
+=== total config key differences (context: they differ, but not in slippage) ===
+  total keys: 337  differing anywhere: 44
+  of which SLIPPAGE-related: 0 []
+
+=== A(e)/A(f): every read of the slippage keys, with defaults ===
+./core/config_auditor.py:508:        ov = sc.entry_gate.slippage_control.overrides
+./core/config_loader.py:1534:        Symbol  >  Strategy  >  Price Band  >  Global (max_slippage_fraction)
+./core/config_loader.py:1560:                    f"slippage_control.overrides.{info.field_name}[{key!r}] = {frac!r}: "
+./core/config_loader.py:1570:      sl_fraction (DEFAULT): tolerance = min(SL_distance × max_slippage_fraction,
+./core/config_loader.py:1571:                             absolute_cap_rs) — auto-scales with price AND the
+./core/config_loader.py:1577:      pct:        signal_price × entry_gate.max_entry_slippage_pct.
+./core/config_loader.py:1578:    `hard_max_slippage_rs` is an absolute ceiling applied in EVERY mode. (SL is
+./core/config_loader.py:1584:    max_slippage_fraction: float = 0.22     # sl_fraction: GLOBAL default; slippage ≤ this × SL distance
+./core/config_loader.py:1585:    absolute_cap_rs: float = 5.0            # sl_fraction: backstop (the smaller of the two wins)
+./core/config_loader.py:1588:    also_apply_pct_check: bool = True       # also apply the flat % (belt+suspenders), non-pct modes
+./core/config_loader.py:1589:    hard_max_slippage_rs: float = 10.0      # absolute ceiling, ALWAYS applied regardless of mode
+./core/config_loader.py:1599:                f"slippage_control.mode must be sl_fraction|flat_tiers|pct, got {v!r}"
+./core/config_loader.py:1615:    FIX-128 (Fix A): max_entry_slippage_pct caps the allowed deviation
+./core/config_loader.py:1620:    slippage_buffer: float  # Rs buffer for limit price adjustment
+./core/config_loader.py:1621:    max_entry_slippage_pct: float = 1.0  # FIX-128: % cap on trigger->LTP deviation
+./core/config_loader.py:1628:    slippage_control: SlippageControlConfig = Field(  # entry-slippage abort (sl_fraction/flat_tiers/pct)
+./main.py:2833:        entry_gate_slippage_buffer=app_config.system.entry_gate.slippage_buffer,  # FIX-025
+./main.py:2834:        max_entry_slippage_pct=app_config.system.entry_gate.max_entry_slippage_pct,  # FIX-128
+./main.py:2835:        slippage_control=app_config.system.entry_gate.slippage_control,  # sl_fraction/flat_tiers/pct abort
+./main.py:2981:        _ov = app_config.system.entry_gate.slippage_control.overrides
+./ops_dashboard/backend/api/analytics.py:36:    slc = (((sc.get("entry_gate") or {}).get("slippage_control")) or {}) if isinstance(sc, dict) else {}
+./ops_dashboard/backend/api/analytics.py:37:    frac = float(slc.get("max_slippage_fraction") or 0.22)
+./ops_dashboard/backend/api/analytics.py:38:    cap = float(slc.get("absolute_cap_rs") or 5.0)
+./ops_dashboard/backend/api/analytics.py:91:        "model": {"mode": slc.get("mode"), "max_slippage_fraction": frac,
+./ops_dashboard/backend/api/analytics.py:92:                  "absolute_cap_rs": cap},
+
+==== [09-16 20:38:31] ASSISTANT-TEXT ====
+Two findings already. **A(f):** the Pydantic defaults at `config_loader.py:1584-1589` (0.22 / 5.0 / True / 10.0) and `:1621` (1.0) govern if a key is absent — they happen to equal the YAML. `slippage_buffer` at `:1620` has **no default**.
+
+**A(e):** there's a second, independent reader — and it uses an `or` idiom. Examining it.
+
+==== [09-16 20:38:32] TOOL_USE Bash id=tP3KxdYr ====
+  command: sed -n '30,50p' ops_dashboard/backend/api/analytics.py && echo "..." && sed -n '60,95p' ops_dashboard/backend/api/analytics.py | grep -nE "frac|cap|tol|slip|min\(|abs\(" | head -15
+  description: Read dashboard slippage computation
+
+==== [09-16 20:38:33] TOOL_RESULT id=tP3KxdYr (1770 chars) ====
+@analytics_api.route("/api/slippage", methods=["GET"])
+@login_required
+def get_slippage():
+    cfg, today = _ctx()
+    sc = config_reader.get_system_config(cfg, today)
+    slc = (((sc.get("entry_gate") or {}).get("slippage_control")) or {}) if isinstance(sc, dict) else {}
+    frac = float(slc.get("max_slippage_fraction") or 0.22)
+    cap = float(slc.get("absolute_cap_rs") or 5.0)
+
+    rows = db_reader.slippage_rows_today(cfg, today)
+    per_strategy: dict = {}
+    worst = []
+    for r in rows:
+        dist = r.get("planned_sl_distance")
+        entry_slip = r.get("entry_slippage_rs")
+        # %-of-SL-distance model (the system's own sl_fraction budget):
+        # tolerance = min(fraction × SL distance, absolute ₹ cap); breach when
+        # the adverse entry slippage exceeds it. Judgement call: entry leg only
+        # (the model governs entry aborts; exits have no configured budget).
+        tol = min(frac * float(dist), cap) if dist else None
+...
+9:    worst.sort(key=lambda r: float(r.get("entry_slippage_rs") or 0.0), reverse=True)
+15:    def _slip_agg(key_fn, label_key):
+19:            a = out.setdefault(k, {label_key: k, "trades": 0, "entry_slip_rs": 0.0,
+22:            slip = float(r.get("entry_slippage_rs") or 0.0)
+23:            a["entry_slip_rs"] = round(a["entry_slip_rs"] + slip, 4)
+25:            a["worst_rs"] = round(max(a["worst_rs"], slip), 4)
+27:            a["avg_slip_rs"] = round(a["entry_slip_rs"] / a["trades"], 4) if a["trades"] else 0.0
+28:        return sorted(out.values(), key=lambda a: -a["entry_slip_rs"])
+32:        "model": {"mode": slc.get("mode"), "max_slippage_fraction": frac,
+33:                  "absolute_cap_rs": cap},
+36:        "per_strategy": sorted(per_strategy.values(), key=lambda a: -a["entry_slip_rs"]),
+
+==== [09-16 20:38:42] ASSISTANT-TEXT ====
+The dashboard's own comment answers B(f) in passing: *"exits have no configured budget."* Now the order-path formula, which is the core of Groups B and C.
+
+==== [09-16 20:38:44] TOOL_USE Bash id=uQMJW2LR ====
+  command: echo "=== the order-path tolerance computation ===" && grep -rn "def .*slippage\|tolerance_rs\|fraction_of_sl_used\|entry_slippage_observed" --include="*.py" . 2>/dev/null | grep -v "^./tests" | grep -v "^./ops_dashboard" | head -18 | cut -c1-160
+  description: Find order-path tolerance computation
+
+==== [09-16 20:38:44] TOOL_RESULT id=uQMJW2LR (1625 chars) ====
+=== the order-path tolerance computation ===
+./broker/order_monitor.py:136:def _calc_slippage_pct(side: str, avg_fill: float, expected: float) -> float:
+./broker/zerodha_adapter.py:1306:    def set_slippage_engine(self, engine: SlippageEngine) -> None:
+./core/state_store.py:2674:    def insert_trade_slippage_log(self, row: dict) -> bool:
+./orders/order_placer.py:245:    tier_slippage_tolerance_rs,
+./orders/order_placer.py:251:def resolve_slippage_fraction(
+./orders/order_placer.py:279:def validate_slippage_overrides(
+./orders/order_placer.py:325:def _compute_slippage_tolerance(
+./orders/order_placer.py:335:    Returns (tolerance_rs, sl_distance_rs_or_None). Pure (no I/O) for testing.
+./orders/order_placer.py:356:        tol = tier_slippage_tolerance_rs(signal_price, tier_tuples, cfg.default_max_slippage_rs)
+./orders/order_placer.py:364:def _slippage_decision(
+./orders/order_placer.py:376:    (abort_reason_or_None, tolerance_rs, sl_distance_or_None). Pure (no I/O).
+./orders/order_placer.py:1135:                    "order_placer.entry_slippage_observed",
+./orders/order_placer.py:1141:                        "tolerance_rs": round(_slip_tol, 2),
+./orders/order_placer.py:1142:                        "fraction_of_sl_used": (round(_slip_rs / _slip_sl_dist, 3)
+./orders/order_reconciler.py:3855:        tolerance_rs = 0.01   # 1 paise; CO trigger is a price, not a rupee sum
+./orders/order_reconciler.py:3876:            if abs(delta) <= tolerance_rs:
+./orders/order_reconciler.py:3892:                    f"delta={delta:.4f} tolerance={tolerance_rs:.4f}"
+./orders/price_math.py:60:def tier_slippage_tolerance_rs(
+
+==== [09-16 20:38:48] TOOL_USE Bash id=TzZcGTd7 ====
+  command: sed -n '325,410p' orders/order_placer.py
+  description: Read order-path tolerance and decision functions
+
+==== [09-16 20:38:48] TOOL_RESULT id=TzZcGTd7 (3853 chars) ====
+def _compute_slippage_tolerance(
+    cfg: Any,
+    signal_price: float,
+    sl_price: Optional[float],
+    tier_tuples: list,
+    max_pct: float,
+    *,
+    fraction_override: Optional[float] = None,
+) -> tuple[float, Optional[float]]:
+    """Entry-slippage tolerance (Rs) for the active mode, plus the hard ceiling.
+    Returns (tolerance_rs, sl_distance_rs_or_None). Pure (no I/O) for testing.
+
+      sl_fraction: min(SL_distance × fraction, absolute_cap_rs)
+                   — SL_distance = |signal − sl|; `fraction` is `fraction_override`
+                   when supplied (Phase 3a per symbol/strategy/band resolution),
+                   else the global `max_slippage_fraction`. Falls back to
+                   absolute_cap_rs if the SL price is unavailable.
+      flat_tiers:  per-price-band Rs (tier_tuples).
+      pct:         signal_price × max_pct%.
+    `hard_max_slippage_rs` is applied as an absolute ceiling in every mode."""
+    mode = getattr(cfg, "mode", "sl_fraction")
+    sl_dist: Optional[float] = None
+    if mode == "sl_fraction":
+        frac = (fraction_override if fraction_override is not None
+                else cfg.max_slippage_fraction)
+        if sl_price is not None and sl_price > 0:
+            sl_dist = abs(signal_price - sl_price)
+            tol = min(sl_dist * frac, cfg.absolute_cap_rs)
+        else:
+            tol = cfg.absolute_cap_rs        # SL unavailable -> backstop only
+    elif mode == "flat_tiers":
+        tol = tier_slippage_tolerance_rs(signal_price, tier_tuples, cfg.default_max_slippage_rs)
+    elif mode == "pct":
+        tol = signal_price * (max_pct / 100.0)
+    else:
+        tol = cfg.absolute_cap_rs            # unknown mode -> safe small cap
+    return min(tol, cfg.hard_max_slippage_rs), sl_dist
+
+
+def _slippage_decision(
+    cfg: Any,
+    signal_price: float,
+    sl_price: Optional[float],
+    slip_rs: float,
+    slip_pct: float,
+    tier_tuples: list,
+    max_pct: float,
+    *,
+    fraction_override: Optional[float] = None,
+) -> tuple[Optional[str], float, Optional[float]]:
+    """Decide whether to abort the entry on slippage. Returns
+    (abort_reason_or_None, tolerance_rs, sl_distance_or_None). Pure (no I/O).
+    Aborts on the mode tolerance; the flat % is kept as belt-and-suspenders for
+    the non-pct modes when `also_apply_pct_check`. `fraction_override` (Phase 3a)
+    replaces the global sl_fraction when supplied."""
+    tol, sl_dist = _compute_slippage_tolerance(
+        cfg, signal_price, sl_price, tier_tuples, max_pct,
+        fraction_override=fraction_override)
+    if slip_rs > tol:
+        extra = f", SL_dist=₹{sl_dist:.2f}, {slip_rs / sl_dist * 100:.0f}% of SL" if sl_dist else ""
+        return (f"slippage ₹{slip_rs:.2f} > tolerance ₹{tol:.2f} "
+                f"(mode={getattr(cfg, 'mode', '?')}{extra})"), tol, sl_dist
+    if (getattr(cfg, "also_apply_pct_check", True) and getattr(cfg, "mode", "") != "pct"
+            and slip_pct > max_pct):
+        return f"slippage {slip_pct:.2f}% > flat limit {max_pct:.1f}%", tol, sl_dist
+    return None, tol, sl_dist
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Leg taxonomy (BL-7a)
+#
+# The `leg` field on _FillEntry routes OrderFilled events to the correct
+# handler inside _on_order_filled:
+#
+#     ENTRY       → _handle_entry_fill  (commit capital, open position)
+#     SL/TGT/EOD  → _handle_exit_fill   (release capital, close position)
+#
+# (The split handler is wired in BL-7d; A.3.c guards non-ENTRY legs.)
+# EOD is reserved for eod_squareoff-originated tracks; it is a valid value
+# today even though eod_squareoff does not currently populate _fill_map.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_LEG_ENTRY: Final[str] = "ENTRY"
+_LEG_SL:    Final[str] = "SL"
+_LEG_TGT:   Final[str] = "TGT"
+_LEG_EOD:   Final[str] = "EOD"
+
+==== [09-16 20:39:01] ASSISTANT-TEXT ====
+Now the order-path formula is exact. Reading the call site, which determines *which prices* are compared — the heart of Groups B(c) and C.
+
+==== [09-16 20:39:02] TOOL_USE Bash id=37GQ9jap ====
+  command: grep -n "_slippage_decision(" orders/order_placer.py | head && echo "--- call site context ---" && sed -n '1095,1150p' orders/order_placer.py
+  description: Read slippage decision call site
+
+==== [09-16 20:39:03] TOOL_RESULT id=37GQ9jap (3662 chars) ====
+364:def _slippage_decision(
+1117:                    _abort_reason, _slip_tol, _slip_sl_dist = _slippage_decision(
+--- call site context ---
+                    symbol=symbol,
+                )
+                raise eod_exc
+
+        # FIX-128 (Fix A): Slippage guard — abort if market has moved too far from signal trigger.
+        # For gate-path signals, release_ltp is already captured at gate release; reuse it
+        # to avoid a redundant quote fetch. For direct-path signals, fetch current LTP.
+        # Best-effort: if LTP unavailable, skip check and proceed.
+        if signal_trigger_price is not None and signal_trigger_price > 0:
+            _slip_ltp = release_ltp  # gate path: already have LTP
+            if _slip_ltp is None:
+                # Bug 6 (FIX-180): use adapter.get_quote_raw via _fetch_ltp
+                # (live_feed has no .quote()). Best-effort; None -> skip guard.
+                _slip_ltp = self._fetch_ltp(symbol)
+            if _slip_ltp is not None:
+                _slip_rs = abs(_slip_ltp - signal_trigger_price)
+                _slip_pct = _slip_rs / signal_trigger_price * 100
+                _scfg = self._slippage_control
+                if _scfg is not None and getattr(_scfg, "enabled", False):
+                    # Phase 3a: enforce the SAME fraction resolved (and recorded
+                    # on the trade) above, so the override hierarchy drives the
+                    # abort decision. None -> _compute falls back to the global.
+                    _abort_reason, _slip_tol, _slip_sl_dist = _slippage_decision(
+                        _scfg, signal_trigger_price, sl_price, _slip_rs, _slip_pct,
+                        self._slippage_tier_tuples, self._max_entry_slippage_pct,
+                        fraction_override=_tol_fraction,
+                    )
+                else:
+                    # slippage_control disabled/absent -> legacy flat % guard (FIX-128)
+                    _slip_tol = signal_trigger_price * (self._max_entry_slippage_pct / 100.0)
+                    _slip_sl_dist = None
+                    _abort_reason = (
+                        f"slippage {_slip_pct:.2f}% > limit {self._max_entry_slippage_pct:.1f}%"
+                        if _slip_pct > self._max_entry_slippage_pct else None
+                    )
+                # Calibration: always record the observed slippage + how much of the
+                # SL risk-budget it consumed (even within tolerance) so
+                # max_slippage_fraction can be tuned from real numbers. Phase 3a:
+                # also record WHICH override rule supplied the fraction (tolerance_source).
+                self._log.info(
+                    "order_placer.entry_slippage_observed",
+                    extra={
+                        "symbol": symbol, "side": side,
+                        "trigger_price": signal_trigger_price, "current_ltp": _slip_ltp,
+                        "slippage_rs": round(_slip_rs, 2), "slippage_pct": round(_slip_pct, 3),
+                        "sl_distance_rs": (round(_slip_sl_dist, 2) if _slip_sl_dist else None),
+                        "tolerance_rs": round(_slip_tol, 2),
+                        "fraction_of_sl_used": (round(_slip_rs / _slip_sl_dist, 3)
+                                                if _slip_sl_dist else None),
+                        "mode": getattr(_scfg, "mode", None),
+                        "tolerance_fraction": _tol_fraction,    # Phase 3a
+                        "tolerance_source": _tol_source,        # Phase 3a
+                        "aborted": _abort_reason is not None,
+                    },
+                )
+                if _abort_reason is not None:
+
+==== [09-16 20:39:14] ASSISTANT-TEXT ====
+Two significant findings at the call site. Confirming the fail-open behaviour and the paper branch, which is D(e).
+
+==== [09-16 20:39:17] TOOL_USE Bash id=yd9o474v ====
+  command: echo "=== is the whole guard inside a 'best-effort' skip? ===" && sed -n '1103,1112p' orders/order_placer.py | grep -nE "if |_slip_ltp" && echo && echo "=== D: paper-mode branch around the entry path ===" && grep -n "paper\|_is_paper\|mode == .paper.\|PAPER" orders/order_placer.py | sed -n '1,25p' | cut -c1-140
+  description: Verify fail-open and find paper branch
+
+==== [09-16 20:39:17] TOOL_RESULT id=yd9o474v (799 chars) ====
+=== is the whole guard inside a 'best-effort' skip? ===
+1:        if signal_trigger_price is not None and signal_trigger_price > 0:
+2:            _slip_ltp = release_ltp  # gate path: already have LTP
+3:            if _slip_ltp is None:
+6:                _slip_ltp = self._fetch_ltp(symbol)
+7:            if _slip_ltp is not None:
+8:                _slip_rs = abs(_slip_ltp - signal_trigger_price)
+
+=== D: paper-mode branch around the entry path ===
+639:        # this data). In-memory only (parity: identical paper/live), reset on restart.
+692:        # paper-synth lock is released before bus.publish() is called).
+733:        In-memory counters (parity: identical paper/live); the alert never breaks placement."""
+4232:        to the broker). Parity: both paper and live persist the same rows, so
+
+==== [09-16 20:39:24] ASSISTANT-TEXT ====
+Fail-open confirmed — three nested guards, and a `None` LTP skips the whole block. Now the paper path: FF says the check is skipped in paper, so I need *how*.
+
+==== [09-16 20:39:26] TOOL_USE Bash id=VdtsP6Z6 ====
+  command: echo "=== _fetch_ltp definition ===" && grep -n "def _fetch_ltp" orders/order_placer.py && sed -n "$(grep -n 'def _fetch_ltp' orders/order_placer.py | cut -d: -f1),+22p" orders/order_placer.py
+  description: Read _fetch_ltp to find paper divergence
+
+==== [09-16 20:39:26] TOOL_RESULT id=VdtsP6Z6 (1085 chars) ====
+=== _fetch_ltp definition ===
+4036:    def _fetch_ltp(self, symbol: str) -> Optional[float]:
+    def _fetch_ltp(self, symbol: str) -> Optional[float]:
+        """
+        Bug 6 (FIX-180): fetch current LTP via the broker adapter.
+
+        The slippage guard and price-drift top-up previously called
+        self._live_feed.quote(symbol), but LiveFeedManager has no quote()
+        method (AttributeError silently disabled both guards on every order —
+        first-live-day incident). Route through adapter.get_quote_raw() instead,
+        the same source _check_liquidity uses (FIX-166 F08 pattern).
+
+        Best-effort: returns None on any error or if no adapter/positive LTP.
+        """
+        if self._adapter is None:
+            return None
+        try:
+            raw_quote = self._adapter.get_quote_raw([f"NSE:{symbol}"])
+            if not raw_quote:
+                return None
+            q = raw_quote.get(f"NSE:{symbol}")
+            if not q:
+                return None
+            ltp = float(q.get("last_price", 0) or 0)
+            return ltp if ltp > 0 else None
+
+==== [09-16 20:39:36] TOOL_USE Bash id=f5xBnkFM ====
+  command: echo "=== what adapter does PAPER mode get? ===" && grep -nE "adapter\s*=|PaperAdapter|paper_adapter|ZerodhaAdapter\(" main.py | head -12 | cut -c1-150; echo; echo "=== does the paper adapter implement get_quote_raw? ===" && grep -rn "def get_quote_raw" --include="*.py" . 2>/dev/null | grep -v "^./tests" | cut -c1-120
+  description: Determine paper mode adapter wiring
+
+==== [09-16 20:39:36] TOOL_RESULT id=f5xBnkFM (789 chars) ====
+=== what adapter does PAPER mode get? ===
+385:    adapter = HTTPAdapter(pool_connections=1, pool_maxsize=50)
+500:            adapter = HTTPAdapter(pool_connections=1, pool_maxsize=50)
+2099:    broker_adapter = ZerodhaAdapter(
+2171:        broker_adapter=broker_adapter,
+2531:            broker_adapter=broker_adapter,
+2733:        adapter=broker_adapter,
+2758:        adapter=broker_adapter,
+2774:        adapter=broker_adapter,
+2778:        adapter=broker_adapter,
+2840:        broker_adapter=broker_adapter,  # FIX-072: margin cache invalidation on 16388
+2857:            adapter=broker_adapter,
+2870:        adapter=broker_adapter,
+
+=== does the paper adapter implement get_quote_raw? ===
+./broker/zerodha_adapter.py:1740:    def get_quote_raw(self, instrument_keys: list[str]) -> dict:
+
+==== [09-16 20:39:44] ASSISTANT-TEXT ====
+Only **one** adapter exists — `ZerodhaAdapter`, used for both modes — so `_fetch_ltp` would work in paper too. That means FF's "skipped in paper" must come from elsewhere. Finding where paper actually diverges.
+
+==== [09-16 20:39:47] TOOL_USE Bash id=tbPcCLze ====
+  command: grep -rn "auto_fill_delay_sec\|paper.*synth\|_synth_fill\|paper_fill" --include="*.py" . 2>/dev/null | grep -v "^./tests" | head -12 | cut -c1-150; echo; echo "=== where is trading_mode / paper branched in the placement path? ===" && grep -rnE "trading_mode|self\._mode\b|== ['\"]paper['\"]|is_paper" --include="*.py" orders/ broker/ 2>/dev/null | head -12 | cut -c1-150
+  description: Find paper fill synthesis path
+
+==== [09-16 20:39:47] TOOL_RESULT id=tbPcCLze (2312 chars) ====
+./broker/order_monitor.py:1081:        _synth_fill LTP-gating thread handles fill simulation (up to 6h).
+./broker/slippage_engine.py:8:    config/slippage_model.yaml was loaded but never consumed; paper synth
+./broker/slippage_engine.py:9:    in zerodha_adapter._synth_fill set fill_price = price exactly. This
+./broker/zerodha_adapter.py:51:            sleeps PaperConfig.auto_fill_delay_sec (default 0.5s),
+./broker/zerodha_adapter.py:64:            inside _synth_fill logs CRITICAL and returns without
+./broker/zerodha_adapter.py:353:        paper_auto_fill_delay_sec: float = 0.5,    # ZA16a: daemon-thread synth delay
+./broker/zerodha_adapter.py:394:        self._paper_auto_fill_delay_sec = paper_auto_fill_delay_sec
+./broker/zerodha_adapter.py:419:        # Updated by _paper_place_order (SUBMITTED), _synth_fill (COMPLETE),
+./broker/zerodha_adapter.py:422:        self._paper_fills: dict[str, dict] = {}
+./broker/zerodha_adapter.py:423:        self._paper_fills_lock: threading.Lock = threading.Lock()
+./broker/zerodha_adapter.py:445:        # ZA16a: paper needs bus to publish synthesized OrderFilled. If paper
+./broker/zerodha_adapter.py:458:        # fills are already handled by _synth_fill; those arrive as
+
+=== where is trading_mode / paper branched in the placement path? ===
+orders/cnc_gtt_monitor.py:128:        self._mode = mode
+orders/cnc_gtt_monitor.py:454:        if self._mode != "PAPER":
+orders/cnc_gtt_monitor.py:1023:            self._notifier.send(severity=severity, title=f"[{self._mode}] {title}",
+orders/eod_squareoff.py:150:        self._mode = mode
+orders/eod_squareoff.py:684:                title=f"[{self._mode}] 📊 DAILY SUMMARY — {date_str}",
+orders/eod_squareoff.py:705:            title=f"[{self._mode}] 📊 DAILY SUMMARY — {date_str}",
+orders/eod_squareoff.py:1804:                            title=f"[{self._mode}] 🚨 EOD Recovery Failed",
+orders/eod_squareoff.py:1869:                                f"[{self._mode}] 🚨 EOD Squareoff Missed — "
+orders/order_placer.py:635:        self._mode = mode
+orders/order_placer.py:752:                    title=f"[{self._mode}] Sector data-quality: high UNKNOWN rate",
+orders/order_placer.py:1010:            mode=self._mode,
+orders/order_placer.py:1176:                                title=f"[{self._mode}] SLIPPAGE GUARD — {symbol}",
+
+==== [09-16 20:39:56] ASSISTANT-TEXT ====
+Found the paper side: `broker/slippage_engine.py`. Reading it — it answers D(c)/D(d) directly.
+
+==== [09-16 20:39:59] TOOL_USE Bash id=V7ZCPAjv ====
+  command: sed -n '1,60p' broker/slippage_engine.py && echo "=== file length ===" && wc -l < broker/slippage_engine.py && echo && echo "=== is slippage_model.yaml present / consumed now? ===" && ls -l config/slippage_model.yaml 2>/dev/null | awk '{print "  "$5" B"}' || echo "  ABSENT"; grep -rn "slippage_model\|SlippageEngine(" --include="*.py" . 2>/dev/null | grep -v "^./tests" | head -6 | cut -c1-130
+  description: Read slippage engine and check model config
+
+==== [09-16 20:39:59] TOOL_RESULT id=V7ZCPAjv (3329 chars) ====
+"""
+broker/slippage_engine.py -- Trading System v2
+
+Purpose:
+    P12 implementation — apply per-liquidity-tier slippage to paper-mode
+    synthesized fills so paper P&L does not systematically over-state vs
+    live P&L. The audit (2026-04-26 CFG-6) flagged that
+    config/slippage_model.yaml was loaded but never consumed; paper synth
+    in zerodha_adapter._synth_fill set fill_price = price exactly. This
+    closes that gap.
+
+Design Decisions:
+    SE1 -- Stateless, dependency-injected. No singletons, no module-level
+            state. Constructed once at startup and passed to ZerodhaAdapter.
+    SE2 -- Tier resolution from InstrumentCache:
+            - is_fno=True  → "liquid"
+            - is_fno=False → "mid"
+            - unknown sym  → SlippageConfig.default_tier
+            (instruments.csv has no avg_volume column; F&O eligibility is
+            the canonical NSE-side liquidity proxy. Sector-level "small"
+            classification can be added later if a column appears.)
+    SE3 -- Slippage is always ADVERSE (paper conservatism, P12):
+            - BUY  : fill = price + bps_pct * price  (paid more)
+            - SELL : fill = price - bps_pct * price  (received less)
+    SE4 -- Result is rounded to instrument tick_size when known. If symbol
+            is not in cache, no tick rounding is applied (raw float).
+    SE5 -- bps math uses 1 bps = 0.01% = price * (bps / 10_000).
+    SE6 -- apply() is pure: same (symbol, side, price) → same output.
+            No mutation, no I/O, no logging from the hot path.
+    SE7 -- side is uppercased; anything other than "BUY"/"SELL" raises
+            ValueError. The adapter is the only caller and always passes
+            uppercase, so this is defence-in-depth.
+
+What This Module Does NOT Do:
+    - Does not handle live mode. Live fills come from the broker; their
+      price IS the truth.
+    - Does not model market impact, order book depth, or partial fills.
+    - Does not log per-fill slippage; the adapter logs the post-slippage
+      fill_price as part of the existing OrderFilled extra= payload.
+"""
+from __future__ import annotations
+
+from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_UP
+from typing import Optional
+
+from core.config_loader import SlippageConfig
+from core.exceptions import InstrumentNotFoundError
+from core.instrument_cache import InstrumentCache
+
+
+class SlippageEngine:
+    """P12 paper-mode slippage applicator (SE1-SE7)."""
+
+    def __init__(
+        self,
+        config: SlippageConfig,
+        instrument_cache: InstrumentCache,
+        logger=None,  # FIX-050: optional logger for DEBUG when sub-tick guard activates
+    ) -> None:
+        self._cfg = config
+=== file length ===
+186
+
+=== is slippage_model.yaml present / consumed now? ===
+  605 B
+./broker/cost_calculator.py:32:    - Does not compute slippage (handled by slippage_model consumers)
+./broker/slippage_engine.py:8:    config/slippage_model.yaml was loaded but never consumed; paper synth
+./broker/slippage_engine.py:66:                f"slippage_model.yaml: default_tier {config.default_tier!r} "
+./core/config_loader.py:29:    slippage_model.yaml     → SlippageConfig    (P12)
+./core/config_loader.py:2135:# slippage_model.yaml — SlippageConfig
+./core/config_loader.py:2347:    ("slippage",          "slippage_model.yaml",   SlippageConfig),
+
+==== [09-16 20:40:16] ASSISTANT-TEXT ====
+Major find for A(e) and D: there's a **second slippage config** — `config/slippage_model.yaml` — feeding a paper-only `SlippageEngine`. Reading it and settling whether paper reaches the abort guard.
+
+==== [09-16 20:40:20] TOOL_USE Bash id=AFMKcxM8 ====
+  command: echo "=== config/slippage_model.yaml, verbatim ===" && grep -vE "^\s*#" config/slippage_model.yaml | grep -v "^$"; echo; echo "=== is it on the VMs, and identical? ===" && for h in trading-vm trading-sbx; do printf "  %-12s %s\n" "$h" "$(ssh -o BatchMode=yes -o ConnectTimeout=20 $h 'md5sum /home/ubuntu/systems/trading-system/config/slippage_model.yaml 2>/dev/null | cut -c1-32' 2>&1)"; done; printf "  %-12s %s\n" "worktree" "$(md5sum config/slippage_model.yaml | cut -c1-32)"
+  description: Read slippage model config and compare across machines
+
+==== [09-16 20:40:23] TOOL_RESULT id=AFMKcxM8 (531 chars) ====
+=== config/slippage_model.yaml, verbatim ===
+tiers:
+  liquid:
+    slippage_bps: 5      # Large-cap, high-volume stocks (avg daily vol > 50L shares)
+  mid:
+    slippage_bps: 15     # Mid-cap stocks
+  small:
+    slippage_bps: 30     # Small-cap / less liquid stocks
+default_tier: liquid     # Tier assigned when symbol is not explicitly classified
+
+=== is it on the VMs, and identical? ===
+  trading-vm   8d87af6bdfda474bd1cc197aff8ea886
+  trading-sbx  8d87af6bdfda474bd1cc197aff8ea886
+  worktree     8d87af6bdfda474bd1cc197aff8ea886
+
+==== [09-16 20:40:32] ASSISTANT-TEXT ====
+`slippage_model.yaml` identical on all three (`8d87af6b…`). Note `default_tier: liquid` = **5 bps, the smallest** — the most optimistic default, which sits oddly against SE3's stated "paper conservatism". Checking tier reachability and settling D(e).
+
+==== [09-16 20:40:36] TOOL_USE Bash id=YSM9J4US ====
+  command: echo "=== F(f): is the 'small' tier reachable? ===" && grep -n "liquid\|mid\|small\|default_tier\|is_fno" broker/slippage_engine.py | sed -n '1,14p' | cut -c1-130; echo; echo "=== D(e): what function holds the slippage guard, and is it mode-gated? ===" && awk 'NR<=1104 && /^    def /{ln=NR; fn=$0} END{}' orders/order_placer.py; PYTHONIOENCODING=utf-8 python -c "
+import re
+src=open('orders/order_placer.py',encoding='utf-8').read().split('\n')
+fn=None
+for i in range(1104):
+    m=re.match(r'    def (\w+)', src[i])
+    if m: fn=(i+1,m.group(1))
+print('  guard at line 1104 lives in: %s (def at line %d)'%(fn[1],fn[0]))
+"
+  description: Check tier reachability and locate guard function
+
+==== [09-16 20:40:36] TOOL_RESULT id=YSM9J4US (1065 chars) ====
+=== F(f): is the 'small' tier reachable? ===
+5:    P12 implementation — apply per-liquidity-tier slippage to paper-mode
+16:            - is_fno=True  → "liquid"
+17:            - is_fno=False → "mid"
+18:            - unknown sym  → SlippageConfig.default_tier
+20:            the canonical NSE-side liquidity proxy. Sector-level "small"
+63:        # Pre-validate default_tier so apply() can rely on it.
+64:        if config.default_tier not in config.tiers:
+66:                f"slippage_model.yaml: default_tier {config.default_tier!r} "
+72:        SE2: resolve liquidity tier for a symbol.
+76:          1. Add avg_volume_20d threshold (e.g., >5M shares → liquid)
+77:          2. Add sector-based proxies (e.g., NIFTY50 constituents → liquid)
+78:          3. Handle illiquid FNO contracts (weekly expiries, deep OTM)
+79:          4. Consider spread % from instrument_cache as liquidity signal
+82:          - FNO → liquid (rough proxy)
+
+=== D(e): what function holds the slippage guard, and is it mode-gated? ===
+  guard at line 1104 lives in: place (def at line 871)
+
+==== [09-16 20:40:46] ASSISTANT-TEXT ====
+`small` (30 bps) is **unreachable** — SE2 assigns only liquid/mid/default_tier. Now the definitive D(e) test: does `place()` return early in paper before reaching the guard at 1104?
+
+==== [09-16 20:40:49] TOOL_USE Bash id=4DxRLVjd ====
+  command: PYTHONIOENCODING=utf-8 python -c "
+src=open('orders/order_placer.py',encoding='utf-8').read().split('\n')
+print('=== any paper/mode branch or early return between def place (871) and the guard (1104)? ===')
+hits=0
+for i in range(870,1104):
+    l=src[i]
+    low=l.lower()
+    if ('paper' in low or 'self._mode' in l) or ('return' in low and l.strip().startswith('return')):
+        print('  %5d  %s'%(i+1,l.strip()[:120])); hits+=1
+print('  matches:',hits)
+"
+  description: Check for paper early return before guard
+
+==== [09-16 20:40:49] TOOL_RESULT id=4DxRLVjd (132 chars) ====
+=== any paper/mode branch or early return between def place (871) and the guard (1104)? ===
+   1010  mode=self._mode,
+  matches: 1
+
+==== [09-16 20:41:05] ASSISTANT-TEXT ====
+**No paper branch and no early return** between `def place()` (871) and the guard (1104) — the only `self._mode` is a parameter pass at 1010. That contradicts the §0 "skipped in paper" fact. Testing it empirically against the production DB, read-only.
+
+==== [09-16 20:41:08] TOOL_USE Bash id=Wa4oB4mM ====
+  command: ssh -o BatchMode=yes -o ConnectTimeout=25 trading-vm 'cd /home/ubuntu/systems/trading-system && which sqlite3 >/dev/null && echo "sqlite3 present" ; sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" "SELECT name FROM sqlite_master WHERE type=\"table\" AND name LIKE \"%slippage%\";" 2>&1; echo "--- trade_slippage_log schema ---"; sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" ".schema trade_slippage_log" 2>&1 | head -25' 2>&1
+  description: Inspect production slippage table schema read-only
+
+==== [09-16 20:41:10] TOOL_RESULT id=Wa4oB4mM (1029 chars) ====
+sqlite3 present
+trade_slippage_log
+--- trade_slippage_log schema ---
+CREATE TABLE trade_slippage_log (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    trade_id            TEXT,
+    trade_date          DATE NOT NULL,
+    symbol              TEXT NOT NULL,
+    strategy_name       TEXT NOT NULL,
+    side                TEXT NOT NULL,     -- LONG / SHORT
+    qty                 INTEGER,
+    price_band          TEXT,              -- e.g. "200-300" (from slippage_bands)
+    -- entry
+    entry_signal_price  REAL,
+    entry_fill_price    REAL,
+    entry_slippage_rs   REAL,              -- adverse = positive
+    entry_slippage_pct  REAL,
+    -- stop loss
+    sl_trigger_price    REAL,
+    sl_fill_price       REAL,
+    sl_slippage_rs      REAL,              -- adverse = positive
+    sl_slippage_pct     REAL,
+    -- target
+    tgt_price           REAL,
+    tgt_fill_price      REAL,
+    tgt_slippage_rs     REAL,              -- favourable = positive (better fill)
+    tgt_slippage_pct    REAL,
+    -- R:R analysis
+
+==== [09-16 20:41:15] ASSISTANT-TEXT ====
+`trade_slippage_log` has `entry_signal_price`, `entry_fill_price`, `entry_slippage_rs` — so realised slippage **is** computed somewhere. The question is population. Checking both VMs.
+
+==== [09-16 20:41:20] TOOL_USE Bash id=v7UB1eGh ====
+  command: for h in trading-vm trading-sbx; do echo "=== $h ==="; ssh -o BatchMode=yes -o ConnectTimeout=25 $h 'cd /home/ubuntu/systems/trading-system && sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" "
+SELECT \"  rows=\"||COUNT(*)||\"  entry_signal=\"||SUM(entry_signal_price IS NOT NULL)||\"  entry_fill=\"||SUM(entry_fill_price IS NOT NULL)||\"  entry_slip_rs=\"||SUM(entry_slippage_rs IS NOT NULL) FROM trade_slippage_log;
+SELECT \"  orders: total=\"||COUNT(*)||\"  price_notnull=\"||SUM(price IS NOT NULL)||\"  avgfill_notnull=\"||SUM(avg_fill_price IS NOT NULL)||\"  avgfill_nonempty=\"||SUM(COALESCE(avg_fill_price,\"\")<>\"\") FROM orders;
+SELECT \"  orders ENTRY: total=\"||COUNT(*)||\"  price_notnull=\"||SUM(price IS NOT NULL) FROM orders WHERE leg=\"ENTRY\";
+" 2>&1'; done
+  description: Check slippage log population on both VMs
+
+==== [09-16 20:41:22] TOOL_RESULT id=v7UB1eGh (410 chars) ====
+=== trading-vm ===
+  rows=356  entry_signal=356  entry_fill=356  entry_slip_rs=356
+  orders: total=1480  price_notnull=696  avgfill_notnull=0  avgfill_nonempty=0
+  orders ENTRY: total=784  price_notnull=0
+=== trading-sbx ===
+  rows=349  entry_signal=349  entry_fill=349  entry_slip_rs=349
+  orders: total=1470  price_notnull=687  avgfill_notnull=0  avgfill_nonempty=0
+  orders ENTRY: total=783  price_notnull=0
+
+==== [09-16 20:41:36] ASSISTANT-TEXT ====
+**This is the Group E answer, and it's not what PPV implied.** `orders` confirms PPV exactly (784 prod ENTRY rows, `price` NULL on **all**; `avg_fill_price` empty on all 1,480) — **but `trade_slippage_log` is 100% populated across 356 rows.** Finding what `entry_signal_price` actually holds, which is E(d).
+
+==== [09-16 20:41:38] TOOL_USE Bash id=Nb4fYniy ====
+  command: grep -rn "insert_trade_slippage_log" --include="*.py" . | grep -v "^./tests" | cut -c1-110 && echo "--- the caller's field mapping ---" && CALLER=$(grep -rn "insert_trade_slippage_log" --include="*.py" . | grep -v "^./tests" | grep -v state_store | head -1 | cut -d: -f1) && echo "file: $CALLER" && grep -n "entry_signal_price\|entry_fill_price\|entry_slippage_rs" "$CALLER" | head -8 | cut -c1-150
+  description: Find slippage log caller and field mapping
+
+==== [09-16 20:41:39] TOOL_RESULT id=Nb4fYniy (438 chars) ====
+./core/state_store.py:2674:    def insert_trade_slippage_log(self, row: dict) -> bool:
+./orders/slippage_recorder.py:190:            self._store.insert_trade_slippage_log(self.build_trade_slippage_
+--- the caller's field mapping ---
+file: ./orders/slippage_recorder.py
+229:            "entry_signal_price": e_sig, "entry_fill_price": e_fill,
+230:            "entry_slippage_rs": (round(entry_slip, 4) if entry_slip is not None else None),
+
+==== [09-16 20:41:43] TOOL_USE Bash id=4CyRr5kN ====
+  command: grep -n "e_sig\|e_fill\|entry_slip\s*=" orders/slippage_recorder.py | head -12 | cut -c1-160
+  description: Trace e_sig and e_fill derivation
+
+==== [09-16 20:41:43] TOOL_RESULT id=4CyRr5kN (774 chars) ====
+198:        e_sig, e_fill = t.get("entry_target_price"), t.get("entry_actual_price")
+203:        entry_slip = adverse_entry_slip(side, e_sig, e_fill) if (e_sig and e_fill) else None
+204:        planned_dist = abs(e_sig - sl0) if (e_sig and sl0) else None
+210:        planned_rr = (abs(tgt0 - e_sig) / planned_dist
+211:                      if (tgt0 and e_sig and planned_dist) else None)
+213:        if e_fill and sl0 and exit_px:
+214:            risk = abs(e_fill - sl0)
+216:                move = (exit_px - e_fill) if _is_long(side) else (e_fill - exit_px)
+228:            "price_band": get_price_band(e_sig, bands) if e_sig else None,
+229:            "entry_signal_price": e_sig, "entry_fill_price": e_fill,
+231:            "entry_slippage_pct": _pct(entry_slip, e_sig),
+
+==== [09-16 20:41:59] ASSISTANT-TEXT ====
+**E(d) confirmed at `slippage_recorder.py:198`:** `e_sig, e_fill = t.get("entry_target_price"), t.get("entry_actual_price")` — realised slippage is **derived-entry-price vs fill**, not submitted-vs-fill. Now Group G, applying the zero-count rule.
+
+==== [09-16 20:42:05] TOOL_USE Bash id=BEXiMGVA ====
+  command: ssh -o BatchMode=yes -o ConnectTimeout=25 trading-vm 'cd /home/ubuntu/systems/trading-system && sqlite3 -readonly "file:data_store/trading_system.db?mode=ro" "
+SELECT \"=== slippage-log rows by account-era (proxy: trade_date) ===\";
+SELECT \"  \"||trade_date||\"  rows=\"||COUNT(*)||\"  avg_slip=\"||ROUND(AVG(entry_slippage_rs),3)||\"  max=\"||ROUND(MAX(entry_slippage_rs),2) FROM trade_slippage_log GROUP BY trade_date ORDER BY trade_date DESC LIMIT 8;
+SELECT \"=== G(d) REACHABILITY: are entries still being PLACED after 09-Sep? ===\";
+SELECT \"  \"||substr(created_at,1,10)||\"  entry_orders=\"||COUNT(*) FROM orders WHERE leg=\"ENTRY\" AND created_at>=\"2026-09-09\" GROUP BY substr(created_at,1,10) ORDER BY 1 DESC LIMIT 8;
+" 2>&1'
+  description: Query abort era data and reachability
+
+==== [09-16 20:42:07] TOOL_RESULT id=BEXiMGVA (689 chars) ====
+Exit code 1
+Error: in prepare, no such column: created_at
+  SELECT "  "||substr(created_at,1,10)||"  entry_orders="||COUNT(*) FROM orders 
+                      ^--- error here
+=== slippage-log rows by account-era (proxy: trade_date) ===
+  2026-09-16  rows=2  avg_slip=-0.003  max=0.0
+  2026-09-15  rows=4  avg_slip=0.002  max=0.02
+  2026-09-11  rows=6  avg_slip=-0.085  max=-0.01
+  2026-09-10  rows=8  avg_slip=-0.003  max=0.02
+  2026-09-09  rows=7  avg_slip=-0.01  max=0.02
+  2026-09-08  rows=5  avg_slip=-0.103  max=0.02
+  2026-09-07  rows=9  avg_slip=0.078  max=0.8
+  2026-09-04  rows=4  avg_slip=-0.058  max=0.01
+=== G(d) REACHABILITY: are entries still being PLACED after 09-Sep? ===
+
+==== [09-16 20:42:17] ASSISTANT-TEXT ====
+Trades continue after the 09-Sep switch (7·8·6·4·2 rows on 09/10/11/15/16-Sep), so the path isn't idle. But the decisive reachability test is whether the **guard itself runs** — it logs `entry_slippage_observed` on every placement, abort or not.
+
+==== [09-16 20:42:21] TOOL_USE Bash id=jmghc4Ux ====
+  command: ssh -o BatchMode=yes -o ConnectTimeout=25 trading-vm 'cd /home/ubuntu/systems/trading-system && echo "=== G(d) ZERO-COUNT REACHABILITY: does the guard RUN post-09-Sep? ===" && for d in 2026-09-09 2026-09-10 2026-09-11 2026-09-15 2026-09-16; do f="logs/system_$d.log"; if [ -f "$f" ]; then printf "  %s  observed=%-4s aborted_true=%-3s guard_alerts=%s\n" "$d" "$(grep -c entry_slippage_observed $f)" "$(grep entry_slippage_observed $f | grep -c \"aborted\": true)" "$(grep -c \"SLIPPAGE GUARD\" $f)"; else echo "  $d  (no log)"; fi; done' 2>&1
+  description: Test guard reachability in production logs
+
+==== [09-16 20:42:22] TOOL_RESULT id=jmghc4Ux (894 chars) ====
+=== G(d) ZERO-COUNT REACHABILITY: does the guard RUN post-09-Sep? ===
+grep:   2026-09-09  observed=18   aborted_true=    guard_alerts=logs/system_2026-09-09.log:0
+true: No such file or directory
+grep: GUARD": No such file or directory
+grep:   2026-09-10  observed=16   aborted_true=    guard_alerts=logs/system_2026-09-10.log:0
+true: No such file or directory
+grep: GUARD": No such file or directory
+grep: true: No such file or directory  2026-09-11  observed=22   aborted_true=    guard_alerts=logs/system_2026-09-11.log:0
+
+grep: GUARD": No such file or directory
+grep: true: No such file or directory
+  2026-09-15  observed=6    aborted_true=    guard_alerts=logs/system_2026-09-15.log:0
+grep: GUARD": No such file or directory
+grep: true: No such file or directory
+grep: GUARD": No such file or directory
+  2026-09-16  observed=11   aborted_true=    guard_alerts=logs/system_2026-09-16.log:0
+
+==== [09-16 20:42:29] ASSISTANT-TEXT ====
+Quoting broke the inner greps, but the key figure came through: `entry_slippage_observed` fires **18 · 16 · 22 · 6 · 11** on 09/10/11/15/16-Sep — all after the account switch. Getting the abort counts cleanly.
+
+==== [09-16 20:42:34] TOOL_USE Bash id=3MDzFkNk ====
+  command: cat > /tmp/g.sh <<'EOS'
+cd /home/ubuntu/systems/trading-system
+echo "day        observed  aborted  near_miss(>=80% of tol)"
+for f in logs/system_2026-09-*.log; do
+  d=$(basename "$f" .log | sed 's/system_//')
+  o=$(grep -c entry_slippage_observed "$f" 2>/dev/null)
+  a=$(grep entry_slippage_observed "$f" 2>/dev/null | grep -c '"aborted": true')
+  printf "  %s  %-8s %-8s\n" "$d" "$o" "$a"
+done
+echo
+echo "=== total aborts in ALL system logs ==="
+grep -h entry_slippage_observed logs/system_*.log 2>/dev/null | grep -c '"aborted": true'
+echo "=== total observations ==="
+grep -hc entry_slippage_observed logs/system_*.log 2>/dev/null | paste -sd+ | bc
+EOS
+ssh -o BatchMode=yes -o ConnectTimeout=25 trading-vm 'bash -s' < /tmp/g.sh 2>&1 | head -30
+  description: Get clean abort counts from production logs
+
+==== [09-16 20:42:35] TOOL_RESULT id=3MDzFkNk (383 chars) ====
+day        observed  aborted  near_miss(>=80% of tol)
+  2026-09-04  12       0       
+  2026-09-07  24       0       
+  2026-09-08  19       0       
+  2026-09-09  18       0       
+  2026-09-10  16       0       
+  2026-09-11  22       0       
+  2026-09-15  6        0       
+  2026-09-16  11       0       
+
+=== total aborts in ALL system logs ===
+0
+=== total observations ===
+128
+
+==== [09-16 20:42:53] TOOL_USE Bash id=rE9ZQWHm ====
+  command: PYTHONIOENCODING=utf-8 python - <<'PYEOF'
+# B(d): can hard_max_slippage_rs=10 EVER bind, given the live config?
+FRAC, CAP, HARD, MAXPCT = 0.22, 5.00, 10.00, 1.0
+TIERS = [(100,1.00),(200,1.25),(500,2.00),(999999,3.00)]
+def tol(mode, price, sl):
+    if mode=="sl_fraction":
+        t = min(abs(price-sl)*FRAC, CAP) if sl else CAP
+    elif mode=="flat_tiers":
+        t = next(v for mx,v in TIERS if price<=mx)
+    elif mode=="pct":
+        t = price*(MAXPCT/100.0)
+    else:
+        t = CAP
+    return t, min(t, HARD)
+print("mode         price     pre-ceiling  after min(.,10)  does 10 BIND?")
+for mode in ("sl_fraction","flat_tiers","pct","unknown"):
+    for price,sl in ((50,45),(250,240),(1500,1400),(5000,4500)):
+        pre, post = tol(mode, price, sl)
+        print("  %-11s %-9s %-12.2f %-16.2f %s" % (mode, price, pre, post, "YES" if post<pre else "no"))
+print("\nB(d) VERDICT: in the LIVE mode (sl_fraction) tol is capped at absolute_cap_rs=5.00 FIRST,")
+print("  so min(tol,10) can never reduce it. The Rs10 ceiling binds ONLY in 'pct' mode above Rs1,000.")
+PYEOF
+  description: Test whether hard ceiling can ever bind
+
+==== [09-16 20:42:53] TOOL_RESULT id=rE9ZQWHm (1185 chars) ====
+mode         price     pre-ceiling  after min(.,10)  does 10 BIND?
+  sl_fraction 50        1.10         1.10             no
+  sl_fraction 250       2.20         2.20             no
+  sl_fraction 1500      5.00         5.00             no
+  sl_fraction 5000      5.00         5.00             no
+  flat_tiers  50        1.00         1.00             no
+  flat_tiers  250       2.00         2.00             no
+  flat_tiers  1500      3.00         3.00             no
+  flat_tiers  5000      3.00         3.00             no
+  pct         50        0.50         0.50             no
+  pct         250       2.50         2.50             no
+  pct         1500      15.00        10.00            YES
+  pct         5000      50.00        10.00            YES
+  unknown     50        5.00         5.00             no
+  unknown     250       5.00         5.00             no
+  unknown     1500      5.00         5.00             no
+  unknown     5000      5.00         5.00             no
+
+B(d) VERDICT: in the LIVE mode (sl_fraction) tol is capped at absolute_cap_rs=5.00 FIRST,
+  so min(tol,10) can never reduce it. The Rs10 ceiling binds ONLY in 'pct' mode above Rs1,000.
+
+==== [09-16 20:43:45] ASSISTANT-TEXT ====
+# SLIPPAGE — DEEP INVESTIGATION REPORT
+**17-Sep-2026 IST · report only · nothing written anywhere · no broker call**
+
+## ⭐ THE FOUR ANSWERS, ONE SENTENCE EACH
+
+**A — which config is live, and do they agree.** Production `f5449553…` (mtime 10-Sep 16:19), testing `4eab1ae5…` (16-Sep 18:30), working tree `e2add048…` (22-Aug, uncommitted) are three *different* files that differ on 44 of 337 keys — but **all 18 slippage keys are byte-identical across all three**, so the enforced slippage model is the same everywhere.
+
+**C(b) — which formula produces the number Rama sees.** Rama sees the **display** formula (`entry_target_price` vs fill, tolerance from `|entry_target_price − sl_initial|`); the system **enforces** a different one (`signal_trigger_price` vs fresh LTP, tolerance from `|signal_trigger_price − sl_price|`) — different inputs, same name, never reconciled.
+
+**D(e) — can a signal aborted in live become a filled trade in paper.** ⚠️ **I could not confirm the §0 premise: I found no paper branch and no early return between `def place()` (order_placer.py:871) and the guard (:1104),** so on my reading the abort guard runs in *both* modes — this **contradicts FF-C/FF-G as cited** and needs resolving before anyone relies on either statement.
+
+**E(f) — does this system know what slippage it incurred.** **Partially, and not the way it appears:** `orders.price` is NULL on all 784 production ENTRY rows and `avg_fill_price` empty on all 1,480 (PPV confirmed on both VMs), but `trade_sli

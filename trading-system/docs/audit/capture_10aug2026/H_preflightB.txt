@@ -1,0 +1,71 @@
+#### Phase B preflight, 10-Aug — full tail ####
+Group — Config Sanity  (7/7 ok)
+  ├─ A_contradictions       ✅ PASS      177ms  no contradictions
+  ├─ B_single_source        ✅ PASS        0ms  no resurrected deleted keys (daily_loss_limit / max_position_value_rs / live_test_* / scoring tier_multipliers)
+  ├─ C_capital_relative     ✅ PASS        0ms  capital-relative caps sane (loss 3% <= 10%, conc 10% < pos-cap 40%, risk/trade 1%)
+  ├─ D_active_overrides     ✅ PASS        0ms  no active slippage overrides — pure global fraction everywhere
+  ├─ E_launch_phase         ✅ PASS        0ms  trading_hours.entry_start=10:00 [LAUNCH-PHASE] — conservative early-live start (avoids opening-hour volatility); relax toward 09:20 as capital/confidence grows
+  ├─ F_stale_defaults       ✅ PASS        0ms  component defaults match config intent (position-value cap + daily-loss pct)
+  ├─ G_cross_field          ✅ PASS        0ms  cross-field timing/leverage/tick sane
+
+Group — State  (3/5 ok)
+  ├─ kill_switch_state      🔴 FAIL        1ms  HARD_KILL active (triggered 2026-08-10T08:15:25.680449+05:30) — trading halted
+  ├─ open_positions_at_start 🔴 FAIL        1ms  2 open position(s) at start — investigate (MIS flat overnight)
+  ├─ open_orders_at_start   ✅ PASS        1ms  no resting/active orders at start
+  ├─ stuck_exiting_positions ✅ PASS        1ms  no trades stuck in EXITING
+  ├─ needs_tgt_retry_residue ✅ PASS        1ms  no TGT-retry residue
+
+Group — Security  (4/4 ok)
+  ├─ security_watcher_alive ✅ PASS        0ms  security-watcher fresh (27s)
+  ├─ copy_protection_state  ✅ PASS        8ms  copy protection enabled (hard-block)
+  ├─ auth_recovery_primed   ✅ PASS        0ms  auth_recovery importable + primed (IP-403 self-recovery)
+  ├─ time_lock_window       ✅ PASS        8ms  outside copy time-lock (hour=8)
+
+Group — Recovery  (4/4 ok)
+  ├─ today_log_writable     ✅ PASS        0ms  /home/ubuntu/systems/trading-system/logs writable
+  ├─ cron_marks_dir_writable ✅ PASS        0ms  /home/ubuntu/systems/trading-system/data_store/cron_marks writable
+  ├─ alert_backlog          ✅ PASS        0ms  0 pending alert sentinels
+  ├─ log_rotation           ⏭  SKIP       0ms  no system log for 2026-08-09 (ok if prior day was non-trading)
+
+------------------------------------------------------------
+🔴 CRITICAL_FAILURE
+  ✅ 46   🔴 2   ⚠️ 2   🔧 0   ⏭ 2   (total 52)
+------------------------------------------------------------
+============================================================
+🚀 PRE-FLIGHT — Phase B — 10-Aug-2026 — LIVE/LFL836
+============================================================
+
+Group — Services  (0/1 ok)
+  ├─ svc_trading_system     🔴 FAIL        3ms  trading-system.service failed (expected active)
+
+Group — Engine  (2/5 ok)
+  ├─ app_health             🔴 FAIL       27ms  /health unreachable — app down? (<urlopen error [Errno 111] Connection refused>)
+  ├─ app_metrics            🔴 FAIL        0ms  /metrics not 200 (HTTP 0) — signal pipeline not queryable
+  ├─ fund_manager_balance   🔴 FAIL        1ms  fund_manager cash_floor <= 0 (-697.22; opening 209.80 - margin_used 907.02)
+  ├─ capital_deployment     ✅ PASS        1ms  capital deployed 432.3% (margin_used ₹907 / total ₹210; pending ₹0)
+  ├─ vm_ntp_strict          ⏭  SKIP       0ms  clock check skipped (ntplib/network unavailable)
+
+Group — Broker  (2/2 ok)
+  ├─ kite_token_fresh_today ✅ PASS        0ms  token minted today (2026-08-10)
+  ├─ vm_ip_unchanged        ✅ PASS      205ms  public IP unchanged (161.118.187.249)
+
+Group — State  (1/1 ok)
+  ├─ open_orders_at_start   ✅ PASS        1ms  no resting/active orders at start
+
+------------------------------------------------------------
+🔴 CRITICAL_FAILURE
+  ✅ 4   🔴 4   ⚠️ 0   🔧 0   ⏭ 1   (total 9)
+------------------------------------------------------------
+============================================================
+🚀 PRE-FLIGHT — Phase C — 10-Aug-2026 — LIVE/LFL836
+============================================================
+
+Group — Signals  (2/3 ok)
+  ├─ webhook_responsive     🔴 FAIL        0ms  webhook unreachable — Chartink signals cannot arrive (<urlopen error [Errno 111] Connection refused>)
+  ├─ signals_arrived        ⚠️  WARN      0ms  could not read /metrics for signal count (HTTP 0)
+  ├─ webhook_backpressure   ⏭  SKIP       0ms  no /metrics (HTTP 0)
+
+------------------------------------------------------------
+🔴 CRITICAL_FAILURE
+  ✅ 0   🔴 1   ⚠️ 1   🔧 0   ⏭ 1   (total 3)
+------------------------------------------------------------

@@ -1,0 +1,36 @@
+#### H. orders columns ####
+order_id trade_id leg leg_index transaction_type order_type product variety qty_requested price trigger_price status qty_filled avg_fill_price placed_at filled_at updated_at rejection_reason reconciliation_status superseded_by 
+
+#### I. ENTRY orders for the two open trades ####
+
+#### J. 07-Aug realised P&L total (fm_ledger pnl_delta) ####
+date        n    sum_pnl
+----------  ---  -------
+2026-08-05  150  0.0    
+2026-08-06  69   0.0    
+2026-08-07  58   0.0    
+2026-08-10  1    0.0    
+
+#### K. trades closed 07-Aug ####
+Error: in prepare, no such column: symbol
+  SELECT trade_id,symbol,leg,product,status,qty,qty_filled,price,trigger_price F
+                  ^--- error here
+Error: in prepare, no such column: realized_pnl
+  SELECT status,COUNT(*) n,ROUND(SUM(COALESCE(realized_pnl,0)),2) pnl FROM trade
+                                error here ---^
+
+#### L. fm_ledger LAST 12 rows before today ####
+ledger_id  ts                                entry_type    amount       bucket    balance_after  pnl_delta        
+---------  --------------------------------  ------------  -----------  --------  -------------  -----------------
+10295      2026-08-07T15:17:02.121599+05:30  RESET_PNL     0.0          both      0.0            -4.26000000000011
+10294      2026-08-07T15:06:59.697698+05:30  RELEASE_USED  -87.308      intraday  6624.76        9.35999999999999 
+10293      2026-08-07T14:54:28.352958+05:30  RELEASE       -92.3411664  intraday  6528.092       0.0              
+10292      2026-08-07T14:53:20.956249+05:30  RESERVE       92.3411664   intraday  6435.7508336   0.0              
+10291      2026-08-07T14:48:27.673736+05:30  RELEASE       -92.3076     intraday  6528.092       0.0              
+10290      2026-08-07T14:47:24.246709+05:30  RESERVE       92.3076      intraday  6435.7844      0.0              
+10289      2026-08-07T14:37:23.129351+05:30  RELEASE       -92.3117958  intraday  6528.092       0.0              
+10288      2026-08-07T14:36:19.159945+05:30  RESERVE       92.3117958   intraday  6435.7802042   0.0              
+10287      2026-08-07T14:31:26.371464+05:30  RELEASE       -92.2782294  intraday  6528.092       0.0              
+10286      2026-08-07T14:30:22.583795+05:30  RESERVE       92.2782294   intraday  6435.8137706   0.0              
+10285      2026-08-07T14:19:22.291366+05:30  RELEASE       -92.2950126  intraday  6528.092       0.0              
+10284      2026-08-07T14:18:15.300848+05:30  RESERVE       92.2950126   intraday  6435.7969874   0.0              

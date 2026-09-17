@@ -1,0 +1,92 @@
+"""D1.1 inventory pass 1 -- READ-ONLY. Piped over ssh stdin.
+Opens both DBs with mode=ro URI + PRAGMA query_only. Imports no project module. Writes nothing."""
+import sys
+sys.dont_write_bytecode = True
+import json, os, sqlite3, subprocess, time
+from collections import Counter
+
+BASE = "/home/ubuntu/systems/trading-system/data_store"
+print("NOW", time.strftime("%Y-%m-%d %H:%M:%S %Z"))
+for u in ("trading-system",):
+    r = subprocess.run(["systemctl", "is-active", u], capture_output=True, text=True)
+    print("unit", u, r.stdout.strip())
+for f in sorted(os.listdir(BASE)):
+    p = os.path.join(BASE, f)
+    if os.path.isfile(p) and (".db" in f):
+        print("dbfile", f, os.path.getsize(p))
+
+m = sqlite3.connect("file:%s/trading_system.db?mode=ro" % BASE, uri=True, timeout=5)
+m.execute("PRAGMA query_only=1")
+a = sqlite3.connect("file:%s/analytics.db?mode=ro" % BASE, uri=True, timeout=5)
+a.execute("PRAGMA query_only=1")
+
+
+def q(conn, label, sql, *args):
+    t = time.time()
+    rows = conn.execute(sql, args).fetchall()
+    print("## [%s] %.2fs n=%d" % (label, time.time() - t, len(rows)))
+    for r in rows[:80]:
+        print("   ", r)
+    return rows
+
+
+q(a, "candles cols", "SELECT name FROM pragma_table_info('candles')")
+q(a, "candles total/range", "SELECT COUNT(*), MIN(ts), MAX(ts), COUNT(DISTINCT symbol) FROM candles")
+q(a, "candles interval", "SELECT interval_sec, is_synthetic, COUNT(*) FROM candles GROUP BY 1,2")
+q(a, "candles per date (symbols, rows)",
+  "SELECT substr(ts,1,10) d, COUNT(DISTINCT symbol), COUNT(*) FROM candles GROUP BY d ORDER BY d")
+
+q(m, "signals cols", "SELECT name FROM pragma_table_info('signals')")
+q(m, "signals range", "SELECT COUNT(*), MIN(received_at), MAX(received_at) FROM signals")
+q(m, "signals per strategy", "SELECT strategy, COUNT(*), MIN(substr(received_at,1,10)), MAX(substr(received_at,1,10)), "
+  "SUM(trigger_price IS NOT NULL AND trigger_price>0), SUM(status='PROCESSED'), SUM(trade_id IS NOT NULL) "
+  "FROM signals GROUP BY strategy ORDER BY 2 DESC")
+q(m, "signals scanner==strategy", "SELECT SUM(scanner=strategy), SUM(scanner<>strategy) FROM signals")
+q(m, "screener_results cols", "SELECT name FROM pragma_table_info('screener_results')")
+q(m, "screener_results range", "SELECT COUNT(*), MIN(ts), MAX(ts) FROM screener_results")
+
+# snapshot key coverage on a sample of 20000 recent rows
+t = time.time()
+keys = Counter(); nonnull = Counter(); n = 0
+for (js,) in m.execute("SELECT market_data_snapshot FROM screener_results ORDER BY rowid DESC LIMIT 20000"):
+    n += 1
+    try:
+        d = json.loads(js or "{}")
+    except Exception:
+        keys["<bad>"] += 1
+        continue
+    for k, v in d.items():
+        keys[k] += 1
+        if v is not None and v != "":
+            nonnull[k] += 1
+print("## [snapshot keys, last 20000 rows] %.2fs n=%d" % (time.time() - t, n))
+for k in sorted(keys):
+    print("   ", k, keys[k], "nonnull", nonnull[k])
+
+q(m, "webhook_audit range", "SELECT COUNT(*), MIN(ts), MAX(ts) FROM webhook_audit")
+q(m, "pb01_watchlist", "SELECT COUNT(*), MIN(trading_date), MAX(trading_date) FROM pb01_watchlist")
+q(m, "trades", "SELECT COUNT(*), MIN(created_at), MAX(created_at) FROM trades")
+q(m, "daily_symbol_stats", "SELECT COUNT(*) FROM daily_symbol_stats")
+
+fs = os.path.join(BASE, "v3", "forward_shadow_fs-v1.jsonl")
+if os.path.exists(fs):
+    n = ok = 0; keys = Counter(); dates = Counter()
+    with open(fs, encoding="utf-8") as fh:
+        for line in fh:
+            n += 1
+            try:
+                r = json.loads(line)
+            except Exception:
+                continue
+            if n == 1:
+                print("fs first keys", sorted(r.keys()))
+            ok += 1 if r.get("ms4_stats_ok") else 0
+            dates[r.get("date")] += 1
+    print("forward_shadow rows", n, "ms4_stats_ok", ok, "dates", len(dates), min(dates), max(dates))
+else:
+    print("no", fs)
+for d in ("v3", "evidence", "candles"):
+    p = os.path.join(BASE, d)
+    if os.path.isdir(p):
+        fl = sorted(os.listdir(p))
+        print("dir", d, len(fl), fl[:6], fl[-4:])

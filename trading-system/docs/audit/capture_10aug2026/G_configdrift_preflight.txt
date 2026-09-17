@@ -1,0 +1,15 @@
+#### CONFIG-drift variants, ALL logs, any wording ####
+      7 config_drift      ✅ PASS       28ms  risk caps OK (max_open=5, max_daily
+      6 config_drift      ✅ PASS       41ms  risk caps OK (max_open=5, max_daily
+      6 config_drift      ✅ PASS       37ms  risk caps OK (max_open=5, max_daily
+      5 config_drift      ✅ PASS       40ms  risk caps OK (max_open=5, max_daily
+      3 config_drift      ✅ PASS       36ms  risk caps OK (max_open=5, max_daily
+      2 config_drift      ✅ PASS       27ms  risk caps OK (max_open=5, max_daily
+      2 Config Changed Since Last Session
+      1 config_drift      ✅ PASS       31ms  risk caps OK (max_open=5, max_daily
+      1 config_drift      ✅ PASS       29ms  risk caps OK (max_open=5, max_daily
+      1 config_drift      ✅ PASS       22ms  risk caps OK (max_open=5, max_daily
+(width: recursive over logs/, all dates, 4 spellings)
+
+#### Phase B preflight block, 10-Aug 09:14 ####
+  ├─ kill_switch_state      🔴 FAIL        1ms  HARD_KILL active (triggered 2026-08-10T08:15:25.680449+05:30) — trading halted

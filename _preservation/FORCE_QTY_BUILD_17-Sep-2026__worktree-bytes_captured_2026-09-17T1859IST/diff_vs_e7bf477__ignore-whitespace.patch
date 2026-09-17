@@ -1,0 +1,134 @@
+diff --git a/capital/position_sizer.py b/capital/position_sizer.py
+index f92eace..e82e0a7 100644
+--- a/capital/position_sizer.py
++++ b/capital/position_sizer.py
+@@ -88,6 +88,9 @@ class SizingResult:
+                            "ZERO_MULTIPLIER" -- M-C6: tier_mult × perf_weight <= 0, i.e.
+                                               sizing said "trade nothing" -> skip (NOT
+                                               floored to 1 lot)
++                           "FORCE_QTY"     -- position_sizing.force_qty set (testing VM,
++                                              17-Sep-2026): the size is the override,
++                                              not a rung
+         reason:          Human-readable explanation (non-empty always).
+         breakdown:       Dict with all candidate qtys + tier multiplier for audit.
+     """
+@@ -178,7 +181,22 @@ class PositionSizer:
+         delivery_risk_per_trade_pct: Optional[float] = None,
+         delivery_max_concentration_pct: Optional[float] = None,
+         delivery_max_position_value_pct: Optional[float] = None,
++        # force_qty (17-Sep-2026, TESTING VM ONLY). None = OFF = the sizing below,
++        # unchanged. When set, _calculate uses exactly this quantity in place of the
++        # risk / capital / concentration rungs and the tier × perf multiplier; the
++        # SL-distance guard before them and the tail after them (lot rounding, output
++        # qty guard, position-value cap, minimum) still run. ⚠️ Unlike the defaults
++        # above, a SET value can ENLARGE a position past the rungs — only the tail and
++        # FundManager.reserve bound it. Default OFF; production passes None.
++        force_qty: Optional[int] = None,
+     ) -> None:
++        if force_qty is not None and (
++            isinstance(force_qty, bool) or not isinstance(force_qty, int) or force_qty < 1
++        ):
++            raise ValueError(
++                f"PositionSizer: force_qty must be None or an integer >= 1, got {force_qty!r}"
++            )
++        self._force_qty = force_qty
+         self._fm = fund_manager
+         self._leverage_map = dict(leverage_map)
+         self._risk_per_trade_pct = risk_per_trade_pct
+@@ -458,7 +476,9 @@ class PositionSizer:
+ 
+         # FIX-041: Guard 2 — Qty explosion sanity cap
+         # Prevents micro-fraction sl_distance from producing million-share orders.
+-        if qty_by_risk > self._max_single_order_qty:
++        # force_qty: this guard tests the RISK RUNG, which the override does not use,
++        # so it is skipped when force_qty is set; the OUTPUT guard below still runs.
++        if self._force_qty is None and qty_by_risk > self._max_single_order_qty:
+             if self._log is not None:
+                 self._log.critical(
+                     "position_sizer.qty_explosion_guard",
+@@ -499,6 +519,41 @@ class PositionSizer:
+             (total_capital * eff_conc_pct) / entry_price
+         ))
+ 
++        if self._force_qty is not None:
++            # ── force_qty OVERRIDE (17-Sep-2026, testing VM only) ─────────────────
++            # REPLACES THE SIZE CALCULATION ONLY: no min() over the rungs as the size,
++            # no RISK/CAPITAL/CONCENTRATION binding (so no risk-bind telemetry), no
++            # qty=0 early exit, no tier × perf multiplier (so no ZERO_MULTIPLIER skip).
++            # The rung quantities are kept in the breakdown for the audit trail only.
++            # Everything from lot rounding onwards runs exactly as for a computed size:
++            # (1 // lot_size) * lot_size is 1 or 0 (-> BELOW_MIN), never more.
++            raw_qty = min(qty_by_risk, qty_by_capital, qty_by_concentration)  # audit only
++            constraint = "FORCE_QTY"
++            tier_mult = self._tier_multipliers.get(score_tier, 1.0)  # audit only
++            tiered_qty = self._force_qty
++            breakdown = {
++                "qty_by_risk": qty_by_risk,
++                "qty_by_capital": qty_by_capital,
++                "qty_by_concentration": qty_by_concentration,
++                "raw_qty": raw_qty,
++                "tier_multiplier": tier_mult,
++                "tier_multiplier_mode": "FORCE_QTY",
++                "tier_weight_applied": None,
++                "perf_weight_applied": None,
++                "flat_value_rs_used": None,
++                "qty_by_flat": None,
++                "force_qty": self._force_qty,
++            }
++            # ONE WARNING per sizing call, naming the key and the value.
++            self._warn(
++                "position_sizer.force_qty_override",
++                {"symbol": symbol, "intent": intent, "bucket": bucket,
++                 "config_key": "position_sizing.force_qty", "force_qty": self._force_qty,
++                 "bypassed": "risk/capital/concentration rungs + tier x perf multiplier",
++                 "qty_by_risk": qty_by_risk, "qty_by_capital": qty_by_capital,
++                 "qty_by_concentration": qty_by_concentration},
++            )
++        else:
+             # Binding constraint: CAPITAL wins on tie (most conservative), then RISK
+             raw_qty = min(qty_by_risk, qty_by_capital, qty_by_concentration)
+             if qty_by_capital <= qty_by_risk and qty_by_capital <= qty_by_concentration:
+diff --git a/core/config_loader.py b/core/config_loader.py
+index 3c78a89..6924a4b 100644
+--- a/core/config_loader.py
++++ b/core/config_loader.py
+@@ -497,6 +497,26 @@ class PositionSizingConfig(BaseModel):
+     delivery_risk_per_trade_pct: Optional[float]
+     delivery_max_concentration_pct: Optional[float]
+     delivery_max_position_value_pct: Optional[float]
++    # force_qty (17-Sep-2026, TESTING VM ONLY — Rama: "only with 1 Qty; [Not more than
++    # 1qty]"). An OVERRIDE, not a clamp: when set, PositionSizer uses exactly this
++    # quantity and BYPASSES the risk / capital / concentration rungs and the tier ×
++    # perf multiplier (a clamp cannot rescue a rung that returns 0). The tail still
++    # runs: lot rounding, the output qty guard, the position-value cap, the minimum.
++    # Default null = OFF = today's sizing exactly. Production and the repo keep null.
++    # ⚠️ While set, risk_per_trade_pct does NOT govern the size.
++    force_qty: Optional[int] = None
++
++    @field_validator("force_qty", mode="before")
++    @classmethod
++    def _validate_force_qty(cls, v):
++        if v is None:
++            return v
++        # bool is an int subclass; `force_qty: true` must not load as 1.
++        if isinstance(v, bool) or not isinstance(v, int):
++            raise ValueError("force_qty must be null or an integer >= 1")
++        if v < 1:
++            raise ValueError("force_qty must be null or an integer >= 1")
++        return v
+ 
+     @field_validator("delivery_risk_per_trade_pct",
+                      "delivery_max_concentration_pct",
+diff --git a/main.py b/main.py
+index 3515758..795e3c1 100644
+--- a/main.py
++++ b/main.py
+@@ -2868,6 +2868,8 @@ def _main_locked(args, config_dir: Path) -> int:
+         delivery_risk_per_trade_pct=ps_cfg.delivery_risk_per_trade_pct,
+         delivery_max_concentration_pct=ps_cfg.delivery_max_concentration_pct,
+         delivery_max_position_value_pct=ps_cfg.delivery_max_position_value_pct,
++        # force_qty (17-Sep-2026, testing VM only): null = OFF = today's sizing.
++        force_qty=ps_cfg.force_qty,
+     )
+     # Diary #4: surface the active sizing mode at startup (one info-level line).
+     if ps_cfg.enabled:

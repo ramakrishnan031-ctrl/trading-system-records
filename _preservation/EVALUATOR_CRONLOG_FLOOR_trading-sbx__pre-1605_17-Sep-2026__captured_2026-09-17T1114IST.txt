@@ -1,0 +1,13 @@
+now=2026-09-17 11:14:22 +0530
+logs_dir type=directory mode=755 owner=ubuntu
+## CONTROL-PRESENT (must read PRESENT, size 12347, md5 a35fd44b...)
+PRESENT /home/ubuntu/systems/trading-system/logs/cron-drift-check.log
+  type=regular file size=12347 mtime=2026-09-16 18:00:02.631433374 +0530 inode=571318 links=1
+  md5=a35fd44ba983b3ccf6b964d27e018ccb lines=248
+## CONTROL-ABSENT (a name that never existed; must read ABSENT)
+ABSENT  /home/ubuntu/systems/trading-system/logs/cron-sr-shadow-evaluate.log.CONTROL_NEVER_EXISTED_17SEP
+## TARGET
+ABSENT  /home/ubuntu/systems/trading-system/logs/cron-sr-shadow-evaluate.log
+## logs/ entry names matching sr.shadow (any variant), with the control pattern cron.drift.check
+match_sr.shadow=0 match_cron.drift.check=1
+##### END

@@ -1,0 +1,83 @@
+"""D1.1 extract -- READ-ONLY. Piped over ssh stdin; table name from env D11_TABLE.
+Opens DBs with mode=ro URI + PRAGMA query_only. Imports no project module.
+Writes gzip CSV to STDOUT only; writes no file on the VM.
+Never selects signals.webhook_payload (it can carry the webhook URL/token)."""
+import sys
+sys.dont_write_bytecode = True
+import csv, gzip, io, json, os, sqlite3
+
+BASE = "/home/ubuntu/systems/trading-system/data_store"
+T = os.environ["D11_TABLE"]
+out = gzip.GzipFile(fileobj=sys.stdout.buffer, mode="wb", compresslevel=6)
+tw = io.TextIOWrapper(out, encoding="utf-8", newline="")
+w = csv.writer(tw)
+
+
+def conn(name):
+    c = sqlite3.connect("file:%s/%s?mode=ro" % (BASE, name), uri=True, timeout=5)
+    c.execute("PRAGMA query_only=1")
+    return c
+
+
+def dump(c, sql, header):
+    w.writerow(header)
+    for r in c.execute(sql):
+        w.writerow(r)
+
+
+if T == "signals":
+    dump(conn("trading_system.db"),
+         "SELECT signal_id, symbol, strategy, triggered_at, received_at, status, rejection_reason, trade_id, trigger_price FROM signals",
+         ["signal_id", "symbol", "strategy", "triggered_at", "received_at", "status", "rejection_reason", "trade_id", "trigger_price"])
+elif T == "screener":
+    c = conn("trading_system.db")
+    KEYS = ["ltp", "bid", "ask", "volume", "vwap", "open", "day_high", "day_low", "upper_circuit", "lower_circuit", "circuit_state"]
+    w.writerow(["signal_id", "ts", "score", "tier", "status", "eligible_score"] + KEYS + ["step_results"])
+    for sid, ts, score, tier, st, el, snap, steps in c.execute(
+            "SELECT signal_id, ts, score, tier, status, eligible_score, market_data_snapshot, step_results FROM screener_results"):
+        try:
+            d = json.loads(snap or "{}")
+        except Exception:
+            d = {}
+        w.writerow([sid, ts, score, tier, st, el] + [d.get(k) for k in KEYS] + [steps])
+elif T == "trades":
+    c = conn("trading_system.db")
+    cols = [r[1] for r in c.execute("PRAGMA table_info(trades)")]
+    dump(c, "SELECT %s FROM trades" % ", ".join(cols), cols)
+elif T == "orders":
+    c = conn("trading_system.db")
+    cols = [r[1] for r in c.execute("PRAGMA table_info(orders)")]
+    keep = [x for x in cols if x not in ("raw_response", "broker_response")]
+    dump(c, "SELECT %s FROM orders" % ", ".join(keep), keep)
+elif T == "candles":
+    dump(conn("analytics.db"),
+         "SELECT symbol, ts, open, high, low, close, volume FROM candles ORDER BY symbol, ts",
+         ["symbol", "ts", "open", "high", "low", "close", "volume"])
+elif T == "webhook_audit":
+    dump(conn("trading_system.db"),
+         "SELECT ts, scanner_name, payload_size_bytes, response_code, signals_accepted, signals_rejected, duration_ms FROM webhook_audit",
+         ["ts", "scanner_name", "payload_size_bytes", "response_code", "signals_accepted", "signals_rejected", "duration_ms"])
+elif T == "pb01":
+    dump(conn("trading_system.db"),
+         "SELECT symbol, trading_date, level, breakout_date, source, status, captured_at FROM pb01_watchlist",
+         ["symbol", "trading_date", "level", "breakout_date", "source", "status", "captured_at"])
+elif T == "v3":
+    w.writerow(["signal_id", "symbol", "strategy", "intent", "signal_ts", "enrichment_ts", "lc_day", "lc_60", "lc_30",
+                "nearest_resistance", "nearest_support", "v3_verdict", "live_entry", "live_sl", "live_tgt"])
+    with open(os.path.join(BASE, "v3", "would_be.jsonl"), encoding="utf-8") as fh:
+        for line in fh:
+            try:
+                r = json.loads(line)
+            except Exception:
+                continue
+            lc = r.get("last_candle_close_ts") or {}
+            w.writerow([r.get("signal_id"), r.get("symbol"), r.get("strategy"), r.get("intent"), r.get("signal_ts"),
+                        r.get("enrichment_ts"), lc.get("day"), lc.get("60minute"), lc.get("30minute"),
+                        json.dumps(r.get("nearest_resistance")), json.dumps(r.get("nearest_support")),
+                        r.get("v3_verdict"), r.get("live_entry"), r.get("live_sl"), r.get("live_tgt")])
+else:
+    raise SystemExit("unknown table " + T)
+tw.flush()
+tw.detach()
+out.close()
+sys.stdout.buffer.flush()

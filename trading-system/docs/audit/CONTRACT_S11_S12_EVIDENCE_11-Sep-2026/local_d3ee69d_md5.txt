@@ -1,0 +1,3 @@
+6b20f82cf0bf99b7c8fe2a37c105b761 *signals/signal_processor.py
+413ec7f59703098ece7dfccd980a4120 *screening/secondary_screener.py
+38d3900bd3ec633bde552e0314890364 *main.py

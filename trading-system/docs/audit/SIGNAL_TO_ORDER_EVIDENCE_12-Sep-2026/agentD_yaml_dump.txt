@@ -1,0 +1,792 @@
+# Raw per-file key/value dump of config/strategies/*.yaml @970aabf
+# Parsed with PyYAML safe_load (data parse only; no project code run)
+# Source tree: scratchpad/src970 (extract of commit 970aabf)
+
+==============================================================================
+FILE config/strategies/first_pullback_long.yaml   (35 top-level keys)
+  L  4  name                             = 'first_pullback_long'
+  L  5  display_name                     = 'First Pullback Long'
+  L  6  description                      = 'Long entry on the first pullback after an initial breakout move'
+  L  8  direction                        = 'LONG'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.015
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = True
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.3
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/first_pullback_short.yaml   (35 top-level keys)
+  L  4  name                             = 'first_pullback_short'
+  L  5  display_name                     = 'First Pullback Short'
+  L  6  description                      = 'Short entry on the first pullback after an initial breakdown move'
+  L  8  direction                        = 'SHORT'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.015
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = True
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.3
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/gap_fade_long.yaml   (36 top-level keys)
+  L  5  name                             = 'gap_fade_long'
+  L  6  display_name                     = 'Gap Fade Long'
+  L  7  description                      = 'Long entry fading an opening gap-down as price reverses toward prior close'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'INTRADAY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'CO_PLUS_TGT'
+  L 15  pipeline                         = 'INTRADAY'
+  L 16  horizon                          = 'SAME_DAY'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.001
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.01
+  L 23  sl_atr_multiplier                = 1.5
+  L 24  sl_min_pct                       = 0.003
+  L 25  sl_max_pct                       = 0.05
+  L 26  sl_gap_buffer_pct                = 0.3
+  L 28  tgt_method                       = 'RISK_REWARD'
+  L 29  tgt_pct                          = 0.0
+  L 30  tgt_risk_reward                  = 1.5
+  L 31  tgt_atr_multiplier               = 2.5
+  L 33  smart_tgt_enabled                = True
+  L 34  smart_tgt_trail_trigger_pct      = 0.005
+  L 35  smart_tgt_trail_step_pct         = 0.003
+  L 37  pullback_wait_enabled            = False
+  L 38  pullback_wait_tolerance_pct      = 0.005
+  L 39  pullback_wait_timeout_sec        = 180
+  L 41  min_score                        = 0
+  L 42  min_volume_surge                 = 1.3
+  L 43  min_adr_pct                      = 0.005
+  L 44  max_spread_pct                   = 0.005
+  L 46  lot_size                         = 1
+  L 47  max_concurrent_positions         = 3
+  L 49  entry_start_time                 = '09:25'
+  L 50  entry_end_time                   = '15:00'
+  L 51  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/gap_fade_short.yaml   (36 top-level keys)
+  L  4  name                             = 'gap_fade_short'
+  L  5  display_name                     = 'Gap Fade Short'
+  L  6  description                      = 'Short entry fading an opening gap-up as price reverses toward prior close'
+  L  8  direction                        = 'SHORT'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.01
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 25  sl_gap_buffer_pct                = 0.3
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 2.5
+  L 32  smart_tgt_enabled                = True
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = False
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.3
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 3
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/gap_go_long.yaml   (36 top-level keys)
+  L  5  name                             = 'gap_go_long'
+  L  6  display_name                     = 'Gap Go Long'
+  L  7  description                      = 'Long momentum entry on upward gap continuation at market open'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'INTRADAY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'CO_PLUS_TGT'
+  L 15  pipeline                         = 'INTRADAY'
+  L 16  horizon                          = 'SAME_DAY'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.001
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.012
+  L 23  sl_atr_multiplier                = 1.5
+  L 24  sl_min_pct                       = 0.003
+  L 25  sl_max_pct                       = 0.05
+  L 26  sl_gap_buffer_pct                = 0.3
+  L 28  tgt_method                       = 'RISK_REWARD'
+  L 29  tgt_pct                          = 0.0
+  L 30  tgt_risk_reward                  = 1.5
+  L 31  tgt_atr_multiplier               = 2.5
+  L 33  smart_tgt_enabled                = True
+  L 34  smart_tgt_trail_trigger_pct      = 0.005
+  L 35  smart_tgt_trail_step_pct         = 0.003
+  L 37  pullback_wait_enabled            = False
+  L 38  pullback_wait_tolerance_pct      = 0.005
+  L 39  pullback_wait_timeout_sec        = 180
+  L 41  min_score                        = 0
+  L 42  min_volume_surge                 = 2.0
+  L 43  min_adr_pct                      = 0.005
+  L 44  max_spread_pct                   = 0.005
+  L 46  lot_size                         = 1
+  L 47  max_concurrent_positions         = 3
+  L 49  entry_start_time                 = '09:25'
+  L 50  entry_end_time                   = '15:00'
+  L 51  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/gap_go_short.yaml   (36 top-level keys)
+  L  5  name                             = 'gap_go_short'
+  L  6  display_name                     = 'Gap Go Short'
+  L  7  description                      = 'Short momentum entry on downward gap continuation at market open'
+  L  9  direction                        = 'SHORT'
+  L 10  intent                           = 'INTRADAY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'CO_PLUS_TGT'
+  L 15  pipeline                         = 'INTRADAY'
+  L 16  horizon                          = 'SAME_DAY'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.001
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.012
+  L 23  sl_atr_multiplier                = 1.5
+  L 24  sl_min_pct                       = 0.003
+  L 25  sl_max_pct                       = 0.05
+  L 26  sl_gap_buffer_pct                = 0.3
+  L 28  tgt_method                       = 'RISK_REWARD'
+  L 29  tgt_pct                          = 0.0
+  L 30  tgt_risk_reward                  = 1.5
+  L 31  tgt_atr_multiplier               = 2.5
+  L 33  smart_tgt_enabled                = True
+  L 34  smart_tgt_trail_trigger_pct      = 0.005
+  L 35  smart_tgt_trail_step_pct         = 0.003
+  L 37  pullback_wait_enabled            = False
+  L 38  pullback_wait_tolerance_pct      = 0.005
+  L 39  pullback_wait_timeout_sec        = 180
+  L 41  min_score                        = 0
+  L 42  min_volume_surge                 = 2.0
+  L 43  min_adr_pct                      = 0.005
+  L 44  max_spread_pct                   = 0.005
+  L 46  lot_size                         = 1
+  L 47  max_concurrent_positions         = 3
+  L 49  entry_start_time                 = '09:25'
+  L 50  entry_end_time                   = '15:00'
+  L 51  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/open_high_breakdown_short.yaml   (35 top-level keys)
+  L  5  name                             = 'open_high_breakdown_short'
+  L  6  display_name                     = 'Open High Breakdown Short'
+  L  7  description                      = 'Short entry when price breaks below the opening range high after initial consolidation'
+  L  9  direction                        = 'SHORT'
+  L 10  intent                           = 'INTRADAY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'CO_PLUS_TGT'
+  L 15  pipeline                         = 'INTRADAY'
+  L 16  horizon                          = 'SAME_DAY'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.001
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.01
+  L 23  sl_atr_multiplier                = 1.5
+  L 24  sl_min_pct                       = 0.003
+  L 25  sl_max_pct                       = 0.05
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 2.5
+  L 32  smart_tgt_enabled                = True
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = True
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.3
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 2
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/open_low_breakout_long.yaml   (35 top-level keys)
+  L  4  name                             = 'open_low_breakout_long'
+  L  5  display_name                     = 'Open Low Breakout Long'
+  L  6  description                      = 'Long entry when price breaks above the opening range low after initial consolidation'
+  L  8  direction                        = 'LONG'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.01
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = True
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.3
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/pb01_breakout_retest.yaml   (36 top-level keys)
+  L 24  name                             = 'pb01_breakout_retest'
+  L 25  display_name                     = 'PB-01 Breakout + Retest (shadow)'
+  L 26  description                      = 'V3 playbook: daily breakout above 20-session high, then next-morning retest-and-confirm. WATCHLIST-bound, SHADOW / non-trading (enabled:false); would-be records only.'
+  L 28  direction                        = 'LONG'
+  L 29  intent                           = 'INTRADAY'
+  L 30  enabled                          = False
+  L 31  order_protocol                   = 'CO_PLUS_TGT'
+  L 34  pipeline                         = 'INTRADAY'
+  L 35  horizon                          = 'NEXT_DAY'
+  L 37  entry_method                     = 'LIMIT'
+  L 38  entry_offset_pct                 = 0.001
+  L 40  sl_method                        = 'FIXED_PCT'
+  L 41  sl_pct                           = 0.01
+  L 42  sl_atr_multiplier                = 1.5
+  L 43  sl_min_pct                       = 0.003
+  L 44  sl_max_pct                       = 0.05
+  L 46  tgt_method                       = 'RISK_REWARD'
+  L 47  tgt_pct                          = 0.0
+  L 48  tgt_risk_reward                  = 1.5
+  L 49  tgt_atr_multiplier               = 2.5
+  L 51  smart_tgt_enabled                = True
+  L 52  smart_tgt_trail_trigger_pct      = 0.005
+  L 53  smart_tgt_trail_step_pct         = 0.003
+  L 55  pullback_wait_enabled            = False
+  L 56  pullback_wait_tolerance_pct      = 0.005
+  L 57  pullback_wait_timeout_sec        = 180
+  L 59  min_score                        = 0
+  L 60  min_volume_surge                 = 1.3
+  L 61  min_adr_pct                      = 0.005
+  L 62  max_spread_pct                   = 0.005
+  L 64  lot_size                         = 1
+  L 65  max_concurrent_positions         = 2
+  L 67  v3_playbook                      = True
+  L 72  entry_start_time                 = '09:25'
+  L 73  entry_end_time                   = '11:00'
+  L 74  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/positional_momentum_long.yaml   (35 top-level keys)
+  L  5  name                             = 'positional_momentum_long'
+  L  6  display_name                     = 'Positional Momentum Long'
+  L  7  description                      = 'Multi-day long position on strong momentum stocks with ATR-based risk management'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'DELIVERY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'LIMIT_TRIPLE'
+  L 15  pipeline                         = 'DELIVERY'
+  L 16  horizon                          = 'SWING'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.002
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.02
+  L 23  sl_atr_multiplier                = 2.0
+  L 24  sl_min_pct                       = 0.005
+  L 25  sl_max_pct                       = 0.08
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 3.0
+  L 32  smart_tgt_enabled                = False
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = False
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.5
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 2
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/positional_sector_rotation.yaml   (35 top-level keys)
+  L  5  name                             = 'positional_sector_rotation'
+  L  6  display_name                     = 'Positional Sector Rotation'
+  L  7  description                      = 'Multi-day long position on outperforming sector leaders during sector rotations'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'DELIVERY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'LIMIT_TRIPLE'
+  L 15  pipeline                         = 'DELIVERY'
+  L 16  horizon                          = 'SWING'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.002
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.02
+  L 23  sl_atr_multiplier                = 2.0
+  L 24  sl_min_pct                       = 0.005
+  L 25  sl_max_pct                       = 0.08
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 3.0
+  L 32  smart_tgt_enabled                = False
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = False
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.3
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 2
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/positional_swing_long.yaml   (35 top-level keys)
+  L  5  name                             = 'positional_swing_long'
+  L  6  display_name                     = 'Positional Swing Long'
+  L  7  description                      = 'Multi-day long position on swing reversal setups at key support levels'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'DELIVERY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'LIMIT_TRIPLE'
+  L 15  pipeline                         = 'DELIVERY'
+  L 16  horizon                          = 'SWING'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.002
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.02
+  L 23  sl_atr_multiplier                = 2.0
+  L 24  sl_min_pct                       = 0.005
+  L 25  sl_max_pct                       = 0.08
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 3.0
+  L 32  smart_tgt_enabled                = False
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = False
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.2
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 2
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/range_breakout_long.yaml   (35 top-level keys)
+  L  5  name                             = 'range_breakout_long'
+  L  6  display_name                     = 'Range Breakout Long'
+  L  7  description                      = 'Long entry on breakout above a consolidated intraday range with volume surge'
+  L  9  direction                        = 'LONG'
+  L 10  intent                           = 'INTRADAY'
+  L 11  enabled                          = True
+  L 12  order_protocol                   = 'CO_PLUS_TGT'
+  L 15  pipeline                         = 'INTRADAY'
+  L 16  horizon                          = 'SAME_DAY'
+  L 18  entry_method                     = 'LIMIT'
+  L 19  entry_offset_pct                 = 0.001
+  L 21  sl_method                        = 'FIXED_PCT'
+  L 22  sl_pct                           = 0.01
+  L 23  sl_atr_multiplier                = 1.5
+  L 24  sl_min_pct                       = 0.003
+  L 25  sl_max_pct                       = 0.05
+  L 27  tgt_method                       = 'RISK_REWARD'
+  L 28  tgt_pct                          = 0.0
+  L 29  tgt_risk_reward                  = 1.5
+  L 30  tgt_atr_multiplier               = 2.5
+  L 32  smart_tgt_enabled                = True
+  L 33  smart_tgt_trail_trigger_pct      = 0.005
+  L 34  smart_tgt_trail_step_pct         = 0.003
+  L 36  pullback_wait_enabled            = False
+  L 37  pullback_wait_tolerance_pct      = 0.005
+  L 38  pullback_wait_timeout_sec        = 180
+  L 40  min_score                        = 0
+  L 41  min_volume_surge                 = 1.8
+  L 42  min_adr_pct                      = 0.005
+  L 43  max_spread_pct                   = 0.005
+  L 45  lot_size                         = 1
+  L 46  max_concurrent_positions         = 2
+  L 48  entry_start_time                 = '09:25'
+  L 49  entry_end_time                   = '15:00'
+  L 50  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/range_breakout_short.yaml   (35 top-level keys)
+  L  4  name                             = 'range_breakout_short'
+  L  5  display_name                     = 'Range Breakout Short'
+  L  6  description                      = 'Short entry on breakdown below a consolidated intraday range with volume surge'
+  L  8  direction                        = 'SHORT'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.01
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = False
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.8
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/vwap_bounce_long.yaml   (35 top-level keys)
+  L  4  name                             = 'vwap_bounce_long'
+  L  5  display_name                     = 'VWAP Bounce Long'
+  L  6  description                      = 'Long entry on price bounce off VWAP with volume confirmation'
+  L  8  direction                        = 'LONG'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.008
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = True
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.5
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+FILE config/strategies/vwap_rejection_short.yaml   (35 top-level keys)
+  L  4  name                             = 'vwap_rejection_short'
+  L  5  display_name                     = 'VWAP Rejection Short'
+  L  6  description                      = 'Short entry on price rejection at VWAP with bearish volume confirmation'
+  L  8  direction                        = 'SHORT'
+  L  9  intent                           = 'INTRADAY'
+  L 10  enabled                          = True
+  L 11  order_protocol                   = 'CO_PLUS_TGT'
+  L 14  pipeline                         = 'INTRADAY'
+  L 15  horizon                          = 'SAME_DAY'
+  L 17  entry_method                     = 'LIMIT'
+  L 18  entry_offset_pct                 = 0.001
+  L 20  sl_method                        = 'FIXED_PCT'
+  L 21  sl_pct                           = 0.008
+  L 22  sl_atr_multiplier                = 1.5
+  L 23  sl_min_pct                       = 0.003
+  L 24  sl_max_pct                       = 0.05
+  L 26  tgt_method                       = 'RISK_REWARD'
+  L 27  tgt_pct                          = 0.0
+  L 28  tgt_risk_reward                  = 1.5
+  L 29  tgt_atr_multiplier               = 2.5
+  L 31  smart_tgt_enabled                = True
+  L 32  smart_tgt_trail_trigger_pct      = 0.005
+  L 33  smart_tgt_trail_step_pct         = 0.003
+  L 35  pullback_wait_enabled            = True
+  L 36  pullback_wait_tolerance_pct      = 0.005
+  L 37  pullback_wait_timeout_sec        = 180
+  L 39  min_score                        = 0
+  L 40  min_volume_surge                 = 1.5
+  L 41  min_adr_pct                      = 0.005
+  L 42  max_spread_pct                   = 0.005
+  L 44  lot_size                         = 1
+  L 45  max_concurrent_positions         = 2
+  L 47  entry_start_time                 = '09:25'
+  L 48  entry_end_time                   = '15:00'
+  L 49  active_days                      = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+
+==============================================================================
+TOTAL top-level keys across 16 files = 565
+DISTINCT keys in union = 37
+
+PRESENCE MATRIX (X = defined)
+  name                             present_in=16/16  absent_in=[]
+  display_name                     present_in=16/16  absent_in=[]
+  description                      present_in=16/16  absent_in=[]
+  direction                        present_in=16/16  absent_in=[]
+  intent                           present_in=16/16  absent_in=[]
+  enabled                          present_in=16/16  absent_in=[]
+  order_protocol                   present_in=16/16  absent_in=[]
+  pipeline                         present_in=16/16  absent_in=[]
+  horizon                          present_in=16/16  absent_in=[]
+  entry_method                     present_in=16/16  absent_in=[]
+  entry_offset_pct                 present_in=16/16  absent_in=[]
+  sl_method                        present_in=16/16  absent_in=[]
+  sl_pct                           present_in=16/16  absent_in=[]
+  sl_atr_multiplier                present_in=16/16  absent_in=[]
+  sl_min_pct                       present_in=16/16  absent_in=[]
+  sl_max_pct                       present_in=16/16  absent_in=[]
+  tgt_method                       present_in=16/16  absent_in=[]
+  tgt_pct                          present_in=16/16  absent_in=[]
+  tgt_risk_reward                  present_in=16/16  absent_in=[]
+  tgt_atr_multiplier               present_in=16/16  absent_in=[]
+  smart_tgt_enabled                present_in=16/16  absent_in=[]
+  smart_tgt_trail_trigger_pct      present_in=16/16  absent_in=[]
+  smart_tgt_trail_step_pct         present_in=16/16  absent_in=[]
+  pullback_wait_enabled            present_in=16/16  absent_in=[]
+  pullback_wait_tolerance_pct      present_in=16/16  absent_in=[]
+  pullback_wait_timeout_sec        present_in=16/16  absent_in=[]
+  min_score                        present_in=16/16  absent_in=[]
+  min_volume_surge                 present_in=16/16  absent_in=[]
+  min_adr_pct                      present_in=16/16  absent_in=[]
+  max_spread_pct                   present_in=16/16  absent_in=[]
+  lot_size                         present_in=16/16  absent_in=[]
+  max_concurrent_positions         present_in=16/16  absent_in=[]
+  entry_start_time                 present_in=16/16  absent_in=[]
+  entry_end_time                   present_in=16/16  absent_in=[]
+  active_days                      present_in=16/16  absent_in=[]
+  sl_gap_buffer_pct                present_in= 4/16  absent_in=['first_pullback_long', 'first_pullback_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+  v3_playbook                      present_in= 1/16  absent_in=['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+
+KEYS WHOSE VALUE DIFFERS BETWEEN FILES (among files that define them)
+  name:
+      'first_pullback_long'  <- ['first_pullback_long']
+      'first_pullback_short'  <- ['first_pullback_short']
+      'gap_fade_long'  <- ['gap_fade_long']
+      'gap_fade_short'  <- ['gap_fade_short']
+      'gap_go_long'  <- ['gap_go_long']
+      'gap_go_short'  <- ['gap_go_short']
+      'open_high_breakdown_short'  <- ['open_high_breakdown_short']
+      'open_low_breakout_long'  <- ['open_low_breakout_long']
+      'pb01_breakout_retest'  <- ['pb01_breakout_retest']
+      'positional_momentum_long'  <- ['positional_momentum_long']
+      'positional_sector_rotation'  <- ['positional_sector_rotation']
+      'positional_swing_long'  <- ['positional_swing_long']
+      'range_breakout_long'  <- ['range_breakout_long']
+      'range_breakout_short'  <- ['range_breakout_short']
+      'vwap_bounce_long'  <- ['vwap_bounce_long']
+      'vwap_rejection_short'  <- ['vwap_rejection_short']
+  display_name:
+      'First Pullback Long'  <- ['first_pullback_long']
+      'First Pullback Short'  <- ['first_pullback_short']
+      'Gap Fade Long'  <- ['gap_fade_long']
+      'Gap Fade Short'  <- ['gap_fade_short']
+      'Gap Go Long'  <- ['gap_go_long']
+      'Gap Go Short'  <- ['gap_go_short']
+      'Open High Breakdown Short'  <- ['open_high_breakdown_short']
+      'Open Low Breakout Long'  <- ['open_low_breakout_long']
+      'PB-01 Breakout + Retest (shadow)'  <- ['pb01_breakout_retest']
+      'Positional Momentum Long'  <- ['positional_momentum_long']
+      'Positional Sector Rotation'  <- ['positional_sector_rotation']
+      'Positional Swing Long'  <- ['positional_swing_long']
+      'Range Breakout Long'  <- ['range_breakout_long']
+      'Range Breakout Short'  <- ['range_breakout_short']
+      'VWAP Bounce Long'  <- ['vwap_bounce_long']
+      'VWAP Rejection Short'  <- ['vwap_rejection_short']
+  description:
+      'Long entry on the first pullback after an initial breakout move'  <- ['first_pullback_long']
+      'Short entry on the first pullback after an initial breakdown move'  <- ['first_pullback_short']
+      'Long entry fading an opening gap-down as price reverses toward prior close'  <- ['gap_fade_long']
+      'Short entry fading an opening gap-up as price reverses toward prior close'  <- ['gap_fade_short']
+      'Long momentum entry on upward gap continuation at market open'  <- ['gap_go_long']
+      'Short momentum entry on downward gap continuation at market open'  <- ['gap_go_short']
+      'Short entry when price breaks below the opening range high after initial consolidation'  <- ['open_high_breakdown_short']
+      'Long entry when price breaks above the opening range low after initial consolidation'  <- ['open_low_breakout_long']
+      'V3 playbook: daily breakout above 20-session high, then next-morning retest-and-confirm. WATCHLIST-bound, SHADOW / non-trading (enabled:false); would-be records only.'  <- ['pb01_breakout_retest']
+      'Multi-day long position on strong momentum stocks with ATR-based risk management'  <- ['positional_momentum_long']
+      'Multi-day long position on outperforming sector leaders during sector rotations'  <- ['positional_sector_rotation']
+      'Multi-day long position on swing reversal setups at key support levels'  <- ['positional_swing_long']
+      'Long entry on breakout above a consolidated intraday range with volume surge'  <- ['range_breakout_long']
+      'Short entry on breakdown below a consolidated intraday range with volume surge'  <- ['range_breakout_short']
+      'Long entry on price bounce off VWAP with volume confirmation'  <- ['vwap_bounce_long']
+      'Short entry on price rejection at VWAP with bearish volume confirmation'  <- ['vwap_rejection_short']
+  direction:
+      'LONG'  <- ['first_pullback_long', 'gap_fade_long', 'gap_go_long', 'open_low_breakout_long', 'pb01_breakout_retest', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'vwap_bounce_long']
+      'SHORT'  <- ['first_pullback_short', 'gap_fade_short', 'gap_go_short', 'open_high_breakdown_short', 'range_breakout_short', 'vwap_rejection_short']
+  intent:
+      'INTRADAY'  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      'DELIVERY'  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  enabled:
+      True  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      False  <- ['pb01_breakout_retest']
+  order_protocol:
+      'CO_PLUS_TGT'  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      'LIMIT_TRIPLE'  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  pipeline:
+      'INTRADAY'  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      'DELIVERY'  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  horizon:
+      'SAME_DAY'  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      'NEXT_DAY'  <- ['pb01_breakout_retest']
+      'SWING'  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  entry_offset_pct:
+      0.001  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      0.002  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  sl_pct:
+      0.015  <- ['first_pullback_long', 'first_pullback_short']
+      0.01  <- ['gap_fade_long', 'gap_fade_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short']
+      0.012  <- ['gap_go_long', 'gap_go_short']
+      0.02  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+      0.008  <- ['vwap_bounce_long', 'vwap_rejection_short']
+  sl_atr_multiplier:
+      1.5  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      2.0  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  sl_min_pct:
+      0.003  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      0.005  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  sl_max_pct:
+      0.05  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      0.08  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  tgt_atr_multiplier:
+      2.5  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      3.0  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  smart_tgt_enabled:
+      True  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      False  <- ['positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long']
+  pullback_wait_enabled:
+      True  <- ['first_pullback_long', 'first_pullback_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'vwap_bounce_long', 'vwap_rejection_short']
+      False  <- ['gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'pb01_breakout_retest', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short']
+  min_volume_surge:
+      1.3  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'positional_sector_rotation']
+      2.0  <- ['gap_go_long', 'gap_go_short']
+      1.5  <- ['positional_momentum_long', 'vwap_bounce_long', 'vwap_rejection_short']
+      1.2  <- ['positional_swing_long']
+      1.8  <- ['range_breakout_long', 'range_breakout_short']
+  max_concurrent_positions:
+      2  <- ['first_pullback_long', 'first_pullback_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'pb01_breakout_retest', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      3  <- ['gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short']
+  entry_end_time:
+      '15:00'  <- ['first_pullback_long', 'first_pullback_short', 'gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short', 'open_high_breakdown_short', 'open_low_breakout_long', 'positional_momentum_long', 'positional_sector_rotation', 'positional_swing_long', 'range_breakout_long', 'range_breakout_short', 'vwap_bounce_long', 'vwap_rejection_short']
+      '11:00'  <- ['pb01_breakout_retest']
+  sl_gap_buffer_pct:
+      0.3  <- ['gap_fade_long', 'gap_fade_short', 'gap_go_long', 'gap_go_short']
+  v3_playbook:
+      True  <- ['pb01_breakout_retest']
+
+NESTED (non-scalar) VALUES
+  first_pullback_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  first_pullback_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  gap_fade_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  gap_fade_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  gap_go_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  gap_go_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  open_high_breakdown_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  open_low_breakout_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  pb01_breakout_retest.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  positional_momentum_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  positional_sector_rotation.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  positional_swing_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  range_breakout_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  range_breakout_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  vwap_bounce_long.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']
+  vwap_rejection_short.active_days = ['MON', 'TUE', 'WED', 'THU', 'FRI']

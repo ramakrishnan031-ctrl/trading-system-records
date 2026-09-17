@@ -5,16 +5,19 @@
 > **Cloning on Windows needs `core.longpaths=true`** -- see `README.md`.
 
 ## 1. Source and time
-- **Taken from the PC** (the operator's Windows workstation) by Claude Code (model `claude-opus-5[1m]`), 17-Sep-2026 (Thursday) IST, in two passes:
-  - **~20:10-20:25 IST (commit 1):** `trading-system/docs/SYSTEM_MAP.md` <- `D:/Projects/trading-system/docs/SYSTEM_MAP.md` · `trading-system/PATHS.md` <- `D:/Projects/trading-system/PATHS.md` · `trading-system/docs/audit/` <- `D:/Projects/trading-system/docs/audit/` · `memory/MEMORY_RULES.md` and `memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md` <- the Claude Code project memory directory · `_preservation/` <- `D:/Projects/_preservation/` (every preserved manifest).
-  - **~20:45-20:55 IST (commit 2):** the REST of the project memory directory (786 files added: `MEMORY.md`, `MEMORY_HAZARDS.md`, `MEMORY_BOARD.md`, `MEMORY_REFERENCE.md`, the individual notes, `fallback_instructions/`, `memory_snapshots/`) · the exclusions of section 6 applied · `README.md`.
-  - ⚠️ The files taken in commit 1 were NOT refreshed in commit 2 (e.g. the ledger and `SYSTEM_MAP.md` have moved on since ~20:20 on the PC).
-- **Contents:** 1340 files including this manifest (incl. `README.md`); 29,153,495 bytes before this manifest.
+- **Taken from the PC** (the operator's Windows workstation) by Claude Code (model `claude-opus-5[1m]`), 17-Sep-2026 (Thursday) IST, in three passes:
+  - **~20:10-20:25 IST (commit 1):** `trading-system/docs/SYSTEM_MAP.md` <- `D:/Projects/trading-system/docs/SYSTEM_MAP.md` · `trading-system/PATHS.md` <- `D:/Projects/trading-system/PATHS.md` · `trading-system/docs/audit/` <- `D:/Projects/trading-system/docs/audit/` · `memory/MEMORY_RULES.md`, `memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md` <- the Claude Code project memory directory · `_preservation/` <- `D:/Projects/_preservation/` (every preserved manifest).
+  - **~20:45-20:50 IST (commit 2):** the rest of the project memory directory (`MEMORY.md`, `MEMORY_HAZARDS.md`, `MEMORY_BOARD.md`, `MEMORY_REFERENCE.md`, the notes, `fallback_instructions/`, `memory_snapshots/`) · raw query/analysis DATA and the transcript excerpts removed · `README.md`.
+  - **~21:45-22:00 IST (commit 3):** the structure-versus-rows test applied to the seven contract-like outputs (4 IN, 3 OUT) · 6 memory files and 2 audit documents IN as PC-side-redacted copies (section 2b).
+  - ⚠️ Files taken in an earlier pass were NOT refreshed in a later one (e.g. the ledger and `SYSTEM_MAP.md` have moved on since ~20:20 on the PC).
+- **Contents:** 1353 files including this manifest (incl. `README.md`); 29,483,271 bytes before this manifest.
 
 ## 2. REDACTIONS -- the only bytes that differ from the PC originals
-> ⚠️ **THE REDACTION IS COSMETIC.** It keeps the value out of THIS repository only. **The value still exists on the machines** (in the PC originals, the machines' configuration and elsewhere) -- dealing with that exposure is a separate task for the owner, ⛔ not something this snapshot does.
+> ⚠️ **THE REDACTION IS COSMETIC.** It keeps a value out of THIS repository only. **The value still exists on the machines** (in the PC originals, the machines' configuration and elsewhere) -- dealing with that exposure is a separate task for the owner, ⛔ not something this snapshot does.
 
-The testing VM's Telegram channel ID (one value, used for all three Telegram keys on that VM) is replaced by `<TELEGRAM_CHANNEL_ID_REDACTED>` in the copies below. The replacement ran in memory ON THE TESTING VM, so the value never reached the PC; a byte comparison then proved that only the marked spans differ and that each replaced span was a `-` + 13-digit channel ID. **The PC originals are unchanged.**
+**The method, one principle for both locations:** redact a STAGING COPY -- never the original, never in place; byte-verify that ONLY the intended spans changed; the PC original stays untouched; every redaction logged here. The replacement runs WHERE THE VALUE LIVES, so it never travels: a value known only to the testing VM is replaced on the VM (2a); the PC's own value is replaced on the PC (2b).
+
+### 2a. The testing VM's Telegram channel ID (one value, used for all three Telegram keys on that VM) -- replaced in memory on the testing VM; each replaced span verified to be a `-` + 13-digit ID
 
 | File | Replacements | Committed copy md5 |
 |---|---:|---|
@@ -23,46 +26,61 @@ The testing VM's Telegram channel ID (one value, used for all three Telegram key
 | `trading-system/PATHS.md` | 2 | `73021dacbceb308c4691541b7f68662a` |
 | `trading-system/docs/SYSTEM_MAP.md` | 2 | `1a5931d48dc3bbc0d4f3ed262238f276` |
 
+### 2b. The PC's Telegram channel ID (from the PC's `.env`) -- replaced on the PC; each replaced span verified to be exactly that value; PC original md5 unchanged before and after
+
+| File | Replacements | PC original md5 | Committed copy md5 |
+|---|---:|---|---|
+| `memory/MEMORY_ARCHIVE_2026H1.md` | 1 | `e399edf466e95b824ae7e4e1f40e9275` | `e7bacabd76dc0bb6cde65c9e9aa77261` |
+| `memory/memory_snapshots/MEMORY_2026-07-23_pre_compaction.md` | 1 | `c28c68fdd1a81b6fe1c02442170a01d7` | `5cfde460b580f1edc5f23ccc733b6019` |
+| `memory/memory_snapshots/memory_snapshot_2026-07-24_194144_precompaction/MEMORY.md` | 1 | `c26b161a9ab73dbd4dbec72801c1c86c` | `86f731777168459676cb02914e4c4f0b` |
+| `memory/memory_snapshots/memory_snapshot_2026-07-25_presplit/MEMORY_ARCHIVE_2026H1.md` | 1 | `9ee7cc588f96df77b6512848b4e68f3c` | `e6b2870b6fbc46b46135fd67a271575d` |
+| `memory/project_20260518_deployment_verification.md` | 1 | `8a629dc76b2ffe7306c6bcd220c96e4e` | `ddf7671fe5e87d0317fbceb67d3d555e` |
+| `memory/project_telegram_recreate_20260428.md` | 1 | `c45189e91d8771197821fba4cdf057d4` | `21c4e0f969a4e99ea22544a57a78749a` |
+| `trading-system/docs/audit/attribution_gloss_sweep_21jul2026.md` | 1 | `0c3decf623355fbaaeca3dac1202a265` | `c001e0f599a1949fd6333b40d97eae0f` |
+| `trading-system/docs/audit/backup_retention_and_telegram_delivery_22jul2026.md` | 3 | `d66854f9a9e27cca5d3604de595cb6be` | `1e7379ffcdf1ea047bbe227ef47a0512` |
+
 ## 3. Deliberately NOT included
 - `docs/` outside `docs/audit/` and `SYSTEM_MAP.md` (e.g. `docs/decisions/`, the live `MASTER_PENDING` register -- preserved copies of the register ARE in `_preservation/`).
 
 ## 4. Credential scan -- values never printed
 - **PC-side:** 12 distinct secret values from the PC's `.env`; shape rules G1-G5; `.docx`/zip members decompressed; set equality and sha256 of every staged file against its source.
 - **VM-side (in memory on the testing VM, via a tar stream):** 25 distinct secret values from the VM's `.env`, two pre-rotation `.env` backups, the Zerodha session file, the GUI secret key, and values harvested from `/home/ubuntu/.gemini`.
-- **Value-independent rules:** G7 unquoted key/value secrets and G8 bare token shapes -- every candidate reviewed by value SHAPE (code expressions, environment-variable names, placeholders, an Oracle Cloud CLI profile identifier); a content-based log detector for text files.
-- **Positive controls -- all fired** (each source detects its own values; synthetic PEM / Telegram / GitHub strings; a zip member; a real value mid-text; G7/G8 synthetic positives and an md5 negative; the log detector scores real logs 1.00 and non-logs 0.00).
-- **Kept, adjudicated:** files matching only PLACEHOLDER values (a 15-character uppercase placeholder configured for accounts D351962 / ZA004 / ZA005; a placeholder secondary Telegram channel); the alert e-mail address (an identifier, not a secret).
-- **Limits:** the PRODUCTION VM's `.env` was not read (production access not approved) -- a credential existing ONLY there is covered by the shape rules alone. `.bundle` files were not unpacked and are excluded.
+- **Value-independent rules:** G7 unquoted key/value secrets and G8 bare token shapes -- every candidate reviewed by value SHAPE; a content-based log detector for text files.
+- **Positive controls -- all fired.** **Kept, adjudicated:** files matching only PLACEHOLDER values (a 15-character uppercase placeholder for accounts D351962 / ZA004 / ZA005; a placeholder secondary Telegram channel); the alert e-mail address (an identifier, not a secret).
+- **Limits:** the PRODUCTION VM's `.env` was not read -- a credential existing ONLY there is covered by the shape rules alone. `.bundle` files were not unpacked and are excluded.
 
-## 5. ⏸ LEFT OUT PENDING RAMA -- these document a CONTRACT rather than carry rows
-They were part of the raw query/analysis outputs excluded as DATA; each looks like it documents a contract, so the decision to add any back is Rama's:
-- `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/field_scan_970aabf.txt` -- a code scan: every source line naming each StrategyConfig field @970aabf
-- `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/harness_s12_output.txt` -- harness output re-feeding recorded production values (not rows; not clearly a contract either)
-- `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/schema_cov_screener.txt` -- the DB schema (CREATE TABLE DDL) as read from production
-- `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/yaml_table_970aabf.txt` -- a table of every strategy YAML's keys @970aabf
-- `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a2c_out.txt` -- the score formula's combination table (which step combinations can reach 60)
-- `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a3_out.txt` -- table column lists (schema) mixed with webhook request counts
-- `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/agentD_yaml_dump.txt` -- a raw key/value dump of every strategy YAML @970aabf
-- ⚠️ `memory/MEMORY_ARCHIVE_2026H1.md` -- a core memory file, excluded because it carries the PC's REAL Telegram channel ID; the approved redaction method runs where the value lives on the VM and cannot apply to a PC-held value. Add back only with a decision on how to redact it.
+## 5. The structure-versus-rows test (commit 3) -- applied to all seven contract-like outputs
+**The test:** IN if the file describes STRUCTURE (schemas, field names, config keys, YAML tables, formulas, score definitions); OUT if it contains ROWS keyed to a symbol, date, price, quantity, order id or P&L; OUT if ambiguous or mixed (a rebuild needs the shape, never the sample).
+
+| File | Verdict | Why |
+|---|---|---|
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/field_scan_970aabf.txt` | ✅ IN | STRUCTURE -- source-code lines naming each StrategyConfig field -- no data rows (its dated comments, default values and the `lot_size("TCS")` docstring example are code) |
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/yaml_table_970aabf.txt` | ✅ IN | STRUCTURE -- a table of every strategy YAML's configuration keys and values |
+| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a2c_out.txt` | ✅ IN | STRUCTURE -- the score formula's combination table (which step values can reach 60) |
+| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/agentD_yaml_dump.txt` | ✅ IN | STRUCTURE -- a key/value dump of every strategy YAML -- no symbol lists or overrides |
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/schema_cov_screener.txt` | ⛔ OUT | MIXED -- the DB schema DDL plus ~101 screener rows keyed to signal ids, symbols and timestamps |
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/harness_s12_output.txt` | ⛔ OUT | ROWS -- recorded production zone prices and distances for one symbol (INDOCO) |
+| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a3_out.txt` | ⛔ OUT | MIXED -- table column lists plus per-date request counts |
+
+**The three audit documents carrying the PC's channel ID** -- redact-and-include only where the file's value justifies it: `attribution_gloss_sweep_21jul2026.md` (a failure-mode analysis: cause and prevention) ✅ IN, redacted · `backup_retention_and_telegram_delivery_22jul2026.md` (an incident investigation) ✅ IN, redacted · `gemini_watchman_alerts_21jul2026.md` (a point-in-time verification of one day's alerts) ⛔ OUT.
 
 ## 6. EVERY exclusion, by name
-**96 files, 49,151,431 bytes, not in this repository.**
+**84 files, 48,822,802 bytes, not in this repository.**
 
 | Class | Files | Bytes |
 |---|---:|---:|
 | log file / log capture | 13 | 35,222,093 |
 | SQLite database copy (shadow DB main/WAL/SHM) | 3 | 7,459,976 |
 | git bundle -- compressed repository history; content cannot be credential-scanned without unpacking | 4 | 3,741,393 |
-| raw query / analysis output -- DATA (rows or statistics), not design (instruction D2) | 22 | 913,577 |
+| raw query / analysis output -- DATA (rows or statistics), not design | 22 | 913,577 |
 | CONTAINS A CREDENTIAL VALUE (the testing VM's Telegram channel ID, in raw alert rows) -- found by the VM-side value scan | 2 | 447,114 |
 | alert copies (sentinel files and their listing) -- alert text, account tags | 15 | 326,323 |
 | systemd journal capture (log) | 3 | 250,191 |
-| raw query / analysis output that appears to document a CONTRACT -- left out PENDING RAMA (section 5) | 7 | 229,723 |
 | data file (CSV/JSON/JSONL/HTML) -- log extracts, candles or would-be signals | 12 | 190,627 |
-| session transcript excerpt -- raw tool output incl. DB reads (instruction D2) | 4 | 177,872 |
-| CONTAINS A CREDENTIAL VALUE (the PC's real Telegram channel ID) -- memory file excluded | 6 | 152,277 |
-| CONTAINS A CREDENTIAL VALUE (a real Telegram channel ID from the PC .env) -- found by the PC-side value scan | 3 | 30,128 |
+| session transcript excerpt -- raw tool output incl. DB reads | 4 | 177,872 |
+| OUT by the structure-versus-rows test (section 5) -- rows or mixed | 3 | 75,642 |
 | log content (at least half the lines are log lines) -- detected file by file | 2 | 10,137 |
+| CONTAINS A CREDENTIAL VALUE (the PC's real Telegram channel ID) -- a point-in-time audit output whose value does not justify a redacted inclusion | 1 | 7,857 |
 
 ### log file / log capture
 
@@ -99,7 +117,7 @@ They were part of the raw query/analysis outputs excluded as DATA; each looks li
 | `_preservation/2026-09-07_cleanup_archive/bundles/n907.bundle` | 5,625 |
 | `_preservation/2026-09-07_cleanup_archive/bundles/tiers.bundle` | 1,025,826 |
 
-### raw query / analysis output -- DATA (rows or statistics), not design (instruction D2)
+### raw query / analysis output -- DATA (rows or statistics), not design
 
 | Path | Bytes |
 |---|---:|
@@ -161,18 +179,6 @@ They were part of the raw query/analysis outputs excluded as DATA; each looks li
 | `_preservation/FULLDAY_journal_trading-system_17-Sep-2026__captured_2026-09-17T1752IST.txt` | 157,324 |
 | `_preservation/GATE78_journal_trading-system_17-Sep-2026__captured_2026-09-17T0816IST.txt` | 1,464 |
 
-### raw query / analysis output that appears to document a CONTRACT -- left out PENDING RAMA (section 5)
-
-| Path | Bytes |
-|---|---:|
-| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/field_scan_970aabf.txt` | 99,071 |
-| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/harness_s12_output.txt` | 1,041 |
-| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/schema_cov_screener.txt` | 70,096 |
-| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/yaml_table_970aabf.txt` | 3,667 |
-| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a2c_out.txt` | 2,244 |
-| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a3_out.txt` | 4,505 |
-| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/agentD_yaml_dump.txt` | 49,099 |
-
 ### data file (CSV/JSON/JSONL/HTML) -- log extracts, candles or would-be signals
 
 | Path | Bytes |
@@ -190,7 +196,7 @@ They were part of the raw query/analysis outputs excluded as DATA; each looks li
 | `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/INDOCO_1m_candlestore.csv` | 66,371 |
 | `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/v3_would_be_INDOCO_0902.jsonl` | 1,786 |
 
-### session transcript excerpt -- raw tool output incl. DB reads (instruction D2)
+### session transcript excerpt -- raw tool output incl. DB reads
 
 | Path | Bytes |
 |---|---:|
@@ -199,24 +205,13 @@ They were part of the raw query/analysis outputs excluded as DATA; each looks li
 | `_preservation/TRANSCRIPT_b4764d54_16-Sep-2026__tools_SLIPPAGE_ANCHOR_2121-2124IST.txt` | 17,607 |
 | `_preservation/TRANSCRIPT_b4764d54_16-Sep-2026__tools_SLIPPAGE_DEEP_2036-2043IST.txt` | 68,021 |
 
-### CONTAINS A CREDENTIAL VALUE (the PC's real Telegram channel ID) -- memory file excluded
+### OUT by the structure-versus-rows test (section 5) -- rows or mixed
 
 | Path | Bytes |
 |---|---:|
-| `memory/MEMORY_ARCHIVE_2026H1.md` | 48,520 |
-| `memory/memory_snapshots/MEMORY_2026-07-23_pre_compaction.md` | 20,733 |
-| `memory/memory_snapshots/memory_snapshot_2026-07-24_194144_precompaction/MEMORY.md` | 20,890 |
-| `memory/memory_snapshots/memory_snapshot_2026-07-25_presplit/MEMORY_ARCHIVE_2026H1.md` | 57,392 |
-| `memory/project_20260518_deployment_verification.md` | 3,738 |
-| `memory/project_telegram_recreate_20260428.md` | 1,004 |
-
-### CONTAINS A CREDENTIAL VALUE (a real Telegram channel ID from the PC .env) -- found by the PC-side value scan
-
-| Path | Bytes |
-|---|---:|
-| `trading-system/docs/audit/attribution_gloss_sweep_21jul2026.md` | 15,662 |
-| `trading-system/docs/audit/backup_retention_and_telegram_delivery_22jul2026.md` | 6,609 |
-| `trading-system/docs/audit/gemini_watchman_alerts_21jul2026.md` | 7,857 |
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/harness_s12_output.txt` | 1,041 |
+| `trading-system/docs/audit/CONTRACT_S11_S12_EVIDENCE_11-Sep-2026/vm/schema_cov_screener.txt` | 70,096 |
+| `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/a3_out.txt` | 4,505 |
 
 ### log content (at least half the lines are log lines) -- detected file by file
 
@@ -224,4 +219,10 @@ They were part of the raw query/analysis outputs excluded as DATA; each looks li
 |---|---:|
 | `trading-system/docs/audit/SIGNAL_TO_ORDER_EVIDENCE_12-Sep-2026/twin_ev3_out.txt` | 5,202 |
 | `trading-system/docs/audit/capture_10aug2026/D_boot_logs.txt` | 4,935 |
+
+### CONTAINS A CREDENTIAL VALUE (the PC's real Telegram channel ID) -- a point-in-time audit output whose value does not justify a redacted inclusion
+
+| Path | Bytes |
+|---|---:|
+| `trading-system/docs/audit/gemini_watchman_alerts_21jul2026.md` | 7,857 |
 

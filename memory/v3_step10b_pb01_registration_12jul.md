@@ -1,0 +1,39 @@
+---
+name: v3_step10b_pb01_registration_12jul
+description: V3 Step 10b addendum — PB-01 scanner REGISTERED fail-closed (built-but-unpushed on branch); + the reusable N-artifact checklist for registering any new Chartink scanner
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 2066d897-6cc1-4810-8160-c8069c50c445
+---
+
+**V3 STEP 10b ADDENDUM — PB-01 webhook REGISTRATION (12-Jul-2026).** Branch `v3-step10a-chain-12jul` (on top of `474e10b`; main UNTOUCHED). **BUILT-but-UNPUSHED, fail-closed.** This is the *registration* only (unblocks Rama's Chartink alert save) — the watchlist capture / entry stage / gates / score / chain / soak are the REMAINING Step 10b build (not yet done). See [[v3_step10a_chain_impl_12jul]], [[v3_step10_pipeline_plumbing_plan_12jul]].
+
+## TASK A — REUSABLE CHECKLIST: how to register a new Chartink scanner (source-verified)
+An existing scanner name (e.g. `gap_go_long`) appears in **EXACTLY 3 config files** — grep-proven, there is NO other per-strategy capital/tier/allow-list config:
+1. **`config/strategies/<strategy>.yaml`** → `StrategyConfig` (`strategies/schema.py`, `extra="forbid"`, all required fields). Loader **globs `*.yaml`** (`strategies/loader.py::load_all_strategies`) so a new file auto-loads. `enabled:true` (LAYER 3) + `intent` vs `trade_type` (LAYER 1×2) + `force_intraday_only` (LAYER 0) gate whether it trades, via `strategies.control.strategy_will_trade`.
+2. **`config/scan_webhook_map.yaml`** → `scanners.<name>: {strategy, chartink_url}` (`ScannerEntry` extra=forbid, url must be http(s)). This is THE routing map: `webhook_receiver` 404s an unknown `scanner_name` (checks `scan_webhook_map.scanners`), and `signal_processor._process_one` resolves scanner→strategy via `_scan_webhook_map.get(name).strategy` → `_strategies.get(strategy_name)`. **S10 COUPLING:** the loader cross-validates — every strategy referenced here MUST have a loaded YAML, else `ConfigMissingError` at startup (`loader._validate_scan_webhook_map`).
+3. **`config/chartink_scanners.yaml`** → `scanners.<name>: <url>` (`ChartinkScannersConfig`). Used ONLY by the pre-flight connectivity check (`utils/startup_checks.check_scanner_connectivity` → `scripts/preflight_scanner_check.py`). **Unreachable URL = WARN, NOT boot-blocking** in-app (`run_startup_checks` appends "scanner_unreachable" to warnings; `ok = len(blocking_failures)==0`); the standalone preflight CLI returns exit 1 (operator tool).
+4. **Test count-invariants (NOT source, but they gate CI/regression):** ~7 tests hard-assert exactly **15** scanners/strategies + per-strategy property invariants — `test_config_loader.py::test_real_scan_webhook_map_yaml_loads`, `test_strategies.py` (loads_15 / scan_webhook_map_all_15 / all_15_yaml_files_validate), `test_secondary_screener.py::test_all_15_strategies_screen`, `test_slice2_strategy_control.py` (yamls_load_with_enabled + `_counts` 12/3·3/12·15/0 + compact_lists), `test_fix133_entry_windows.py` (all 09:25-15:00), `test_p0_live_day1_fixes.py` (all INTRADAY trade). **Adding a 16th touches all of these.**
+
+**Auth/URL:** `POST /webhook/<scanner_name>?token=<WEBHOOK_SECRET>` (bind `0.0.0.0:5000`, `require_hmac:false` → `?token=` path active, `webhook_receiver:429`). One SHARED token for all scanners ([[webhook_token_rotated_03jul]]); value only in VM `.env` (0600), never in chat. VM_IP 161.118.187.249.
+
+## PB-01 artifacts created (fail-closed)
+- `config/strategies/pb01_breakout_retest.yaml` — `enabled:false` + `v3_playbook:true` + `intent:INTRADAY`. Schema-valid SEED (real gates/score/window from the SPEC land in the Step-10b build).
+- `scan_webhook_map.yaml` + `chartink_scanners.yaml` — `pb01_breakout_retest` added to both.
+- **G-NO-ORDER (fail-closed):** `strategy_will_trade(pb01, …)` returns `will_trade=False, cause=DISABLED` under EVERY (trade_type × force) combo → `_process_one` raises `_PipelineReject("STRATEGY_CONTROL")` BEFORE sizing/reservation/placement. A raw firing can never place. Tested `tests/unit/test_pb01_registration.py` (6 tests).
+- **Deploy-state safety:** VM runs `c1ad82e` (no PB-01) → any Chartink firing 404s until this branch is pushed+deployed. Post-deploy, an intraday firing → STRATEGY_CONTROL reject; a **post-close EOD firing → 403 "Outside entry window"** (`webhook_receiver.py:455-457` `is_entry_allowed`). So capturing PB-01's EOD alert REQUIRES the Step-10b EOD route that bypasses the entry-window gate (TASK 0a is a real design fork, not solved by registration).
+
+## Regression (G-OFF/G-REG)
+Preserved the "15 LIVE strategies" invariant by filtering `v3_playbook` (the 15 live keep `v3_playbook:false` → byte-identical). Fixed 8 tests to scope to non-playbook + added `test_pb01_registration.py`. Production change: 1 line in `scripts/strategy_status.py::build_status_rows` (skip v3_playbook so the operator WILL/WON'T table stays = 15 live). **test_main clean-vs-dirty stash-diff = 4==4 (zero new; the 4 are pre-existing PC-env fails).** RAMCOIND dup-exit+oversell + signal_processor + webhook_receiver + preflight + config_auditor batch PASS.
+
+## Rama's webhook URL (handed over)
+`http://161.118.187.249:5000/webhook/pb01_breakout_retest?token=<SAME token as your other 15 Chartink URLs>` (re-read via SSH `grep '^WEBHOOK_SECRET=' /home/ubuntu/systems/trading-system/.env | cut -d= -f2-`). Chartink scan name `PB01_BREAKOUT_RETEST` normalizes to `pb01_breakout_retest` (matches the URL path). Set the alert to fire EOD/after-close (daily scan; a 5-min firing evaluates a FORMING candle — the system will dedupe per (symbol, trading_date) + accept only settled EOD in the Step-10b build).
+
+## BUILD PROGRESS (12-Jul — SPEC v1.0 in hand + schema APPROVED by Rama+WebClaude+ChatGPT)
+**T0 DONE:** T0a = structural `scanner_type: intraday|eod` on the scan_webhook_map entry (default intraday → 15 live byte-identical); EOD skips the entry-window gate + routes to a dedicated EOD-capture queue, NEVER signal_queue (URL unchanged). T0b = no existing store fits (gate_state EOD-cleared; retest_state same-session) → NEW table `pb01_watchlist` v43 APPROVED. T0c = LiveFeed→CandleStore→`candle_math.resample` / OhlcFetcher fallback. REUSE `screening/retest_monitor.py`+`sr_detector/retest_confirm.py` for the entry stage.
+**✅ SCHEMA v43 DONE + R6 PROVEN:** `pb01_watchlist` in schema.sql (UNIQUE(symbol,trading_date) dedupe + trading_date anti-rehydration key; pure addition); EXPECTED_SCHEMA_VERSION 42→43. 129 migration tests + explicit v42→v43 sim (clean migrate, existing rows intact, no rebuild). VM applies on a backup first at deploy.
+**✅ DECISION-CONTENT CORE DONE (pure/default-off/tested; live byte-identical):** V3ChainConfig +10b SEED knobs; `hard_gate.py` gate_confirm/gate_pullback (SPEC §3, missing→FAIL; PB-01 G-RR reuses gate_rr via sl_edge=min(retest_low,LEVEL)); `v3_chain/score.py` Playbook-40 layer + factor helpers (SPEC §4; confirmation_strength CONFLUENCE with price_action) — 10a `compose_score` byte-identical when playbook=None. Tests `tests/unit/test_v3_pb01_gates_score.py` (18).
+
+## REMAINING (stateful front-end — next increment)
+watchlist config block (enabled:false + 09:20-11:00 + gap_guard 3% + level_lookback 20) + `scanner_type` on ScannerEntry · **T0a** EOD routing in `webhook_receiver.py` (live-path; prove G-OFF + G-NO-INTERFERENCE) · **T2** capture worker (LEVEL = highest daily high of 20 sessions before breakout; state_store helpers; discard trading_date!=today) · **T3** entry stage 09:20-11:00 (extend RetestMonitor; 5-min resample; gap guard; G-PULLBACK→G-CONFIRM; first-retest-only; expiry; record every outcome) · **T6** runner playbook path → would-be (shadow, NO order — reuse the place-free runner; PB-01 enabled:false = unconditional fail-closed) · **T7** `--pb01` soak · main.py wiring · acceptance gates. **STILL OWED separately (do not displace):** Monday SESSION-1 scorer+allocator sanity check; NIFTY-index probe in a token-fresh window.

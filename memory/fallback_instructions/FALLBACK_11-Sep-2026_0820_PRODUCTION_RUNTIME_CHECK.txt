@@ -1,0 +1,955 @@
+================================================================================
+INSTRUCTION FILE (FALLBACK) - FOR VS CODE CLAUDE
+08:20 PRODUCTION RUNTIME CHECK - DOES THE RUNNING PROCESS HOLD BLOCK A?
+================================================================================
+DATE OF WORK   : 11-Sep-2026 (Friday) IST
+WRITTEN        : 11-Sep-2026 02:49 IST, by the CLOSE-SIX session, per the 02:35
+                 instruction file §3: "the real fallback".
+REVISED        : 06:09 (05:30 file: mechanical precheck), 06:39 (06:35 file: host
+                 gate, the verdict model), 07:00 (06:50 file: triage, the immutable
+                 record) and 11-Sep-2026 07:36 IST (07:20 file: explicit precedence
+                 P0-P6, the kill-switch witness, the token behind T3, the writer
+                 preserves the raw output FIRST). Earlier versions are kept as
+                 claude-ev10sep\FALLBACK_11-Sep-2026_0820_PRODUCTION_RUNTIME_CHECK.txt.v1 .. .v4.
+                 ⚠ These header times are author-typed labels, not evidence of
+                 chronology (standing rule, 05:30 file §1.5).
+RUN WHEN       : at or after 08:20 IST on 11-Sep IF the session-local job did not
+                 fire. Section 2 FIRST.
+MODEL          : Opus 4.6 or higher (Opus 5 preferred). NEVER Sonnet.
+REASONING      : HIGH
+AUTHORITY      : CLOSE-SIX instruction file (10-Sep 21:45) §5, restated by the
+                 11-Sep 02:35 file §5; the 05:30 file §3; the 06:35 file §2-§3;
+                 the 06:50 file §1-§2; the 07:20 file §1-§5. READ-ONLY.
+
+--------------------------------------------------------------------------------
+1. THE QUESTION
+--------------------------------------------------------------------------------
+Block A (d3ee69d) reached production by push at ~16:19 on 10-Sep, AFTER that
+day's 08:15 boot; the process then running was 10-Sep's. The 11-Sep 08:15 boot is
+what loads it - the FIRST time Block A runs anywhere on production. Prove whether
+the RUNNING process holds Block A by EXPERIMENT: the pre-Block-A config loader
+(3b15bbf) must REFUSE today's config, because EodSquareoffConfig is
+extra="forbid" and today's YAML carries the two Block A keys.
+⛔ PID age alone is not proof. ⛔ Bare HEAD alone is not proof.
+⭐ "We cannot prove Block A is running" and "production is not running" are
+different sentences. Never let the first be mistaken for the second, or the second
+be buried inside the first.
+⛔ ESTABLISHED proves runtime, config and provenance - NOT that the exit path works.
+That is 15:13's separate question, and a flat PASS_2 will never answer it.
+
+--------------------------------------------------------------------------------
+2. PRECHECK - MECHANICAL, RUN FIRST
+--------------------------------------------------------------------------------
+Run this FIRST, from Git Bash:
+
+  grep -c "RESULT-0820-11SEP2026" \
+    "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/MEMORY_BOARD.md"
+
+  0   -> no 08:20 result is recorded: continue.
+  1+  -> ALREADY RECORDED (the session job fired and wrote it): do NOT run
+         again; report the BOARD line that carries the marker instead.
+The marker is written ONLY by the RECORD step below (or by the session job
+doing the same work), exactly once, on the BOARD line holding the verdict.
+
+--------------------------------------------------------------------------------
+3. PRECONDITIONS
+--------------------------------------------------------------------------------
+  ⭐ TARGET HOST: run it on trading-vm, whose hostname is `trading-system`
+     (measured 11-Sep 06:33). First print it and confirm it is NOT
+     `trading-system-sandbox` (the Testing VM):
+
+       ssh -o ConnectTimeout=15 trading-vm hostname
+
+     The script prints the host FIRST; on any other host it prints P0 WRONG HOST
+     and the verdict is INVALID, full stop. On 11-Sep a TWIN dry run was read as
+     production's result - read the TARGET HOST block before anything else.
+  3.1  ⛔ No restart · no rollback · no repair · no config edit · no kill-switch
+       change · no token regeneration · no push · no checkout · no reset · no
+       order. The script writes nothing (DB read-only; broker calls read-only).
+
+--------------------------------------------------------------------------------
+4. RUN - CAPTURE THE RAW OUTPUT
+--------------------------------------------------------------------------------
+Save section 8 verbatim as prod_0820_check.py, then from Git Bash:
+
+  B64=$(base64 -w0 prod_0820_check.py) && ssh -o ConnectTimeout=15 trading-vm \
+    "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u -" 2>&1 \
+    | tee prod_0820_RAW_trading-system_11-Sep-2026.txt
+
+Base64 over stdin: no heredoc over ssh, nothing written on the VM. The tee'd file
+is the PRIMARY EVIDENCE; if the check crashes, what it printed is still evidence.
+
+--------------------------------------------------------------------------------
+5. TRIAGE - EXPLICIT PRECEDENCE (07:20 file §1) - THE FIRST LINE OF THE REPORT
+--------------------------------------------------------------------------------
+ONE code, by precedence - never by the order the checks happen to run in:
+  P0  WRONG HOST                                        -> the verdict is INVALID
+  P1  boot fired; production failed to start / crashing -> T4 EMERGENCY
+  P2  boot did not fire; production inactive            -> T3 EMERGENCY
+  P3  yesterday's process still running                 -> T5
+  P4  kill switch engaged                               -> T6
+  P5  service active, required evidence missing         -> T2
+  P6  service active, host gate + all twelve inputs PASS -> T1 ESTABLISHED
+  ⭐ T6 does NOT mean "production is not trading": kill-switch state and service
+     state are different facts - report both, separately.
+  ⭐ T5 does NOT mean an outage: it means Block A's runtime proof is ABSENT;
+     production may be trading perfectly well on yesterday's code.
+  ⭐ T3: the script checks the TOKEN first - token file dated today? today's
+     auto_refresh_token heartbeat (its contract: 0 <=> SUCCESS, 1 <=> FAILED)?
+     "Token refresh FAILED" lines? - and prints T3-TOKEN (a known, recurring,
+     NON-Block-A cause: Block A never ran, so it is not implicated) or
+     T3-UNKNOWN (an unexplained no-boot - more alarming). ⛔ Still no restart,
+     no token regeneration, no intervention.
+  ⭐ T4: the traceback and config error are the OBSERVATION. "Block A MAY have
+     broken production boot" is a HYPOTHESIS, kept visibly apart. If Rama judges
+     Block A the cause, the remedy is a rollback to 3b15bbf - HIS call.
+  ⭐ THE KILL SWITCH IS AN INDEPENDENT WITNESS TO THE BOOT: its state, timestamp
+     and actor are reported; cleared today by main.auto_clear_stale /
+     auto_clear_scheduled corroborates a boot; the routine 15:15 SOFT_KILL still
+     engaged from before today corroborates NO boot. If the witness contradicts
+     the process evidence, THAT DISAGREEMENT IS THE FINDING - report both
+     readings, pick neither.
+  For P1 / P2 (and any unexpected result) tell Rama inside minutes. ⭐ If the
+  result is unexpected in any way, send the COMPLETE raw output for review
+  BEFORE interpreting it: the first interpretation must not become an
+  irreversible action.
+
+--------------------------------------------------------------------------------
+6. WHAT TO REPORT - THE HOST GATE, THEN THE TWELVE INPUTS
+--------------------------------------------------------------------------------
+The HOST is a separate hard gate. The INPUTS are 3.1-3.12 - ⛔ never say "the
+twelve became thirteen". Each input is PASS, FAIL or NOT EXECUTED (an experiment
+that could not run - never a pass, never a failure: say which it is).
+  HOST  target host is production (hostname trading-system)
+  3.1   service active
+  3.2   process started TODAY, 11-Sep
+  3.3   the running source is the approved Block-A content (disk == d3ee69d
+        blobs, 5/5, and the process is newer than every file)
+  3.4   today's YAML loads with PASS_1 = 1.5 and PASS_2 = 2.5
+  3.5   the OLD loader (3b15bbf) genuinely REFUSES today's YAML: ConfigSchemaError,
+        error_count=2 is PASS; inability to execute is NOT EXECUTED; acceptance
+        is FAIL. ⛔ Never a proxy.
+  3.6   market_protection wiring present at the measured call site
+  3.7   imported kiteconnect 5.1.0, from __file__ and __version__.__version__
+  3.8   local live trades
+  3.9   broker positions and holdings, read-only
+  3.10  kill-switch state - with its timestamp and actor
+  3.11  no unexpected orders (08:20 is pre-open: expect 0)
+  3.12  d3ee69d exists in production's bare repo
+ESTABLISHED only when the host gate and every input PASS; otherwise NOT
+ESTABLISHED, naming each FAIL and each NOT EXECUTED - never green, never
+"probably fine". NEVER "live-proven".
+
+--------------------------------------------------------------------------------
+7. RECORD, THEN REPORT
+--------------------------------------------------------------------------------
+  7.1  THE EVIDENCE RECORD (06:50 file §1; 07:20 file §2). Save section 9
+       verbatim as make_evidence_record.py and run it on the PC:
+
+         python make_evidence_record.py prod_0820_RAW_trading-system_11-Sep-2026.txt \
+           prod_0820_check.py "<who ran it: the session job or this fallback>"
+
+       It writes the raw bytes FIRST (D:/Projects/trading-system/docs/audit/
+       BOOT_PROOF_BLOCK_A_d3ee69d_11-Sep-2026.raw.txt), then the record (.md) with
+       the raw output VERBATIM - whatever the verdict, and as PARTIAL if the check
+       crashed. It refuses only output in which the script never started, a
+       non-production host block, or an existing record. If the WRITER fails,
+       that is its own failure: report it - ⛔ never re-run production to obtain
+       a tidier record.
+       ⭐ IMMUTABILITY IS NEVER-EDIT-AFTER-CREATION. Read-only is a secondary
+       guard only. A correction is a NEW record citing the path and both
+       SHA-256s. ⛔ Never chmod-and-edit the first one.
+  7.2  Record the verdict in the three memory targets - D:/Projects/trading-
+       system/docs/SYSTEM_MAP.md, D:/Projects/trading-system/PATHS.md and memory/
+       UNPUSHED_PENDING_DEPLOY_LEDGER.md - plus the MEMORY_BOARD.md resume point,
+       citing the record's path and SHA-256s, with the marker
+       RESULT-0820-11SEP2026 exactly ONCE on the BOARD line that holds the
+       verdict. Re-run the section-2 precheck: it must now print 1. Keep
+       MEMORY.md under 24,000 bytes and the MEMORY*.md line guard clean.
+  7.3  Report to Rama: the TRIAGE line first; then SERVICE and KILL SWITCH as two
+       facts; the WITNESS; the host gate; the twelve inputs separately; the
+       verdict; the record's path. Every figure from a command you ran.
+
+--------------------------------------------------------------------------------
+8. THE CHECK SCRIPT - VERBATIM, READ-ONLY (identical to the 08:20 session job's)
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY 08:20 production runtime check (v5).
+CLOSE-SIX sec 5.1, extended by the 11-Sep 05:30 file sec 3.2, the 06:35 file sec 2-3
+(host gate, the twelve inputs, d3ee69d in the bare repo), the 06:50 file sec 2
+(triage) and the 07:20 file (explicit precedence, the kill switch as a witness to the
+boot, the token check behind T3, observation kept apart from hypothesis).
+
+TRIAGE -- ONE code, by EXPLICIT PRECEDENCE (07:20 file sec 1), never by the order the
+checks happen to run in:
+  P0  WRONG HOST                                        -> the verdict is INVALID
+  P1  boot fired; production failed to start / crashing -> T4 EMERGENCY
+  P2  boot did not fire; production inactive            -> T3 EMERGENCY, with its
+                                                          cause: T3-TOKEN / T3-UNKNOWN
+  P3  yesterday's process still running                 -> T5 (Block A's runtime proof
+                                                          is ABSENT; NOT an outage)
+  P4  kill switch engaged                               -> T6 (a separate fact from the
+                                                          service state; NOT "not trading")
+  P5  service active, required evidence missing         -> T2 (a records gap)
+  P6  service active, host gate + all twelve inputs PASS -> T1 ESTABLISHED
+The HOST is a separate hard gate; the INPUTS are 3.1-3.12. Every input is PASS, FAIL
+or NOT EXECUTED (an experiment that could not run -- never a pass, never a failure).
+T4 is an OBSERVATION; "Block A MAY have broken production's boot" is a HYPOTHESIS and
+is printed apart from it. The kill switch is reported with its timestamp and actor as
+an INDEPENDENT WITNESS to the boot; if it contradicts the process evidence, the
+contradiction is itself the finding.
+
+Writes NOTHING: no files, no temp index. The DB is opened read-only -- mode=ro while
+a -wal exists (service up), else also immutable=1 -- so no -wal/-shm is ever created.
+Broker calls are READ-ONLY (profile, positions, holdings, orders, GTTs). The OLD
+loader is built from `git show` in memory. Prints no secret and no account id: every
+log-derived line passes through mask(). ASCII output, flushed per line.
+usage: python -u - [--no-broker]
+"""
+import functools
+import glob
+import json
+import os
+import re
+import sqlite3
+import struct
+import subprocess
+import sys
+import types
+from datetime import date, datetime
+
+print = functools.partial(print, flush=True)  # noqa: A001
+
+ROOT = "/home/ubuntu/systems/trading-system"
+BARE = "/home/ubuntu/trading-system.git"
+VENV = "/home/ubuntu/systems/venv"
+EXPECT_HOST = "trading-system"            # production; measured 11-Sep 06:33 via ssh trading-vm
+SANDBOX_HOST = "trading-system-sandbox"   # the Testing VM
+OLD_SHA = "3b15bbf"          # production's tip BEFORE the Block A push
+APPROVED_SHA = "d3ee69d"     # Block A, pushed to production 10-Sep ~16:19
+BLOCK_A = ["broker/zerodha_adapter.py", "core/config_loader.py", "main.py",
+           "orders/mis_autosquareoff.py", "config/system_config.yaml"]
+DB = os.path.join(ROOT, "data_store", "trading_system.db")
+TOKEN = os.path.join(ROOT, "data_store", "session", "zerodha_token.json")
+TWLOG = os.path.join(ROOT, "logs", "token_watcher.log")
+CRONTOK = os.path.join(ROOT, "logs", "cron-auto-token.log")   # auto_refresh_token's cron output
+BOOT_CLEARERS = ("main.auto_clear_stale", "auto_clear_scheduled")   # capital/kill_switch.py
+TODAY = date.today().isoformat()
+NO_BROKER = "--no-broker" in sys.argv
+PASS, FAIL, NX = "PASS", "FAIL", "NOT EXECUTED"
+INPUTS = ["3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+V = {}
+
+
+def rec(i, label, state, detail):
+    V[i] = (label, state, detail)
+
+
+def sh(c):
+    try:
+        return subprocess.run(c, shell=True, capture_output=True, text=True,
+                              timeout=60).stdout.strip()
+    except Exception as e:  # noqa: BLE001
+        return "ERR %s" % e
+
+
+def a(s):
+    return str(s).encode("ascii", "replace").decode("ascii")
+
+
+def mask(s):
+    s = re.sub(r"(account=|acct=|user_id=|totp=|api_key=|api_secret=|access_token=|"
+               r"request_token=|password=|secret=)[^\s&\"',]+", r"\1<masked>", str(s))
+    return re.sub(r"\b[A-Z]{2,4}\d{3,6}\b", "<acct>", s)
+
+
+def day_of(ts):
+    m = re.search(r"(\d{4}-\d{2}-\d{2})", ts or "")
+    return m.group(1) if m else ""
+
+
+def indent(text, width=300):
+    lines = (text or "").splitlines()
+    return "\n".join("    " + mask(a(l))[:width] for l in lines) if lines else "    (none)"
+
+
+def ro_connect():
+    wal = os.path.exists(DB + "-wal")
+    return sqlite3.connect("file:%s?mode=ro%s" % (DB, "" if wal else "&immutable=1"),
+                           uri=True, timeout=5), wal
+
+
+os.chdir(ROOT)
+sys.path.insert(0, ROOT)
+host = sh("hostname")
+is_prod = host == EXPECT_HOST
+print("== TARGET HOST ==")
+print("  hostname  : %s" % a(host))
+print("  production: %s   (production's hostname is %r)" % (is_prod, EXPECT_HOST))
+if not is_prod:
+    print("  >>> P0 WRONG HOST%s -- THE VERDICT IS INVALID, FULL STOP. NOTHING BELOW DESCRIBES "
+          "PRODUCTION <<<" % (" -- this is the Testing VM" if host == SANDBOX_HOST else ""))
+print("  time      : %s" % a(sh("date '+%F %T %Z'")))
+HOSTGATE = "%s  hostname=%s" % (PASS if is_prod else FAIL, a(host))
+
+print("\n== the process ==")
+show = sh("systemctl show trading-system -p ActiveState -p SubState -p MainPID "
+          "-p ExecMainStartTimestamp -p ActiveEnterTimestamp -p NRestarts")
+print(a(show))
+kv = dict(l.split("=", 1) for l in show.splitlines() if "=" in l)
+pid = kv.get("MainPID", "0")
+lstart = sh("ps -o lstart= -p %s" % pid) if pid not in ("", "0") else ""
+start_epoch = sh("date -d '%s' +%%s" % lstart) if lstart else ""
+start_day = sh("date -d '%s' +%%F" % lstart) if lstart else ""
+print("ps lstart: %s  (epoch %s)" % (a(lstart) or "-", start_epoch or "-"))
+active = kv.get("ActiveState") == "active"
+today_proc = bool(lstart) and start_day == TODAY
+nrest = kv.get("NRestarts", "0") or "0"
+crashing = (kv.get("ActiveState") in ("activating", "failed", "deactivating")
+            or kv.get("SubState") in ("auto-restart", "failed"))
+rec("3.1", "service active", PASS if active else FAIL,
+    "ActiveState=%s SubState=%s NRestarts=%s" % (kv.get("ActiveState"), kv.get("SubState"), nrest))
+rec("3.2", "process started TODAY (%s)" % TODAY, PASS if today_proc else FAIL,
+    "MainPID=%s lstart=%s" % (pid, a(lstart) or "none"))
+unit = sh("systemctl show trading-system -p ExecStart -p WorkingDirectory -p EnvironmentFiles")
+for l in unit.splitlines():
+    print("  unit %s" % a(l)[:260])
+env = sh("systemctl show trading-system -p Environment")
+envs = env.split("=", 1)[1].split() if "=" in env else []
+print("  unit Environment names: %s" % ([e.split("=", 1)[0] for e in envs] or "-"))
+pp = [e for e in envs if e.startswith("PYTHONPATH=")]
+print("  unit PYTHONPATH: %s" % (a(pp[0]) if pp else "not set in the unit"))
+
+print("\n== boot-attempt evidence (triage) ==")
+bp = sh("systemctl show trading-system -p Result -p ExecMainStatus -p ExecMainCode "
+        "-p ExecMainExitTimestamp -p InactiveEnterTimestamp -p StateChangeTimestamp")
+print(a(bp))
+kvb = dict(l.split("=", 1) for l in bp.splitlines() if "=" in l)
+ems_today = day_of(kv.get("ExecMainStartTimestamp")) == TODAY
+exit_today = day_of(kvb.get("ExecMainExitTimestamp")) == TODAY
+log = "logs/system_%s.log" % TODAY
+have_log = os.path.exists(log)
+jprobe = sh("journalctl -u trading-system --since today --no-pager -n 3 2>&1")
+j_readable = not any(x in jprobe for x in ("not seeing messages", "No journal files",
+                                           "ermission denied", "Failed to "))
+JQ = "journalctl -u trading-system --since today --no-pager -o short-iso"
+j_starts = sh("%s 2>/dev/null | grep -c -E 'systemd\\[1\\]: (Started|Starting) '" % JQ) if j_readable else ""
+j_fails = sh("%s 2>/dev/null | grep -c -E 'systemd\\[1\\]: .*(Failed with result|Main process "
+             "exited|Scheduled restart job)'" % JQ) if j_readable else ""
+print("  ExecMainStartTimestamp is today: %s | ExecMainExitTimestamp is today: %s" % (ems_today, exit_today))
+print("  today's system log (%s): %s" % (log, "present" if have_log else "MISSING"))
+print("  journal readable: %s | systemd start lines today: %s | exit/fail/restart lines today: %s"
+      % (j_readable, j_starts or "n/a", j_fails or "n/a"))
+print("  journal, the unit's last 40 lines today (masked):")
+print(indent(sh("%s 2>&1 | tail -n 40" % JQ)))
+print("  token_watcher.log, last 12 lines (masked):")
+print(indent(sh("tail -n 12 %s 2>&1" % TWLOG)))
+print("  today's config-load failures and tracebacks (system log, full lines, masked):")
+if have_log:
+    print(indent(sh("grep -n -F 'Config load failed' %s | tail -n 5" % log), width=3000))
+    print(indent(sh("grep -n -F 'Traceback (most recent call last)' %s | tail -n 3" % log), width=6000))
+else:
+    print("    (no system log today)")
+boot_evidence = [label for label, ok in (
+    ("ExecMainStartTimestamp is today", ems_today),
+    ("today's system log exists", have_log),
+    ("the journal shows %s systemd start line(s) today" % j_starts, j_starts not in ("", "0")))
+    if ok]
+boot_fired = bool(boot_evidence)
+
+print("\n== token refresh evidence (07:20 file sec 4: behind any T3) ==")
+tok_m = sh("date -r %s '+%%F %%T' 2>/dev/null" % TOKEN)
+tok_today = day_of(tok_m) == TODAY
+print("  token file: %s -- mtime %s -- dated today: %s" % (TOKEN, a(tok_m) or "MISSING", tok_today))
+ct_m = sh("date -r %s '+%%F %%T' 2>/dev/null" % CRONTOK)
+print("  auto_refresh_token's cron log: %s -- mtime %s; its last 25 lines (masked):"
+      % (CRONTOK, a(ct_m) or "MISSING"))
+print(indent(sh("tail -n 25 %s 2>&1" % CRONTOK), width=400))
+fail_recent = sh("tail -n 80 %s 2>/dev/null | grep -c -F 'Token refresh FAILED'" % CRONTOK) or "0"
+print("  'Token refresh FAILED' lines in its last 80 lines: %s" % fail_recent)
+cron_ran = (sh("journalctl -u cron --since today --no-pager 2>/dev/null | grep -c -F "
+               "'auto_refresh_token'") if j_readable else "")
+print("  cron journal today: auto_refresh_token CMD lines: %s" % (cron_ran or "n/a"))
+hb_today = ""
+try:
+    c0, _w = ro_connect()
+    cols = [r[1] for r in c0.execute("PRAGMA table_info(cron_heartbeat)")]
+    if not cols:
+        print("  heartbeat: no cron_heartbeat table")
+    else:
+        tcol = next((c for c in ("finished_at", "completed_at", "ended_at", "timestamp", "ts",
+                                 "recorded_at", "started_at", "run_at", "created_at") if c in cols), None)
+        hb = c0.execute("SELECT job_name, status, %s, message FROM cron_heartbeat WHERE job_name "
+                        "LIKE '%%token%%' ORDER BY rowid DESC LIMIT 3" % (tcol or "NULL")).fetchall()
+        print("  heartbeat (cron_heartbeat.%s): %d recent token row(s)" % (tcol, len(hb)))
+        for r in hb:
+            print("    job=%s status=%s at=%s msg=%s" % (a(r[0]), a(r[1]), a(r[2]), mask(a(r[3]))[:200]))
+        if hb and day_of(str(hb[0][2])) == TODAY:
+            hb_today = str(hb[0][1])
+    c0.close()
+except Exception as e:  # noqa: BLE001
+    print("  heartbeat read FAILED -- %s" % type(e).__name__)
+print("  its exit code: not recorded directly; by the script's own contract (0 <=> heartbeat SUCCESS, "
+      "1 <=> heartbeat FAILED) today's heartbeat says: %s" % (hb_today or "NO heartbeat row dated today"))
+if not tok_today:
+    token_cause = "the token file is NOT dated today (mtime %s)" % (a(tok_m) or "MISSING")
+elif hb_today == "FAILED":
+    token_cause = "today's token-refresh heartbeat is FAILED"
+elif fail_recent not in ("", "0"):
+    token_cause = "%s 'Token refresh FAILED' line(s) in the refresh log" % fail_recent
+else:
+    token_cause = ""
+print("  token reading: %s" % (token_cause or "the token is dated today and no refresh failure is "
+                                              "recorded"))
+
+if not is_prod:
+    early = "P0"
+elif crashing or (not active and boot_fired):
+    early = "P1"
+elif not active:
+    early = "P2"
+elif not today_proc:
+    early = "P3"
+else:
+    early = None
+print("\n>>> EARLY TRIAGE: %s" % (
+    {"P0": "P0 WRONG HOST -- THE VERDICT IS INVALID, FULL STOP",
+     "P1": "P1 / T4 !!! EMERGENCY -- the boot fired and production failed to start or is crashing",
+     "P2": "P2 / T3-%s !!! EMERGENCY -- production is inactive and the boot did not fire"
+           % ("TOKEN" if token_cause else "UNKNOWN"),
+     "P3": "P3 / T5 -- yesterday's process is still running (NOT an outage; Block A's runtime "
+           "proof is absent)"}.get(early, "service active, today's process -- P4 / P5 / P6 are "
+                                         "decided at the end")))
+
+print("\n== provenance: the bare repo (context -- bare HEAD alone is NOT proof) ==")
+print("  bare HEAD : %s" % a(sh("git --git-dir=%s rev-parse HEAD" % BARE)))
+print("  bare main : %s" % a(sh("git --git-dir=%s rev-parse refs/heads/main" % BARE)))
+print("  HEAD log  : %s" % a(sh("git --git-dir=%s log -1 --format='%%h %%ci %%s' HEAD" % BARE))[:200])
+ctype = sh("git --git-dir=%s cat-file -t %s 2>&1" % (BARE, APPROVED_SHA))
+print("  cat-file -t %s: %s" % (APPROVED_SHA, a(ctype)))
+rec("3.12", "%s exists in this host's bare repo" % APPROVED_SHA,
+    PASS if ctype == "commit" else FAIL, "cat-file -t -> %s" % a(ctype)[:80])
+
+print("\n== 3.3 the running source vs the APPROVED Block-A content (%s) ==" % APPROVED_SHA)
+match, older, blob_ok = [], [], []
+for f in BLOCK_A:
+    disk = sh("md5sum < %s | cut -c1-32" % f)
+    have = sh("git --git-dir=%s cat-file -e %s:%s 2>/dev/null && echo yes" % (BARE, APPROVED_SHA, f)) == "yes"
+    appr = sh("git --git-dir=%s show %s:%s 2>/dev/null | md5sum | cut -c1-32" % (BARE, APPROVED_SHA, f)) if have else ""
+    headeq = sh("git --git-dir=%s show HEAD:%s 2>/dev/null | md5sum | cut -c1-32" % (BARE, f)) == disk
+    ok = have and bool(disk) and disk == appr
+    try:
+        mt = int(os.stat(f).st_mtime)
+        o = bool(start_epoch.isdigit() and int(start_epoch) > mt)
+        mts = a(sh("date -d @%d '+%%F %%T'" % mt))
+    except OSError as e:
+        o, mts = False, "stat failed: %s" % a(e)
+    blob_ok.append(have)
+    match.append(ok)
+    older.append(o)
+    print("  %-30s disk==%s:%s  (disk==HEAD:%s)  mtime %s  process-newer-than-file=%s"
+          % (f, APPROVED_SHA, ok if have else "NO BLOB", headeq, mts, o))
+LBL33 = "running source = approved Block-A content (%s)" % APPROVED_SHA
+if not all(blob_ok):
+    rec("3.3", LBL33, NX, "%s blobs retrievable on this host: %d/5" % (APPROVED_SHA, sum(blob_ok)))
+elif not start_epoch.isdigit():
+    rec("3.3", LBL33, NX, "no running process to compare against")
+else:
+    rec("3.3", LBL33, PASS if (all(match) and all(older)) else FAIL,
+        "disk==%s %d/5; process newer than every file: %s" % (APPROVED_SHA, sum(match), all(older)))
+
+print("\n== 3.4 / 3.5 THE EXPERIMENT: today's YAML through the NEW and the OLD loader ==")
+LBL34 = "today's YAML loads with PASS_1=1.5 and PASS_2=2.5"
+try:
+    import core.config_loader as new_cl
+    cfg = new_cl.load_all()
+    eod = cfg.system.eod_squareoff
+    p1 = getattr(eod, "mis_pass_1_market_protection_percent", "ABSENT")
+    p2 = getattr(eod, "mis_pass_2_market_protection_percent", "ABSENT")
+    print("  NEW loader: OK  pass_1=%s pass_2=%s" % (p1, p2))
+    rec("3.4", LBL34, PASS if (p1 == 1.5 and p2 == 2.5) else FAIL, "pass_1=%s pass_2=%s" % (p1, p2))
+except Exception as e:  # noqa: BLE001
+    print("  NEW loader: FAILED %s: %s" % (type(e).__name__, mask(a(str(e)[:3000]))))
+    rec("3.4", LBL34, FAIL, "load_all raised %s -- the full error is printed above" % type(e).__name__)
+LBL35 = "OLD loader genuinely REFUSES (ConfigSchemaError, error_count=2)"
+old = subprocess.run(["git", "--git-dir=" + BARE, "show", OLD_SHA + ":core/config_loader.py"],
+                     capture_output=True, text=True)
+old_src = old.stdout
+print("  OLD loader source from %s: %d bytes%s" % (
+    OLD_SHA, len(old_src), "" if old_src else "  (git: %s)" % a(old.stderr.strip())[:120]))
+if not old_src:
+    rec("3.5", LBL35, NX, "%s:core/config_loader.py not retrievable on this host -- the "
+        "experiment did not run" % OLD_SHA)
+else:
+    mod = types.ModuleType("core.config_loader_old_%s" % OLD_SHA)
+    mod.__file__ = os.path.join(ROOT, "core", "config_loader.py")
+    try:
+        exec(compile(old_src, "config_loader@%s" % OLD_SHA, "exec"), mod.__dict__)
+    except Exception as e:  # noqa: BLE001
+        print("  OLD loader: the old source did not exec -- %s: %s" % (type(e).__name__, a(e)))
+        rec("3.5", LBL35, NX, "the old source did not exec (%s)" % type(e).__name__)
+    else:
+        try:
+            mod.load_all()
+            print("  OLD loader: LOADED today's YAML  <<< a pre-Block-A process COULD have booted")
+            rec("3.5", LBL35, FAIL, "the OLD loader LOADED today's YAML")
+        except Exception as e:  # noqa: BLE001
+            msg = mask(a(str(e))).splitlines()
+            name = type(e).__name__
+            print("  OLD loader: REFUSED -- %s: %s" % (name, msg[0] if msg else ""))
+            ec = getattr(e, "error_count", None)
+            errs = getattr(e, "errors", None) or []
+            if ec is None and hasattr(e, "context"):
+                ec, errs = e.context.get("error_count"), e.context.get("errors") or []
+            print("      error_count=%s" % ec)
+            try:
+                if callable(errs):
+                    errs = errs()
+                for err in list(errs)[:6]:
+                    try:
+                        print("      loc=%s type=%s" % (a(err.get("loc")), a(err.get("type"))))
+                    except Exception:  # noqa: BLE001
+                        print("      " + a(err)[:160])
+            except Exception as e2:  # noqa: BLE001
+                print("      (errors unreadable: %s)" % type(e2).__name__)
+            for l in msg[1:6]:
+                print("      " + l)
+            if name == "ConfigSchemaError" and str(ec) == "2":
+                rec("3.5", LBL35, PASS, "REFUSED: ConfigSchemaError, error_count=2")
+            elif name == "ConfigSchemaError":
+                rec("3.5", LBL35, FAIL, "REFUSED, but error_count=%s (expected 2)" % ec)
+            else:
+                rec("3.5", LBL35, NX, "stopped on %s -- not the schema refusal the experiment "
+                    "tests" % name)
+
+print("\n== 3.6 wiring: do the YAML values reach the squareoff? (the deployed source) ==")
+hits = []
+for f, pat in (("main.py", "mis_pass_1_market_protection_percent"),
+               ("main.py", "mis_pass_2_market_protection_percent"),
+               ("orders/mis_autosquareoff.py", "market_protection=protection")):
+    h = sh("grep -n -F '%s' %s | cut -d: -f1 | tr '\\n' ' '" % (pat, f)).strip()
+    hits.append(h)
+    print("  %-28s %-38s at lines: %s" % (f, pat, a(h) or "NONE"))
+rec("3.6", "market_protection wiring at the call site", PASS if all(hits) else FAIL,
+    "main.py pass_1@%s pass_2@%s; mis_autosquareoff.py market_protection=protection@%s"
+    % tuple(a(h) or "NONE" for h in hits))
+
+print("\n== .pyc headers (corroboration only: ANY import rewrites them) ==")
+for f in [x for x in BLOCK_A if x.endswith(".py")]:
+    d, base = os.path.split(f)
+    for pyc in sorted(glob.glob(os.path.join(d, "__pycache__", base[:-3] + ".cpython-*.pyc"))):
+        with open(pyc, "rb") as fh:
+            hdr = fh.read(16)
+        flags, mt, sz = struct.unpack("<III", hdr[4:16])
+        st = os.stat(f)
+        print("  %-48s src-mtime/size MATCH=%s" % (pyc, (mt, sz) == (int(st.st_mtime) & 0xFFFFFFFF,
+                                                                   st.st_size & 0xFFFFFFFF)))
+
+print("\n== boot log (today) ==")
+print("  %s (%s)" % (log, "present" if have_log else "MISSING -- every count below is n/a"))
+for pat in ("Config loaded", "run_all_startup_checks", "Config load failed", "STARTUP", "Traceback"):
+    print("  %-24s %s" % (pat, sh("grep -c -F %s %s" % (repr(pat), log)) if have_log else "n/a"))
+print("  first Config loaded : %s" % mask(a(sh("grep -m1 -F 'Config loaded' %s | cut -c1-160" % log))))
+print("  first STARTUP       : %s" % mask(a(sh("grep -m1 -F 'STARTUP' %s | cut -c1-160" % log))))
+print("  CRITICAL lines today: %s" % (sh("grep -c '\"level\":\"CRITICAL\"' %s" % log)
+                                     if have_log else "n/a"))
+
+print("\n== 3.7 kiteconnect: what THIS interpreter imports (same venv + cwd as the unit) ==")
+print("  interpreter: %s" % sys.executable)
+LBL37 = "kiteconnect 5.1.0 (from __file__ + __version__.__version__)"
+try:
+    import importlib.metadata as md
+    import kiteconnect
+    kfile = kiteconnect.__file__
+    print("  __file__   : %s" % a(kfile))
+    ver = getattr(kiteconnect, "__version__", None)
+    if isinstance(ver, types.ModuleType):
+        # Importing the submodule kiteconnect.__version__ rebinds the package
+        # attribute to the MODULE (measured on the twin, 11-Sep 06:07), so the
+        # version string lives one level down.
+        vstr = getattr(ver, "__version__", None)
+        print("  __version__: (the attribute is the MODULE %s)" % a(getattr(ver, "__file__", "?")))
+        print("  __version__.__version__: %s" % a(vstr))
+    else:
+        vstr = ver
+        print("  __version__: %s" % a(vstr))
+    meta = md.version("kiteconnect")
+    print("  metadata   : %s" % a(meta))
+    ok = str(vstr) == "5.1.0" and str(kfile).startswith(VENV + "/")
+    rec("3.7", LBL37, PASS if ok else FAIL, "version=%s file=%s (metadata %s)" % (a(vstr), a(kfile), a(meta)))
+except Exception as e:  # noqa: BLE001
+    print("  kiteconnect: FAILED %s: %s" % (type(e).__name__, a(e)))
+    rec("3.7", LBL37, NX, "import failed: %s" % type(e).__name__)
+dists = sh("ls -d %s/lib/python3*/site-packages/kiteconnect-*.dist-info 2>/dev/null "
+           "| xargs -r -n1 basename | tr '\\n' ' '" % VENV)
+print("  dist-info  : %s" % (a(dists) or "NONE"))
+
+print("\n== 3.8 / 3.10 local state (DB, read-only) ==")
+local_orders_today = None
+ks_rows = []
+try:
+    con, wal = ro_connect()
+    print("  -wal present: %s -> opened %s" % (wal, "mode=ro" if wal else "mode=ro&immutable=1"))
+    ks_rows = [tuple(str(x) for x in r) for r in con.execute(
+        "SELECT state, triggered_at, triggered_by, reason FROM kill_switch_state").fetchall()]
+    for r in ks_rows:
+        print("  KILL SWITCH: state=%s triggered_at=%s triggered_by=%s" % (a(r[0]), a(r[1]), a(r[2])))
+        print("               reason=%s" % mask(a(r[3]))[:240])
+    rec("3.10", "kill-switch state (read)", PASS,
+        "; ".join("state=%s at=%s by=%s" % (a(r[0]), a(r[1]), a(r[2])) for r in ks_rows) or "no row")
+    try:
+        su = con.execute("SELECT event_id, timestamp, scenario FROM system_events WHERE event_type "
+                         "= 'STARTUP' AND timestamp LIKE ? ORDER BY event_id", (TODAY + "%",)).fetchall()
+        print("  system_events STARTUP rows today: %d  (a PROVEN BOOT = one written AFTER the "
+              "process start)" % len(su))
+        for r in su:
+            after = ""
+            if start_epoch.isdigit():
+                ev = sh("date -d '%s' +%%s 2>/dev/null" % str(r[1]).replace("'", ""))
+                after = "  after-process-start=%s" % (ev.isdigit() and int(ev) >= int(start_epoch))
+            print("    ev %s  %s  %s%s" % (a(r[0]), a(r[1]), a(r[2]), after))
+    except Exception as e:  # noqa: BLE001
+        print("  system_events read FAILED -- %s" % type(e).__name__)
+    live = con.execute(
+        "SELECT t.status, (SELECT o.product FROM orders o WHERE o.trade_id = t.trade_id "
+        "AND o.leg = 'ENTRY' LIMIT 1), t.symbol, t.qty_filled, t.created_at FROM trades t "
+        "WHERE t.status IN ('PENDING_FILL','OPEN','PARTIAL','EXITING') "
+        "ORDER BY t.created_at").fetchall()
+    print("  live trades (PENDING_FILL/OPEN/PARTIAL/EXITING): %d" % len(live))
+    for r in live:
+        print("    %-12s %-4s %-14s qty_filled=%s created=%s" % tuple(a(x) for x in r))
+    rec("3.8", "local live trades (read)", PASS,
+        "%d live: %s" % (len(live), ", ".join("%s %s %s" % (a(r[2]), a(r[1]), a(r[0])) for r in live) or "none"))
+    todays = con.execute(
+        "SELECT leg, status, product, order_type, COUNT(*) FROM orders WHERE placed_at LIKE ? "
+        "GROUP BY 1, 2, 3, 4 ORDER BY 1, 2", (TODAY + "%",)).fetchall()
+    local_orders_today = sum(r[4] for r in todays)
+    print("  local orders placed today: %d" % local_orders_today)
+    for r in todays:
+        print("    leg=%s status=%s product=%s type=%s n=%s" % tuple(a(x) for x in r))
+    con.close()
+except Exception as e:  # noqa: BLE001
+    print("  DB read FAILED -- %s: %s" % (type(e).__name__, a(e)))
+for i, lbl in (("3.8", "local live trades (read)"), ("3.10", "kill-switch state (read)")):
+    if i not in V:
+        rec(i, lbl, NX, "DB read failed")
+
+print("\n== the kill switch as an INDEPENDENT WITNESS to the boot (07:20 file sec 3) ==")
+engaged, witness, wvote = [], "no kill_switch_state row read", 0
+if ks_rows:
+    k_state, k_at, k_by, k_reason = ks_rows[0]
+    k_day = day_of(k_at)
+    if k_state in ("SOFT_KILL", "HARD_KILL"):
+        engaged.append(k_state)
+    if k_state == "INACTIVE" and k_day == TODAY and k_by in BOOT_CLEARERS:
+        witness, wvote = "cleared TODAY at %s by %s -- corroborates a boot today" % (a(k_at), a(k_by)), 1
+    elif k_state == "INACTIVE" and k_day == TODAY:
+        witness = "cleared TODAY at %s by %s (not a boot auto-clear actor) -- neutral" % (a(k_at), a(k_by))
+    elif k_state == "INACTIVE":
+        witness = "INACTIVE since %s (before today): nothing was cleared today -- neutral" % a(k_at)
+    elif k_day and k_day < TODAY and "circuit_breaker_force_close" in k_reason:
+        witness, wvote = ("the routine 15:15 %s of %s (by %s) is STILL ENGAGED: no boot has cleared it -- "
+                          "corroborates NO boot today" % (a(k_state), a(k_at), a(k_by))), -1
+    elif k_day and k_day < TODAY:
+        witness = ("%s since %s by %s, a NON-routine reason -- a boot may legitimately leave it engaged: "
+                   "neutral for the boot question" % (a(k_state), a(k_at), a(k_by)))
+    else:
+        witness, wvote = ("%s set TODAY at %s by %s -- a process ran today" % (a(k_state), a(k_at), a(k_by))), 1
+process_says = "a boot today" if (today_proc or boot_fired) else "NO boot today"
+disagree = (wvote == 1 and process_says == "NO boot today") or (wvote == -1 and process_says == "a boot today")
+print("  kill switch : %s" % witness)
+print("  process     : the process / log / journal evidence says %s" % process_says)
+print("  WITNESS CHECK: %s" % ("DISAGREE -- THE DISAGREEMENT IS THE FINDING: two independent witnesses "
+                            "contradict each other, so the model is wrong. Report both; pick neither."
+                            if disagree else ("AGREE" if wvote else "NEUTRAL (the kill switch does not "
+                                                                     "speak to today's boot)")))
+
+print("\n== 3.9 / 3.11 broker truth (READ-ONLY: profile, positions, holdings, orders, GTTs) ==")
+broker_orders = None
+LBL39 = "broker positions + holdings (read-only)"
+if NO_BROKER:
+    print("  skipped (--no-broker)")
+    rec("3.9", LBL39, NX, "skipped (--no-broker)")
+else:
+    try:
+        from kiteconnect import KiteConnect
+        print("  token file mtime: %s" % a(tok_m))
+        tok = json.load(open(TOKEN))
+        kc = KiteConnect(api_key=tok["api_key"])
+        kc.set_access_token(tok["access_token"])
+        kc.profile()
+        print("  profile read OK (account id deliberately not printed)")
+        pos = kc.positions() or {}
+        nzc = {}
+        for book in ("net", "day"):
+            rows = pos.get(book, []) or []
+            nz = [p for p in rows if p.get("quantity")]
+            nzc[book] = len(nz)
+            print("  positions %-3s: %d row(s), %d with non-zero quantity" % (book, len(rows), len(nz)))
+            for p in nz:
+                print("    %-14s %-4s qty=%s" % (a(p.get("tradingsymbol")), p.get("product"),
+                                                p.get("quantity")))
+        hold = [h for h in (kc.holdings() or [])
+                if (h.get("quantity") or 0) or (h.get("t1_quantity") or 0)]
+        print("  holdings with quantity: %d" % len(hold))
+        for h in hold:
+            print("    %-14s qty=%s t1=%s" % (a(h.get("tradingsymbol")), h.get("quantity"),
+                                             h.get("t1_quantity")))
+        rec("3.9", LBL39, PASS, "net non-zero %d, day non-zero %d, holdings with quantity %d"
+            % (nzc["net"], nzc["day"], len(hold)))
+        orders = kc.orders() or []
+        broker_orders = len(orders)
+        print("  broker orders today: %d   (pre-open: ANY order here is unexpected)" % len(orders))
+        for o in orders:
+            print("    %s %-14s %s %s %s %s tag=%s" % (
+                o.get("order_timestamp"), a(o.get("tradingsymbol")), o.get("transaction_type"),
+                o.get("product"), o.get("order_type"), o.get("status"), a(o.get("tag"))))
+        by = {}
+        for g in kc.get_gtts() or []:
+            by[g.get("status")] = by.get(g.get("status"), 0) + 1
+        print("  GTTs by status: %s" % (by or "none"))
+    except Exception as e:  # noqa: BLE001
+        print("  broker read FAILED -- %s: %s  (report it; infer NOTHING from the missing half)"
+              % (type(e).__name__, mask(a(e))))
+        if "3.9" not in V:
+            rec("3.9", LBL39, NX, "broker read failed: %s" % type(e).__name__)
+LBL311 = "no unexpected orders"
+now_hm = datetime.now().strftime("%H:%M")
+if broker_orders is None or local_orders_today is None:
+    rec("3.11", LBL311, NX, "broker orders read: %s; local orders read: %s"
+        % (broker_orders is not None, local_orders_today is not None))
+elif now_hm >= "09:15":
+    rec("3.11", LBL311, NX, "run at %s, after the open: orders are expected -- review the list "
+        "by hand" % now_hm)
+else:
+    n = broker_orders + local_orders_today
+    rec("3.11", LBL311, PASS if n == 0 else FAIL, "pre-open at %s: broker orders %d, local "
+        "orders placed today %d" % (now_hm, broker_orders, local_orders_today))
+
+fails = [i for i in INPUTS if V.get(i, ("", NX, ""))[1] == FAIL]
+nxs = [i for i in INPUTS if V.get(i, ("", NX, ""))[1] == NX]
+all_pass = is_prod and not fails and not nxs
+code = early
+if code is None:
+    code = "P4" if engaged else ("P6" if all_pass else "P5")
+if code == "P0":
+    final = "P0 WRONG HOST (%s) -- THE VERDICT IS INVALID, FULL STOP. Nothing in this output describes production." % a(host)
+elif code == "P1":
+    final = ("P1 / T4 !!! EMERGENCY -- OBSERVED: production's boot fired and %s (evidence: %s). The "
+             "config error and traceback printed above are the OBSERVATION. HYPOTHESIS, not observed: "
+             "Block A MAY have broken production's boot (two new YAML keys against extra=\"forbid\"). "
+             "Report IMMEDIATELY. If Rama judges Block A the cause, the remedy is a rollback to 3b15bbf "
+             "-- HIS call. Do NOT roll back, restart or edit config."
+             % ("the service is crash-looping" if crashing else "the service failed to start",
+                "; ".join(boot_evidence) or "state %s/%s" % (kv.get("ActiveState"), kv.get("SubState"))))
+elif code == "P2":
+    final = ("P2 / T3-%s !!! EMERGENCY -- production is NOT TRADING: the service is inactive and the "
+             "08:15 boot did not fire. CAUSE: %s. Report IMMEDIATELY. Do NOT restart, do NOT regenerate "
+             "a token, do NOT intervene."
+             % (("TOKEN", token_cause + " -- a known, recurring, NON-Block-A cause: Block A never ran, so "
+                 "it is NOT implicated") if token_cause else
+                ("UNKNOWN", "UNEXPLAINED -- the token is dated today and no refresh failure is recorded")))
+elif code == "P3":
+    final = ("P3 / T5 -- YESTERDAY'S PROCESS: the service is active on a process started %s. NOT an "
+             "outage -- production may be trading normally on yesterday's code; what is ABSENT is Block "
+             "A's runtime proof. Report it; do NOT restart (Rama's call)." % (a(lstart) or "?"))
+elif code == "P4":
+    final = ("P4 / T6 -- KILL SWITCH ENGAGED: %s. A SEPARATE fact from the service state (service: "
+             "active, today's process) -- report both; this line does NOT say production is not "
+             "trading. Do NOT clear it (Rama's call)." % witness)
+elif code == "P5":
+    final = ("P5 / T2 -- service active, today's process; REQUIRED EVIDENCE MISSING -- FAIL: %s ; NOT "
+             "EXECUTED: %s. Production is running: a records gap, not an emergency."
+             % (", ".join(fails) or "none", ", ".join(nxs) or "none"))
+else:
+    final = "P6 / T1 -- ESTABLISHED: host gate PASS and all twelve inputs PASS. A normal day."
+alerts = []
+if disagree:
+    alerts.append("KILL-SWITCH WITNESS DISAGREES WITH THE PROCESS EVIDENCE -- that disagreement is the "
+                  "finding (see the witness block)")
+if V.get("3.11", ("", "", ""))[1] == FAIL:
+    alerts.append("UNEXPECTED ORDERS pre-open -- see the broker and local order lists above")
+if active and nrest != "0":
+    alerts.append("NRestarts=%s -- the service restarted at least once today" % nrest)
+print("\n== TRIAGE (explicit precedence P0-P6) -- THE FIRST LINE OF THE REPORT ==")
+print("  TRIAGE: %s" % final)
+print("  SERVICE: %s | KILL SWITCH: %s" % (
+    "active, process started %s" % (a(lstart) or "?") if active else
+    "NOT active (%s/%s)" % (kv.get("ActiveState"), kv.get("SubState")),
+    "; ".join("%s at %s by %s" % (a(r[0]), a(r[1]), a(r[2])) for r in ks_rows) or "not read"))
+print("  WITNESS: %s" % ("DISAGREE" if disagree else ("AGREE" if wvote else "NEUTRAL")))
+for al in alerts:
+    print("  ALERT : %s" % al)
+
+print("\n== VERDICT: the HOST GATE, then the twelve INPUTS (3.1-3.12) -- each separately ==")
+print("  HOST GATE : %s" % HOSTGATE)
+for i in INPUTS:
+    lbl, st, det = V.get(i, ("(never recorded)", NX, "the script did not reach this input"))
+    print("  %-5s %-58s %-13s %s" % (i, lbl, st, det))
+if all_pass:
+    print("  => ESTABLISHED: host gate PASS and all twelve inputs PASS -- runtime, config and provenance. "
+          "NOT proof the exit path works: that is 15:13's separate question, and a flat PASS_2 will never "
+          "answer it.")
+else:
+    print("  => NOT ESTABLISHED -- host gate: %s ; FAIL: %s ; NOT EXECUTED: %s. Do NOT restart, do NOT "
+          "repair." % ("PASS" if is_prod else "FAIL (P0: the verdict is INVALID)",
+                       ", ".join(fails) or "none", ", ".join(nxs) or "none"))
+print("\nDONE")
+
+--------------------------------------------------------------------------------
+9. THE EVIDENCE-RECORD WRITER - VERBATIM (runs on the PC, writes only the record)
+--------------------------------------------------------------------------------
+# -*- coding: utf-8 -*-
+"""Write the evidence record of the 11-Sep 08:20 production runtime check (06:50 file
+sec 1; 07:20 file sec 2). THE ORDER OF OPERATIONS IS THE GUARANTEE:
+  1. refuse ONLY: (a) output in which the script never started ("== TARGET HOST ==" is
+     absent -- a transport failure, not a check result: nothing is written, so a real
+     first run is never blocked); (b) an explicitly NON-production host block (P0: not
+     production evidence); (c) an existing record or sidecar (never overwrite);
+  2. write the raw bytes to the sidecar FIRST -- so no later failure of this writer can
+     turn "the check crashed" into "nothing happened";
+  3. only then parse, LENIENTLY: a check that crashed or was cut off still gets a
+     record, labelled PARTIAL, with every field it never reached marked so; a NOT
+     ESTABLISHED verdict gets its record like any other;
+  4. write the record; set both files read-only -- a SECONDARY guard only.
+IMMUTABILITY IS NEVER-EDIT-AFTER-CREATION. A privileged process can overwrite read-only
+files; the rule does not depend on the attribute. A later correction is a NEW record
+citing this one's path and both SHA-256s. Never chmod-and-edit this one.
+If this writer fails after step 2 it says so as ITS OWN failure; production is NOT
+re-run to obtain a tidier record.
+usage: make_evidence_record.py <raw_output.txt> <script.py> "<run by>" [outdir]"""
+import hashlib
+import io
+import os
+import re
+import stat
+import sys
+import traceback
+from datetime import datetime
+
+RAW, SCRIPT, RUN_BY = sys.argv[1], sys.argv[2], sys.argv[3]
+OUTDIR = sys.argv[4] if len(sys.argv) > 4 else r"D:\Projects\trading-system\docs\audit"
+NAME = "BOOT_PROOF_BLOCK_A_d3ee69d_11-Sep-2026"
+MD = os.path.join(OUTDIR, NAME + ".md")
+SIDE = os.path.join(OUTDIR, NAME + ".raw.txt")
+
+raw_b = open(RAW, "rb").read()
+text = raw_b.decode("utf-8", errors="replace").replace("\r\n", "\n")
+
+
+def find(pattern):
+    found = re.findall(pattern, text, re.M)
+    return found[-1].strip() if found else None
+
+
+if "== TARGET HOST ==" not in text:
+    sys.exit("NO RECORD: the script never started on the host (no '== TARGET HOST ==' line) -- a "
+             "transport failure, not a check result. The raw output stays at %s." % RAW)
+host = find(r"^  hostname  : (.+)$")
+prod = find(r"^  production: (\S+)")
+if host is not None and (host != "trading-system" or prod != "True"):
+    sys.exit("REFUSED (P0): the raw output is from host %r (production=%s) -- not production "
+             "evidence; no record is written" % (host, prod))
+for p in (MD, SIDE):
+    if os.path.exists(p):
+        sys.exit("REFUSED: %s exists -- a record is never overwritten; a correction is a NEW "
+                 "record that cites it" % p)
+open(SIDE, "wb").write(raw_b)
+os.chmod(SIDE, stat.S_IREAD)
+sha_raw = hashlib.sha256(raw_b).hexdigest()
+print("preserved the raw output FIRST: %s (%d bytes, sha256 %s)" % (SIDE, len(raw_b), sha_raw))
+
+try:
+    complete = "\nDONE" in text
+    NR = "(not reached -- the check did not complete)"
+    status = ("COMPLETE -- the check ran to DONE" if complete else
+              "PARTIAL -- the check did NOT reach DONE (it crashed or was cut off); every field it "
+              "never reached is marked so")
+    ran = find(r"^  time      : (.+)$") or NR
+    triage = find(r"^  TRIAGE: (.+)$") or NR
+    verdict = find(r"^  => (.+)$") or NR
+    hostgate = find(r"^  HOST GATE : (.+)$") or NR
+    host_s = host or "(the hostname line was never printed)"
+
+    def between(start, end):
+        if start not in text:
+            return NR
+        i = text.index(start)
+        j = text.find(end, i)
+        return text[i:(j if j >= 0 else len(text))].rstrip()
+
+    tblock = between("== TRIAGE", "== VERDICT")
+    vblock = between("== VERDICT", "\nDONE")
+    sha_scr = hashlib.sha256(open(SCRIPT, "rb").read()).hexdigest()
+    fence = "````"
+    while fence in text:
+        fence += "`"
+    written = datetime.now().strftime("%Y-%m-%d %H:%M:%S") + " IST (PC clock)"
+    body = ("# BOOT PROOF — Fri 11-Sep-2026 · THE FIRST PRODUCTION RUN OF BLOCK A (`d3ee69d`)\n\n"
+            "**Status of this record:** " + status + "\n"
+            "**Triage (the script's own line, verbatim):** `" + triage + "`\n"
+            "**Verdict (the script's own line, verbatim):** `" + verdict + "`\n"
+            "**Host gate (verbatim):** `" + hostgate + "`\n\n"
+            "🏷️ **ONE-TIME, DATED EVIDENCE RECORD. IMMUTABILITY IS NEVER-EDIT-AFTER-CREATION** *(07:20 file "
+            "§2.1)*. The read-only attribute on this file and its sidecar is a **secondary** guard only — a "
+            "privileged process can overwrite it. A later correction is a **NEW** record under `docs/audit/` "
+            "that cites this file's path and **both** SHA-256s — the raw sidecar's (in §0) and this file's "
+            "(in the ledger entry that recorded it). ⛔ Never chmod-and-edit this one.\n"
+            "⭐ Written whatever the verdict: a failed or partial check is still evidence *(07:20 file "
+            "§2.2–§2.3)*.\n"
+            "⛔ **ESTABLISHED would prove runtime, config and provenance — NOT that the exit path works.** "
+            "That is the 15:13 capture's separate question, and a flat PASS_2 will never answer it.\n\n"
+            "All work in this file is **read-only measurement**: one read-only script, run once on "
+            "production over ssh (base64 over stdin; nothing written on the VM; the DB opened read-only; "
+            "broker calls read-only). The prose is a frame; ⭐ **§3 is the evidence.**\n\n"
+            "---\n\n## §0 — PROVENANCE\n\n| fact | value |\n|---|---|\n"
+            "| status | " + status + " |\n"
+            "| target host — the first thing the script printed | `" + host_s + "` (production's hostname "
+            "is `trading-system`, measured 11-Sep 06:33) |\n"
+            "| run time — the script's own clock | `" + ran + "` |\n"
+            "| run by | " + RUN_BY + " |\n"
+            "| raw output | `" + NAME + ".raw.txt` beside this file — written FIRST, before this record; " +
+            str(len(raw_b)) + " bytes, SHA-256 `" + sha_raw + "`; embedded verbatim in §3 |\n"
+            "| script | `prod_0820_check.py` (v5) — SHA-256 `" + sha_scr + "`; embedded verbatim in "
+            "`memory/fallback_instructions/FALLBACK_11-Sep-2026_0820_PRODUCTION_RUNTIME_CHECK.txt` |\n"
+            "| authority | the CLOSE-SIX file (10-Sep) §5.1, and the 11-Sep instruction files delivered "
+            "**05:28:02**, **06:30:55**, **06:49:38** and **07:19:47** — delivery times read from the "
+            "session transcript; ⛔ their ISSUED headers are not evidence (standing rule) |\n"
+            "| record written | " + written + " |\n\n"
+            "## §1 — THE QUESTION\n\n"
+            "Block A (`d3ee69d`) reached production by push at ~16:19 on 10-Sep, after that day's 08:15 "
+            "boot; the 11-Sep 08:15 boot is the first to load it. **Does the RUNNING production process "
+            "hold Block A?** Proven by experiment — the pre-Block-A loader (`3b15bbf`) must refuse today's "
+            "YAML, because `EodSquareoffConfig` is `extra=\"forbid\"` and today's YAML carries the two Block "
+            "A keys — ⛔ never by PID age alone, ⛔ never by bare HEAD alone. The **host** is a separate hard "
+            "gate; the **inputs** are 3.1–3.12, each PASS, FAIL or NOT EXECUTED (an experiment that could "
+            "not run — never a pass, never a failure). The triage code comes from an explicit precedence, "
+            "P0–P6 *(07:20 file §1)*; *\"we cannot prove Block A is running\"* and *\"production is not "
+            "running\"* are different sentences.\n\n"
+            "## §2 — TRIAGE AND THE VERDICT (a verbatim excerpt of §3)\n\n"
+            + fence + "text\n" + tblock + "\n\n" + vblock + "\n" + fence + "\n\n"
+            "## §3 — RAW OUTPUT, VERBATIM — THE PRIMARY EVIDENCE\n\n"
+            + fence + "text\n" + text.rstrip("\n") + "\n" + fence + "\n\n"
+            "## §4 — HOW THIS RECORD CHANGES\n\n"
+            "It does not. ⛔ No edit, no appended re-run, no reinterpretation in place, ⛔ no chmod-and-edit. "
+            "If a later finding changes what this means, write a NEW dated record under `docs/audit/` that "
+            "names this file and both SHA-256s — the same discipline as striking a false claim in place "
+            "rather than silently rewriting it.\n")
+    io.open(MD, "w", encoding="utf-8", newline="\n").write(body)
+    os.chmod(MD, stat.S_IREAD)
+    sha_md = hashlib.sha256(open(MD, "rb").read()).hexdigest()
+    print("wrote the record: %s (%d bytes, sha256 %s) -- %s" % (
+        MD, os.path.getsize(MD), sha_md, "COMPLETE" if complete else "PARTIAL"))
+    print("script sha256 %s" % sha_scr)
+    print("both read-only (a SECONDARY guard; the rule is never-edit-after-creation): %s"
+          % (not os.access(MD, os.W_OK) and not os.access(SIDE, os.W_OK)))
+except Exception:  # noqa: BLE001
+    print("WRITER FAILED AFTER PRESERVING THE RAW OUTPUT -- this is the WRITER's own failure, not the check's:")
+    traceback.print_exc()
+    print("The raw output is safe at %s (sha256 %s). Do NOT re-run production to get a tidier record."
+          % (SIDE, sha_raw))
+    sys.exit(2)
+
+================================================================================
+END
+================================================================================

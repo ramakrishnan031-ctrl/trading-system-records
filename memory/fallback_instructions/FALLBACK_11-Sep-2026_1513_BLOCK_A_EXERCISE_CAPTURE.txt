@@ -1,0 +1,356 @@
+================================================================================
+INSTRUCTION FILE (FALLBACK) - FOR VS CODE CLAUDE
+15:03 BLOCK-A EXERCISE CAPTURE - AFTER THE FACT
+================================================================================
+DATE OF WORK   : 11-Sep-2026 (Friday) IST
+WRITTEN        : 11-Sep-2026 02:49 IST, by the CLOSE-SIX session, per the 02:35
+                 instruction file §3: "the real fallback".
+REVISED        : 11-Sep 06:09 IST (05:30 file: mechanical precheck, v2 script)
+                 and 11-Sep-2026 06:39 IST (06:35 file: host guard, the verdict model,
+                 v3 script). Earlier versions are kept as
+                 claude-ev10sep\FALLBACK_11-Sep-2026_1513_BLOCK_A_EXERCISE_CAPTURE.txt.v1 and .v2.
+                 ⚠ These header times are author-typed labels, not evidence of
+                 chronology (standing rule, 05:30 file §1.5).
+RUN WHEN       : at or after 15:13 IST on 11-Sep (PASS_1 15:03, PASS_2 15:06,
+                 cutoff 15:09 all passed) IF the session-local job did not fire.
+                 Section 2 FIRST. ⚠ SAME DAY ONLY: the broker's order book is
+                 daily - after the day ends its half of the evidence is gone.
+MODEL          : Opus 4.6 or higher (Opus 5 preferred). NEVER Sonnet.
+REASONING      : HIGH
+AUTHORITY      : CLOSE-SIX instruction file (10-Sep 21:45) §5, restated by the
+                 11-Sep 02:35 file §5, the 05:30 file §3/§4 and the 06:35 file
+                 §2-§4. READ-ONLY.
+
+--------------------------------------------------------------------------------
+1. THE QUESTION
+--------------------------------------------------------------------------------
+Did production's MIS auto-squareoff find any MIS position at 15:03 today - the
+first natural supervised exercise of Block A's protected MARKET exits?
+  - NONE: record NOT EXERCISED. ⛔ Never PASS, never CLEAN.
+  - ANY:  capture, per symbol: the scan line, the exact pass submitted, the
+          market_protection value, the broker_order_id, broker status and
+          history, filled / pending / cancelled quantity, average price, EVERY
+          order on that symbol today (so a manual close is never counted as the
+          system's), and the final broker position.
+
+--------------------------------------------------------------------------------
+2. PRECHECK - MECHANICAL, RUN FIRST
+--------------------------------------------------------------------------------
+Run this FIRST, from Git Bash:
+
+  grep -c "RESULT-1513-11SEP2026" \
+    "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/MEMORY_BOARD.md"
+
+  0   -> no 15:03 result is recorded: continue.
+  1+  -> ALREADY RECORDED (the session job fired and wrote it): do NOT run
+         again; report the BOARD line that carries the marker instead.
+The marker is written ONLY by the RECORD step below (or by the session job
+doing the same work), exactly once, on the BOARD line holding the verdict.
+
+--------------------------------------------------------------------------------
+3. RULES
+--------------------------------------------------------------------------------
+  ⭐ TARGET HOST: run it on trading-vm, whose hostname is `trading-system`
+     (measured 11-Sep 06:33). First print it and confirm it is NOT
+     `trading-system-sandbox` (the Testing VM):
+
+       ssh -o ConnectTimeout=15 trading-vm hostname
+
+     The script also prints the host FIRST, and on any other host its output
+     is NOT a production result by construction. A check that silently verifies the
+     wrong machine is worse than no check. On 11-Sep a TWIN dry run was read
+     as production's result - read the TARGET HOST block before anything else.
+  3.1  ⛔ NEVER manufacture a trade to create an exercise. No orders, no cancels,
+       no restarts, no config edits.
+  3.2  The BROKER is the authority on positions - never the local trades table.
+  3.3  The squareoff's own exit orders get NO local orders row: its record is the
+       system log (MIS_AUTO_SQUAREOFF_SCAN, MIS_AUTO_SQUAREOFF_EXIT_SUBMITTED,
+       "mis_autosquareoff <STATE>: ...") plus the broker's order book.
+  3.4  ⭐ A FLAT PASS_2 PROVES NOTHING ABOUT PASS_1. On 10-Sep (IDEA) PASS_2 found
+       the book flat only because Rama had closed the position by hand between
+       the passes. Attribute every close from the broker's order list.
+  3.5  Classify each squareoff order: FULL · PARTIAL + residual · NONE + resting
+       · CANCELLED · REJECTED. A partial leaves a resting order - the case Block
+       A's gate exists for, never yet exercised.
+  3.6  broker_order_id is the identity. ⛔ The tag cannot distinguish the passes:
+       both truncate to "mis_autosq_pass_" (S11-R7).
+  3.7  Verdicts per symbol: EXERCISED - CLEAN / EXERCISED - FAILED /
+       NOT EXERCISED. Never a softer fourth wording. "Live-proven" only if a
+       protected MARKET actually executed and was verified at the broker.
+
+--------------------------------------------------------------------------------
+4. RUN
+--------------------------------------------------------------------------------
+Save section 7 verbatim as prod_1513_capture.py, then from Git Bash:
+
+  B64=$(base64 -w0 prod_1513_capture.py) && ssh -o ConnectTimeout=15 trading-vm \
+    "cd /home/ubuntu/systems/trading-system && echo $B64 | base64 -d | PYTHONPATH=. /home/ubuntu/systems/venv/bin/python -u -"
+
+It reads the session token file only to make READ-ONLY broker calls (profile,
+positions, orders, order history) - the same method the 09-Sep pre-push
+flat-book check used.
+
+--------------------------------------------------------------------------------
+5. HOW TO READ THE VERDICT LINE
+--------------------------------------------------------------------------------
+  - "NOT A PRODUCTION RESULT": wrong host. Nothing to record; run it on trading-vm.
+  - "NO SCAN LINE": the passes did not run or did not log. Report exactly that;
+    it is neither "flat" nor a pass.
+  - "NOT PARSED": read the scan lines by eye; never call the book flat on a
+    failed parse.
+  - "NOT EXERCISED": confirm against the broker MIS rows the script printed.
+  - "EXERCISED": per symbol, what was SENT (the EXIT_SUBMITTED line) against what
+    HAPPENED (the broker order, its history, every other order on the symbol,
+    and the final net position), using the five classes of 3.5.
+
+--------------------------------------------------------------------------------
+6. RECORD, THEN REPORT
+--------------------------------------------------------------------------------
+Record in the three memory targets - D:/Projects/trading-system/docs/
+SYSTEM_MAP.md, D:/Projects/trading-system/PATHS.md, and memory/
+UNPUSHED_PENDING_DEPLOY_LEDGER.md - plus the MEMORY_BOARD.md resume point, putting
+the marker RESULT-1513-11SEP2026 exactly ONCE on the BOARD line that holds the
+verdict. Re-run the section-2 precheck: it must now print 1. Guards clean. Then
+report to Rama. Every figure from a command you ran.
+
+--------------------------------------------------------------------------------
+7. THE SCRIPT - VERBATIM, READ-ONLY (identical to the 15:13 session job's)
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY 15:03 Block-A exercise capture, AFTER THE FACT (v3).
+CLOSE-SIX sec 5.2, extended by the 11-Sep 05:30 file sec 4 and the 11-Sep 06:35
+file sec 4: a host guard, the five fill classes, pass identity by broker_order_id.
+
+Did PASS_1 (15:03) / PASS_2 (15:06) find any MIS position on production today?
+  none -> NOT EXECUTED is never the word here: the result is NOT EXERCISED. Never
+          PASS, never CLEAN.
+  any  -> per symbol: the scan line, the exact pass submitted, the market_protection
+          value, the broker_order_id, broker status and history, filled / pending /
+          cancelled quantity, average price, EVERY order on that symbol today (so a
+          manual close is never counted as the system's), the final broker position,
+          and each order's class: FULL / PARTIAL + residual / NONE + resting /
+          CANCELLED / REJECTED.
+The pass is identified by broker_order_id, NEVER by the tag: both passes truncate
+to "mis_autosq_pass_" (S11-R7). A flat PASS_2 proves NOTHING about PASS_1 (10-Sep
+IDEA: PASS_2 found the book flat only because Rama had closed it by hand).
+The host is printed FIRST; on any host but production nothing here is a
+production result.
+Writes NOTHING: no files, no orders, no cancels; the DB is opened read-only. Prints
+no account id. ASCII output, flushed per line.   usage: python -u - [--no-broker]
+The broker's order book is DAILY: run this on the same trading day, or the
+broker-side half of the evidence is gone for good."""
+import functools
+import json
+import os
+import re
+import sqlite3
+import subprocess
+import sys
+from datetime import date
+
+print = functools.partial(print, flush=True)  # noqa: A001
+
+ROOT = "/home/ubuntu/systems/trading-system"
+EXPECT_HOST = "trading-system"            # production; measured 11-Sep 06:33 via ssh trading-vm
+SANDBOX_HOST = "trading-system-sandbox"   # the Testing VM
+TODAY = date.today().isoformat()
+LOG = os.path.join(ROOT, "logs", "system_%s.log" % TODAY)
+DB = os.path.join(ROOT, "data_store", "trading_system.db")
+TOKEN = os.path.join(ROOT, "data_store", "session", "zerodha_token.json")
+NO_BROKER = "--no-broker" in sys.argv
+SENT_KEYS = ("pass", "symbol", "broker_order_id", "qty", "side", "order_type",
+             "market_protection_percent", "pass_1_order_id", "residual_detail")
+
+
+def a(s):
+    return str(s).encode("ascii", "replace").decode("ascii")
+
+
+def sh(c):
+    return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+def field(line, name):
+    m = re.search(r'"%s"\s*:\s*("([^"]*)"|[^,}\s]+)' % re.escape(name), line)
+    if not m:
+        return None
+    return m.group(2) if m.group(2) is not None else m.group(1)
+
+
+def classify(o):
+    qty, fq = o.get("quantity") or 0, o.get("filled_quantity") or 0
+    pend, canc, st = o.get("pending_quantity") or 0, o.get("cancelled_quantity") or 0, o.get("status")
+    if st == "REJECTED":
+        return "REJECTED"
+    if st == "COMPLETE" and fq == qty:
+        return "FULL"
+    if 0 < fq < qty:
+        return "PARTIAL + residual %d (%s)" % (
+            qty - fq, "resting, pending=%d" % pend if pend else "cancelled=%d" % canc)
+    if fq == 0 and pend:
+        return "NONE + resting (pending=%d, status %s)" % (pend, st)
+    if st == "CANCELLED":
+        return "CANCELLED"
+    return "UNCLASSIFIED (status %s, filled %s of %s)" % (st, fq, qty)
+
+
+host = sh("hostname")
+is_prod = host == EXPECT_HOST
+print("== TARGET HOST ==")
+print("  hostname  : %s" % a(host))
+print("  production: %s   (production's hostname is %r)" % (is_prod, EXPECT_HOST))
+if not is_prod:
+    print("  >>> NOT PRODUCTION%s -- NOTHING BELOW IS A PRODUCTION RESULT <<<"
+          % (" -- this is the Testing VM" if host == SANDBOX_HOST else ""))
+print("  time      : %s" % a(sh("date '+%F %T %Z'")))
+print("log: %s (%s)" % (LOG, "present" if os.path.exists(LOG) else "MISSING"))
+
+scan, submitted, states = [], [], []
+if os.path.exists(LOG):
+    with open(LOG, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            if "MIS_AUTO_SQUAREOFF_SCAN" in line:
+                scan.append(line.strip())
+            elif "MIS_AUTO_SQUAREOFF_EXIT_SUBMITTED" in line:
+                submitted.append(line.strip())
+            elif "mis_autosquareoff " in line and re.search(
+                    r"EXIT_|RESTORE_|PASS_|BROKER_STATE|DEADLINE|RESIDUAL|CANCEL_", line):
+                states.append(line.strip())
+
+print("\n== MIS_AUTO_SQUAREOFF_SCAN -- one per pass ==")
+for l in scan:
+    print("  pass=%s mis_candidates=%s | %s" % (field(l, "pass"), field(l, "mis_candidates"),
+                                               a(l)[:300]))
+print("\n== MIS_AUTO_SQUAREOFF_EXIT_SUBMITTED -- what was SENT ==")
+sent, pass_by_id = {}, {}
+for l in submitted:
+    d = dict((k, field(l, k)) for k in SENT_KEYS)
+    sent.setdefault(d["symbol"], []).append(d)
+    pass_by_id[str(d["broker_order_id"])] = d["pass"]
+    print("  " + " ".join("%s=%s" % (k, a(v)) for k, v in d.items()))
+    print("    raw: %s" % a(l)[:500])
+print("\n== mis_autosquareoff state lines (first 80) ==")
+for l in states[:80]:
+    print("  " + a(l)[:420])
+
+print("\n== local trades created today with an MIS entry (read-only; NOT the authority) ==")
+try:
+    wal = os.path.exists(DB + "-wal")
+    con = sqlite3.connect("file:%s?mode=ro%s" % (DB, "" if wal else "&immutable=1"),
+                          uri=True, timeout=5)
+    rows = con.execute(
+        "SELECT t.symbol, t.status, t.qty_filled, t.created_at FROM trades t "
+        "WHERE t.created_at LIKE ? AND (SELECT o.product FROM orders o WHERE o.trade_id = "
+        "t.trade_id AND o.leg = 'ENTRY' LIMIT 1) = 'MIS' ORDER BY t.created_at",
+        (TODAY + "%",)).fetchall()
+    print("  %d trade(s)" % len(rows))
+    for r in rows:
+        print("    %-14s %-12s qty_filled=%s created=%s" % tuple(a(x) for x in r))
+    con.close()
+except Exception as e:  # noqa: BLE001
+    print("  DB read FAILED -- %s: %s" % (type(e).__name__, a(e)))
+
+print("\n== broker truth (READ-ONLY: profile, positions, orders, order history) ==")
+summary = []
+if NO_BROKER:
+    print("  skipped (--no-broker)")
+else:
+    try:
+        from kiteconnect import KiteConnect
+        tok = json.load(open(TOKEN))
+        kc = KiteConnect(api_key=tok["api_key"])
+        kc.set_access_token(tok["access_token"])
+        kc.profile()
+        print("  profile read OK (account id deliberately not printed)")
+        pos = kc.positions() or {}
+        day_mis = [p for p in (pos.get("day") or []) if p.get("product") == "MIS"]
+        net_mis = dict((p.get("tradingsymbol"), p) for p in (pos.get("net") or [])
+                       if p.get("product") == "MIS")
+        orders = kc.orders() or []
+        sq = [o for o in orders if str(o.get("tag") or "").startswith("mis_autosq")
+              or str(o.get("order_id")) in pass_by_id]
+        syms = sorted(set(p.get("tradingsymbol") for p in day_mis)
+                      | set(o.get("tradingsymbol") for o in sq) | set(s for s in sent if s))
+        print("  MIS day-book rows: %d | squareoff orders (by id or tag): %d | symbols examined: %s"
+              % (len(day_mis), len(sq), " ".join(a(s) for s in syms) or "none"))
+        for s in syms:
+            n = net_mis.get(s) or {}
+            q = n.get("quantity") or 0
+            final = "FLAT" if q == 0 else "RESIDUAL %s" % q
+            print("\n  -- %s: FINAL net MIS qty=%s (buy=%s sell=%s avg=%s pnl=%s) => %s" % (
+                a(s), q, n.get("buy_quantity"), n.get("sell_quantity"), n.get("average_price"),
+                n.get("pnl"), final))
+            for d in sent.get(s, []):
+                print("     SENT (log): pass=%s broker_order_id=%s qty=%s side=%s type=%s "
+                      "market_protection=%s%%" % (d["pass"], d["broker_order_id"], d["qty"],
+                                                  d["side"], d["order_type"],
+                                                  d["market_protection_percent"]))
+            classes = []
+            for o in sorted([o for o in orders if o.get("tradingsymbol") == s],
+                            key=lambda o: str(o.get("order_timestamp"))):
+                oid, tag = str(o.get("order_id")), str(o.get("tag") or "")
+                if oid in pass_by_id:
+                    who = "SYSTEM squareoff %s (by broker_order_id)" % pass_by_id[oid]
+                elif tag.startswith("mis_autosq"):
+                    who = "squareoff-tagged, pass UNKNOWN (tag truncated -- S11-R7)"
+                else:
+                    who = "NOT the squareoff (tag %r)" % a(tag)
+                mine = oid in pass_by_id or tag.startswith("mis_autosq")
+                cls = classify(o) if mine else "-"
+                if mine:
+                    classes.append("%s:%s" % (pass_by_id.get(oid, "PASS_?"), cls))
+                print("     %s id=%s %s %s %s qty=%s filled=%s pending=%s cancelled=%s avg=%s "
+                      "status=%s mp=%s [%s] class=%s" % (
+                          o.get("order_timestamp"), oid, o.get("transaction_type"),
+                          o.get("product"), o.get("order_type"), o.get("quantity"),
+                          o.get("filled_quantity"), o.get("pending_quantity"),
+                          o.get("cancelled_quantity"), o.get("average_price"), o.get("status"),
+                          o.get("market_protection"), who, cls))
+                if o.get("status_message"):
+                    print("        msg=%s" % a(o.get("status_message"))[:300])
+                if mine:
+                    for h in kc.order_history(oid) or []:
+                        print("        %s %-16s filled=%s pending=%s avg=%s %s" % (
+                            h.get("order_timestamp"), h.get("status"), h.get("filled_quantity"),
+                            h.get("pending_quantity"), h.get("average_price"),
+                            a(h.get("status_message"))[:160]))
+            summary.append("%s final=%s squareoff orders=[%s]" % (a(s), final,
+                                                                  "; ".join(classes) or "none"))
+    except Exception as e:  # noqa: BLE001
+        print("  broker read FAILED -- %s: %s  (report it; infer NOTHING from the log alone)"
+              % (type(e).__name__, a(e)))
+
+print("\n== verdict inputs ==")
+cand = []
+for l in scan:
+    m = re.search(r'"mis_candidates"\s*:\s*(\d+)', l) or re.search(r"mis_candidates=(\d+)", l)
+    if m:
+        cand.append(int(m.group(1)))
+print("  host=%s production=%s | scan lines=%d mis_candidates parsed=%s exits submitted=%d"
+      % (a(host), is_prod, len(scan), cand, len(submitted)))
+for line in summary:
+    print("  per symbol: " + line)
+if not is_prod:
+    print("  => NOT A PRODUCTION RESULT (host %s)." % a(host))
+elif not scan:
+    print("  => NO SCAN LINE: the passes did not run or did not log. Report exactly that -- it "
+          "is neither 'flat' nor a pass.")
+elif len(cand) != len(scan):
+    print("  => SCAN LINES PRESENT BUT mis_candidates NOT PARSED -- read them by eye; do NOT "
+          "call the book flat on a failed parse.")
+elif all(c == 0 for c in cand) and not submitted:
+    print("  => NOT EXERCISED -- every pass logged mis_candidates=0 and nothing was submitted. "
+          "Confirm against the broker MIS rows above. NEVER PASS, NEVER CLEAN.")
+else:
+    print("  => EXERCISED -- per symbol, what was SENT against what HAPPENED:")
+    print("     EXERCISED - CLEAN  only if the system's protected MARKET filled FULL and the")
+    print("                        final position is FLAT because of that order;")
+    print("     EXERCISED - FAILED for REJECTED, PARTIAL + residual, NONE + resting, CANCELLED,")
+    print("                        or a final position that is not flat;")
+    print("     NOT EXERCISED      for a symbol the squareoff never sent an order for.")
+    print("     A flat PASS_2 proves NOTHING about PASS_1's order (10-Sep IDEA).")
+print("\nDONE")
+
+================================================================================
+END
+================================================================================

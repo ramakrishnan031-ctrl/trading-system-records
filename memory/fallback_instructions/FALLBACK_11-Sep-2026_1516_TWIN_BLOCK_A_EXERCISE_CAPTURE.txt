@@ -1,0 +1,542 @@
+================================================================================
+INSTRUCTION FILE (FALLBACK) - FOR VS CODE CLAUDE
+THE TWIN'S OWN 15:03 - BLOCK-A EXERCISE CAPTURE ON THE TESTING VM, AFTER THE FACT
+================================================================================
+DATE OF WORK   : 11-Sep-2026 (Friday) IST
+WRITTEN        : 11-Sep-2026 10:01 IST (PC clock), per the 09:35 instruction file (delivered 09:33:04)
+                 §3-§4: "the session jobs are convenience; the files are the mechanism".
+                 ⚠ Header times are author-typed labels, not evidence (standing rule).
+RUN WHEN       : at or after 15:16 IST on 11-Sep (the twin's PASS_1 15:03, PASS_2 15:06,
+                 cutoff 15:09 all passed) IF the session-local job did not fire.
+                 Section 2 FIRST. ⚠ SAME DAY ONLY: the broker's order book is daily.
+MODEL          : Opus 4.6 or higher (Opus 5 preferred). NEVER Sonnet.
+REASONING      : HIGH
+AUTHORITY      : the 09:35 file §4 ("there are now TWO 15:03 events today, on two machines"). READ-ONLY.
+TARGET         : the TESTING VM ONLY - hostname trading-system-sandbox (ssh alias
+                 trading-sbx), account VBB097. ⛔ PRODUCTION (trading-system,
+                 trading-vm, LFL836) is NOT touched by this file in any way.
+
+--------------------------------------------------------------------------------
+1. THE QUESTION
+--------------------------------------------------------------------------------
+Did the TWIN's MIS auto-squareoff find any MIS position at 15:03 today? The twin runs
+Block A AND Batch 1 and trades its own capital (account VBB097) on the same strategies.
+  - NONE: record NOT EXERCISED for the twin. ⛔ Never PASS, never CLEAN. If production is
+    also flat, both are NOT EXERCISED and that is a complete result.
+  - ANY:  per symbol: the scan line, the exact pass submitted, the market_protection value,
+          the broker_order_id, broker status and history, filled / pending / cancelled
+          quantity, average price, EVERY order on that symbol today (so a manual close is
+          never counted as the system's), and the final broker position.
+⭐ KEEP THE FINDINGS SEPARATE AND NAME THE MACHINE: a twin result is VBB097's evidence
+   about Block A - never production's; the accounts have different capital and fills.
+⭐ SEPARATE THE TWO CHANGES ON THIS MACHINE: Block A governs the EXIT; Batch 1 governs
+   only the evidence recorder. Batch 1's capture points are P1 / P2 / P3 (signal
+   decisions) - it does NOT capture squareoff exits, so an exit is not expected in the
+   evidence corpus. What Batch 1 must show at 15:03 is only that its failure path stayed
+   silent. A failure in one must never be reported as a failure in the other.
+
+--------------------------------------------------------------------------------
+2. PRECHECK - MECHANICAL, RUN FIRST
+--------------------------------------------------------------------------------
+Run this FIRST, from Git Bash:
+
+  grep -c "RESULT-1516-TWIN-11SEP2026" \
+    "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/MEMORY_BOARD.md"
+
+  0   -> no twin 15:03 result is recorded: continue.
+  1+  -> ALREADY RECORDED (the session job fired and wrote it): do NOT run again;
+         report the BOARD line that carries the marker instead.
+The marker is written ONLY by the RECORD step of this file (or by the session job
+doing the same work), exactly once, on the BOARD line holding the result.
+
+--------------------------------------------------------------------------------
+3. RULES
+--------------------------------------------------------------------------------
+  ⛔ No restart · no stop/start · no config edit · no copy · no push · no order ·
+     no cancel · no kill-switch change · no token work · nothing on production.
+  ⭐ Every script below refuses to run on any host but trading-system-sandbox.
+  ⭐ Every figure you report must come from a command you ran.
+  3.1  ⛔ NEVER manufacture a trade on either machine. No orders, no cancels.
+  3.2  The BROKER is the authority on positions - never the local trades table.
+  3.3  broker_order_id is the identity; ⛔ the tag cannot distinguish the passes (both
+       truncate to "mis_autosq_pass_", S11-R7).
+  3.4  A flat PASS_2 proves NOTHING about PASS_1 (10-Sep IDEA).
+  3.5  Classes per squareoff order: FULL · PARTIAL + residual · NONE + resting ·
+       CANCELLED · REJECTED. Verdicts per symbol: EXERCISED - CLEAN / EXERCISED -
+       FAILED / NOT EXERCISED.
+
+--------------------------------------------------------------------------------
+4. RUN - two read-only scripts (sections 7 and 8), each saved verbatim, from Git Bash
+--------------------------------------------------------------------------------
+Save sections 7 and 8 VERBATIM -- each is the text between its heading's closing rule line and
+the next rule line -- under the file name in its heading, in one scratch directory;
+cd there; then run, from Git Bash:
+
+  B64=$(base64 -w0 twin_1516_capture.py) && MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx \
+    "cd /home/ubuntu/systems/trading-system && echo $B64 | base64 -d | PYTHONPATH=. /home/ubuntu/systems/venv/bin/python -u -" 2>&1 | tee twin_1516_RAW_11-Sep-2026.txt
+  B64=$(base64 -w0 twin_b1_verify.py) && MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx \
+    "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u - /home/ubuntu/preserved/batch1_stage_20260911_090737"
+
+--------------------------------------------------------------------------------
+5. HOW TO READ IT
+--------------------------------------------------------------------------------
+  - "NOT A TWIN RESULT": wrong host - nothing to record; run it on trading-sbx.
+  - "NO SCAN LINE": the passes did not run or did not log on the twin - report exactly that.
+  - "NOT EXERCISED": confirm against the broker MIS rows the script printed.
+  - "EXERCISED": what was SENT (EXIT_SUBMITTED) against what HAPPENED (the broker order,
+    its history, every other order on the symbol, the final net position).
+  - Batch 1 (from twin_b1_verify.py): the failure log and sentinels - silent or not.
+
+--------------------------------------------------------------------------------
+6. RECORD, THEN REPORT
+--------------------------------------------------------------------------------
+Record in the three memory targets (D:/Projects/trading-system/docs/SYSTEM_MAP.md,
+D:/Projects/trading-system/PATHS.md, memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md) plus the
+MEMORY_BOARD.md resume point - the raw capture output VERBATIM in the ledger entry (the
+broker's book is daily) - labelled TWIN (VBB097), with the marker RESULT-1516-TWIN-11SEP2026
+exactly ONCE on the BOARD line holding the verdict. Re-run section 2: it must now print 1.
+Guards clean. Report the twin and production results SEPARATELY.
+
+--------------------------------------------------------------------------------
+7. twin_1516_capture.py - VERBATIM, READ-ONLY (the production capture's logic; host + labels only)
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY 15:03 Block-A exercise capture, AFTER THE FACT -- THE TWIN VARIANT (TESTING VM,
+trading-system-sandbox, account VBB097), 09:35 file sec 4. IDENTICAL LOGIC to
+prod_1513_capture_v3.py; only the expected host and the labels differ. A twin result is
+VBB097's evidence, never production's.
+(from v3)
+CLOSE-SIX sec 5.2, extended by the 11-Sep 05:30 file sec 4 and the 11-Sep 06:35
+file sec 4: a host guard, the five fill classes, pass identity by broker_order_id.
+
+Did PASS_1 (15:03) / PASS_2 (15:06) find any MIS position on production today?
+  none -> NOT EXECUTED is never the word here: the result is NOT EXERCISED. Never
+          PASS, never CLEAN.
+  any  -> per symbol: the scan line, the exact pass submitted, the market_protection
+          value, the broker_order_id, broker status and history, filled / pending /
+          cancelled quantity, average price, EVERY order on that symbol today (so a
+          manual close is never counted as the system's), the final broker position,
+          and each order's class: FULL / PARTIAL + residual / NONE + resting /
+          CANCELLED / REJECTED.
+The pass is identified by broker_order_id, NEVER by the tag: both passes truncate
+to "mis_autosq_pass_" (S11-R7). A flat PASS_2 proves NOTHING about PASS_1 (10-Sep
+IDEA: PASS_2 found the book flat only because Rama had closed it by hand).
+The host is printed FIRST; on any host but production nothing here is a
+production result.
+Writes NOTHING: no files, no orders, no cancels; the DB is opened read-only. Prints
+no account id. ASCII output, flushed per line.   usage: python -u - [--no-broker]
+The broker's order book is DAILY: run this on the same trading day, or the
+broker-side half of the evidence is gone for good."""
+import functools
+import json
+import os
+import re
+import sqlite3
+import subprocess
+import sys
+from datetime import date
+
+print = functools.partial(print, flush=True)  # noqa: A001
+
+ROOT = "/home/ubuntu/systems/trading-system"
+EXPECT_HOST = "trading-system-sandbox"    # THE TWIN (Testing VM, VBB097) -- this variant's ONLY target
+SANDBOX_HOST = "trading-system"            # PRODUCTION -- the OTHER machine, never this capture's target
+TODAY = date.today().isoformat()
+LOG = os.path.join(ROOT, "logs", "system_%s.log" % TODAY)
+DB = os.path.join(ROOT, "data_store", "trading_system.db")
+TOKEN = os.path.join(ROOT, "data_store", "session", "zerodha_token.json")
+NO_BROKER = "--no-broker" in sys.argv
+SENT_KEYS = ("pass", "symbol", "broker_order_id", "qty", "side", "order_type",
+             "market_protection_percent", "pass_1_order_id", "residual_detail")
+
+
+def a(s):
+    return str(s).encode("ascii", "replace").decode("ascii")
+
+
+def sh(c):
+    return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+def field(line, name):
+    m = re.search(r'"%s"\s*:\s*("([^"]*)"|[^,}\s]+)' % re.escape(name), line)
+    if not m:
+        return None
+    return m.group(2) if m.group(2) is not None else m.group(1)
+
+
+def classify(o):
+    qty, fq = o.get("quantity") or 0, o.get("filled_quantity") or 0
+    pend, canc, st = o.get("pending_quantity") or 0, o.get("cancelled_quantity") or 0, o.get("status")
+    if st == "REJECTED":
+        return "REJECTED"
+    if st == "COMPLETE" and fq == qty:
+        return "FULL"
+    if 0 < fq < qty:
+        return "PARTIAL + residual %d (%s)" % (
+            qty - fq, "resting, pending=%d" % pend if pend else "cancelled=%d" % canc)
+    if fq == 0 and pend:
+        return "NONE + resting (pending=%d, status %s)" % (pend, st)
+    if st == "CANCELLED":
+        return "CANCELLED"
+    return "UNCLASSIFIED (status %s, filled %s of %s)" % (st, fq, qty)
+
+
+host = sh("hostname")
+is_prod = host == EXPECT_HOST
+print("== TARGET HOST ==")
+print("  hostname  : %s" % a(host))
+print("  the twin  : %s   (the twin's hostname is %r)" % (is_prod, EXPECT_HOST))
+if not is_prod:
+    print("  >>> NOT THE TWIN%s -- NOTHING BELOW IS A TWIN RESULT <<<"
+          % (" -- this is PRODUCTION" if host == SANDBOX_HOST else ""))
+print("  time      : %s" % a(sh("date '+%F %T %Z'")))
+print("log: %s (%s)" % (LOG, "present" if os.path.exists(LOG) else "MISSING"))
+
+scan, submitted, states = [], [], []
+if os.path.exists(LOG):
+    with open(LOG, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            if "MIS_AUTO_SQUAREOFF_SCAN" in line:
+                scan.append(line.strip())
+            elif "MIS_AUTO_SQUAREOFF_EXIT_SUBMITTED" in line:
+                submitted.append(line.strip())
+            elif "mis_autosquareoff " in line and re.search(
+                    r"EXIT_|RESTORE_|PASS_|BROKER_STATE|DEADLINE|RESIDUAL|CANCEL_", line):
+                states.append(line.strip())
+
+print("\n== MIS_AUTO_SQUAREOFF_SCAN -- one per pass ==")
+for l in scan:
+    print("  pass=%s mis_candidates=%s | %s" % (field(l, "pass"), field(l, "mis_candidates"),
+                                               a(l)[:300]))
+print("\n== MIS_AUTO_SQUAREOFF_EXIT_SUBMITTED -- what was SENT ==")
+sent, pass_by_id = {}, {}
+for l in submitted:
+    d = dict((k, field(l, k)) for k in SENT_KEYS)
+    sent.setdefault(d["symbol"], []).append(d)
+    pass_by_id[str(d["broker_order_id"])] = d["pass"]
+    print("  " + " ".join("%s=%s" % (k, a(v)) for k, v in d.items()))
+    print("    raw: %s" % a(l)[:500])
+print("\n== mis_autosquareoff state lines (first 80) ==")
+for l in states[:80]:
+    print("  " + a(l)[:420])
+
+print("\n== local trades created today with an MIS entry (read-only; NOT the authority) ==")
+try:
+    wal = os.path.exists(DB + "-wal")
+    con = sqlite3.connect("file:%s?mode=ro%s" % (DB, "" if wal else "&immutable=1"),
+                          uri=True, timeout=5)
+    rows = con.execute(
+        "SELECT t.symbol, t.status, t.qty_filled, t.created_at FROM trades t "
+        "WHERE t.created_at LIKE ? AND (SELECT o.product FROM orders o WHERE o.trade_id = "
+        "t.trade_id AND o.leg = 'ENTRY' LIMIT 1) = 'MIS' ORDER BY t.created_at",
+        (TODAY + "%",)).fetchall()
+    print("  %d trade(s)" % len(rows))
+    for r in rows:
+        print("    %-14s %-12s qty_filled=%s created=%s" % tuple(a(x) for x in r))
+    con.close()
+except Exception as e:  # noqa: BLE001
+    print("  DB read FAILED -- %s: %s" % (type(e).__name__, a(e)))
+
+print("\n== broker truth (READ-ONLY: profile, positions, orders, order history) ==")
+summary = []
+if NO_BROKER:
+    print("  skipped (--no-broker)")
+else:
+    try:
+        from kiteconnect import KiteConnect
+        tok = json.load(open(TOKEN))
+        kc = KiteConnect(api_key=tok["api_key"])
+        kc.set_access_token(tok["access_token"])
+        kc.profile()
+        print("  profile read OK (account id deliberately not printed)")
+        pos = kc.positions() or {}
+        day_mis = [p for p in (pos.get("day") or []) if p.get("product") == "MIS"]
+        net_mis = dict((p.get("tradingsymbol"), p) for p in (pos.get("net") or [])
+                       if p.get("product") == "MIS")
+        orders = kc.orders() or []
+        sq = [o for o in orders if str(o.get("tag") or "").startswith("mis_autosq")
+              or str(o.get("order_id")) in pass_by_id]
+        syms = sorted(set(p.get("tradingsymbol") for p in day_mis)
+                      | set(o.get("tradingsymbol") for o in sq) | set(s for s in sent if s))
+        print("  MIS day-book rows: %d | squareoff orders (by id or tag): %d | symbols examined: %s"
+              % (len(day_mis), len(sq), " ".join(a(s) for s in syms) or "none"))
+        for s in syms:
+            n = net_mis.get(s) or {}
+            q = n.get("quantity") or 0
+            final = "FLAT" if q == 0 else "RESIDUAL %s" % q
+            print("\n  -- %s: FINAL net MIS qty=%s (buy=%s sell=%s avg=%s pnl=%s) => %s" % (
+                a(s), q, n.get("buy_quantity"), n.get("sell_quantity"), n.get("average_price"),
+                n.get("pnl"), final))
+            for d in sent.get(s, []):
+                print("     SENT (log): pass=%s broker_order_id=%s qty=%s side=%s type=%s "
+                      "market_protection=%s%%" % (d["pass"], d["broker_order_id"], d["qty"],
+                                                  d["side"], d["order_type"],
+                                                  d["market_protection_percent"]))
+            classes = []
+            for o in sorted([o for o in orders if o.get("tradingsymbol") == s],
+                            key=lambda o: str(o.get("order_timestamp"))):
+                oid, tag = str(o.get("order_id")), str(o.get("tag") or "")
+                if oid in pass_by_id:
+                    who = "SYSTEM squareoff %s (by broker_order_id)" % pass_by_id[oid]
+                elif tag.startswith("mis_autosq"):
+                    who = "squareoff-tagged, pass UNKNOWN (tag truncated -- S11-R7)"
+                else:
+                    who = "NOT the squareoff (tag %r)" % a(tag)
+                mine = oid in pass_by_id or tag.startswith("mis_autosq")
+                cls = classify(o) if mine else "-"
+                if mine:
+                    classes.append("%s:%s" % (pass_by_id.get(oid, "PASS_?"), cls))
+                print("     %s id=%s %s %s %s qty=%s filled=%s pending=%s cancelled=%s avg=%s "
+                      "status=%s mp=%s [%s] class=%s" % (
+                          o.get("order_timestamp"), oid, o.get("transaction_type"),
+                          o.get("product"), o.get("order_type"), o.get("quantity"),
+                          o.get("filled_quantity"), o.get("pending_quantity"),
+                          o.get("cancelled_quantity"), o.get("average_price"), o.get("status"),
+                          o.get("market_protection"), who, cls))
+                if o.get("status_message"):
+                    print("        msg=%s" % a(o.get("status_message"))[:300])
+                if mine:
+                    for h in kc.order_history(oid) or []:
+                        print("        %s %-16s filled=%s pending=%s avg=%s %s" % (
+                            h.get("order_timestamp"), h.get("status"), h.get("filled_quantity"),
+                            h.get("pending_quantity"), h.get("average_price"),
+                            a(h.get("status_message"))[:160]))
+            summary.append("%s final=%s squareoff orders=[%s]" % (a(s), final,
+                                                                  "; ".join(classes) or "none"))
+    except Exception as e:  # noqa: BLE001
+        print("  broker read FAILED -- %s: %s  (report it; infer NOTHING from the log alone)"
+              % (type(e).__name__, a(e)))
+
+print("\n== verdict inputs ==")
+cand = []
+for l in scan:
+    m = re.search(r'"mis_candidates"\s*:\s*(\d+)', l) or re.search(r"mis_candidates=(\d+)", l)
+    if m:
+        cand.append(int(m.group(1)))
+print("  host=%s twin=%s | scan lines=%d mis_candidates parsed=%s exits submitted=%d"
+      % (a(host), is_prod, len(scan), cand, len(submitted)))
+for line in summary:
+    print("  per symbol: " + line)
+if not is_prod:
+    print("  => NOT A TWIN RESULT (host %s)." % a(host))
+elif not scan:
+    print("  => NO SCAN LINE: the passes did not run or did not log. Report exactly that -- it "
+          "is neither 'flat' nor a pass.")
+elif len(cand) != len(scan):
+    print("  => SCAN LINES PRESENT BUT mis_candidates NOT PARSED -- read them by eye; do NOT "
+          "call the book flat on a failed parse.")
+elif all(c == 0 for c in cand) and not submitted:
+    print("  => NOT EXERCISED -- every pass logged mis_candidates=0 and nothing was submitted. "
+          "Confirm against the broker MIS rows above. NEVER PASS, NEVER CLEAN.")
+else:
+    print("  => EXERCISED -- per symbol, what was SENT against what HAPPENED:")
+    print("     EXERCISED - CLEAN  only if the system's protected MARKET filled FULL and the")
+    print("                        final position is FLAT because of that order;")
+    print("     EXERCISED - FAILED for REJECTED, PARTIAL + residual, NONE + resting, CANCELLED,")
+    print("                        or a final position that is not flat;")
+    print("     NOT EXERCISED      for a symbol the squareoff never sent an order for.")
+    print("     A flat PASS_2 proves NOTHING about PASS_1's order (10-Sep IDEA).")
+print("\nDONE")
+
+--------------------------------------------------------------------------------
+8. twin_b1_verify.py - VERBATIM, READ-ONLY
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY verification of Batch 1 on the TESTING VM (trading-system-sandbox).
+Re-runnable. Prints: the process; every deployed file's md5 (vs the staging manifest) and
+its mtime vs the process start; THE EXPERIMENT -- core/__pycache__/evidence_contract.cpython
+-312.pyc was ABSENT before the restart (measured 09:02) and can only appear if the running
+main.py imported the new module at boot; the startup log since the process start; the
+STARTUP rows; the kill switch; the evidence directory and a summary of its rows; and the
+code fingerprint recomputed from the files on disk, to compare with the rows' own
+code_fingerprint. Writes NOTHING -- not even bytecode.   usage: python -u - <staging dir>"""
+import collections
+import glob
+import hashlib
+import json
+import os
+import socket
+import sqlite3
+import struct
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+print_ = print
+
+
+def print(*a):  # noqa: A001
+    print_(*a, flush=True)
+
+
+ROOT = "/home/ubuntu/systems/trading-system"
+STG = sys.argv[1] if len(sys.argv) > 1 else ""
+TODAY = time.strftime("%Y-%m-%d")
+
+
+def sh(c):
+    return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+host = socket.gethostname()
+print("host: %s | time: %s" % (host, time.strftime("%F %T %Z")))
+if host != "trading-system-sandbox":
+    print("ABORT: not the Testing VM")
+    sys.exit(9)
+os.chdir(ROOT)
+sys.path.insert(0, ROOT)
+
+print("\n== the process ==")
+show = sh("systemctl show trading-system -p ActiveState -p SubState -p MainPID -p ExecMainStartTimestamp "
+          "-p NRestarts -p Result")
+print(show)
+kv = dict(l.split("=", 1) for l in show.splitlines() if "=" in l)
+pid = kv.get("MainPID", "0")
+lstart = sh("ps -o lstart= -p %s" % pid) if pid not in ("", "0") else ""
+start_epoch = int(sh("date -d '%s' +%%s" % lstart)) if lstart else 0
+start_iso = sh("date -d @%d +%%Y-%%m-%%dT%%H:%%M:%%S" % start_epoch) if start_epoch else ""
+print("ps lstart: %s  (epoch %s, iso %s)" % (lstart or "-", start_epoch or "-", start_iso or "-"))
+
+print("\n== the deployed files: md5 vs the manifest; mtime vs the process start ==")
+newer_all = True
+if STG and os.path.exists(STG + "/x/manifest.txt"):
+    for line in open(STG + "/x/manifest.txt"):
+        p, before, new, action = line.split()
+        b = open(p, "rb").read()
+        mt = os.stat(p).st_mtime
+        newer = bool(start_epoch) and start_epoch > mt
+        newer_all = newer_all and newer
+        print("  %-38s %-5s md5-ok=%s mtime=%s process-newer-than-file=%s" % (
+            p, action, hashlib.md5(b).hexdigest() == new, time.strftime("%F %T", time.localtime(mt)), newer))
+print("  process newer than EVERY deployed file: %s" % newer_all)
+
+print("\n== THE EXPERIMENT: only the new main.py imports core/evidence_contract.py at boot ==")
+pyc = "core/__pycache__/evidence_contract.cpython-312.pyc"
+if os.path.exists(pyc):
+    with open(pyc, "rb") as fh:
+        hdr = fh.read(16)
+    _, src_mt, src_sz = struct.unpack("<III", hdr[4:16])
+    st = os.stat("core/evidence_contract.py")
+    pmt = os.stat(pyc).st_mtime
+    print("  %s EXISTS (it was ABSENT at 09:02): written %s; written-after-process-start=%s; header "
+          "matches the deployed source (mtime/size)=%s" % (
+              pyc, time.strftime("%F %T", time.localtime(pmt)), bool(start_epoch) and pmt >= start_epoch - 1,
+              (src_mt, src_sz) == (int(st.st_mtime) & 0xFFFFFFFF, st.st_size & 0xFFFFFFFF)))
+else:
+    print("  %s ABSENT -- the running process has NOT imported the new module (or cannot write bytecode)" % pyc)
+for f in ("signals/signal_processor.py", "screening/secondary_screener.py"):
+    d, base = os.path.split(f)
+    for c in sorted(glob.glob(os.path.join(d, "__pycache__", base[:-3] + ".cpython-*.pyc"))):
+        with open(c, "rb") as fh:
+            hdr = fh.read(16)
+        _, mt, sz = struct.unpack("<III", hdr[4:16])
+        st = os.stat(f)
+        print("  corroboration: %-52s header matches the deployed source=%s" % (
+            c, (mt, sz) == (int(st.st_mtime) & 0xFFFFFFFF, st.st_size & 0xFFFFFFFF)))
+
+print("\n== the log since the process start ==")
+log = "logs/system_%s.log" % TODAY
+crit, err, tb, ev, loaded = [], [], 0, [], []
+if os.path.exists(log) and start_iso:
+    for line in open(log, encoding="utf-8", errors="replace"):
+        ts = line[7:26] if line.startswith('{"ts":"') else ""   # '{"ts":"' is 7 chars (09:17 fix: was 8)
+        if not ts or ts < start_iso:
+            continue
+        if '"level":"CRITICAL"' in line:
+            crit.append(line.strip())
+        elif '"level":"ERROR"' in line:
+            err.append(line.strip())
+        if "Traceback" in line:
+            tb += 1
+        if "evidence" in line.lower():
+            ev.append(line.strip())
+        if "Config loaded" in line:
+            loaded.append(line.strip())
+print("  Config loaded since start: %d | CRITICAL: %d | ERROR: %d | lines with Traceback: %d | lines mentioning "
+      "evidence: %d" % (len(loaded), len(crit), len(err), tb, len(ev)))
+for l in loaded[:2]:
+    print("   loaded: " + l[:200])
+for l in crit[:10]:
+    print("   CRITICAL: " + l[:300])
+for l in err[:10]:
+    print("   ERROR: " + l[:300])
+for l in ev[:10]:
+    print("   evidence: " + l[:300])
+print("  journal since start (last 12):")
+print("\n".join("    " + l[:260] for l in sh("journalctl -u trading-system --since '%s' --no-pager -o short-iso "
+                                                "2>&1 | tail -n 12" % start_iso.replace("T", " ")).splitlines()))
+
+db = "data_store/trading_system.db"
+con = sqlite3.connect("file:%s?mode=ro%s" % (db, "" if os.path.exists(db + "-wal") else "&immutable=1"), uri=True)
+print("\n== STARTUP rows today, and the kill switch ==")
+for r in con.execute("SELECT event_id, timestamp, scenario FROM system_events WHERE event_type='STARTUP' "
+                     "AND timestamp LIKE ? ORDER BY event_id", (TODAY + "%",)):
+    print("  STARTUP ev %s %s %s" % r)
+for r in con.execute("SELECT state, triggered_at, triggered_by FROM kill_switch_state"):
+    print("  kill switch: state=%s at=%s by=%s" % r)
+
+print("\n== the evidence directory ==")
+files = sorted(glob.glob("data_store/evidence/*"))
+d = "data_store/evidence"
+print("  %s: %s" % (d, sh("ls -ld --time-style=+%%F_%%T %s 2>&1" % d)))
+for f in files:
+    print("  %-62s %8d bytes %6d lines" % (f, os.path.getsize(f), sum(1 for _ in open(f, "rb"))))
+main_rows = []
+for f in files:
+    if os.path.basename(f).startswith("signal_evidence_") and "failure" not in os.path.basename(f):
+        for line in open(f, encoding="utf-8", errors="replace"):
+            try:
+                main_rows.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                pass
+by_cp = collections.Counter(r.get("capture_point") for r in main_rows)
+by_st = collections.Counter((r.get("capture_point"), r.get("record_status")) for r in main_rows)
+print("  rows: %d | by capture point: %s" % (len(main_rows), dict(by_cp)))
+print("  by (capture point, record_status): %s" % dict(sorted(by_st.items(), key=str)))
+print("  arms: %s | contract versions: %s" % (sorted(set(str(r.get("arm")) for r in main_rows)),
+                                             sorted(set(str(r.get("contract_version")) for r in main_rows))))
+mo = collections.Counter((r.get("capture_point"), f) for r in main_rows for f in (r.get("missing_optional") or []))
+mr = collections.Counter((r.get("capture_point"), f) for r in main_rows for f in (r.get("missing_required") or []))
+print("  missing_optional (cp, field) top 12: %s" % mo.most_common(12))
+print("  missing_required (cp, field): %s" % mr.most_common(12))
+if main_rows:
+    ts = sorted(str(r.get("captured_at")) for r in main_rows)
+    print("  first row %s | last row %s" % (ts[0], ts[-1]))
+fps = collections.Counter(str(r.get("code_fingerprint")) for r in main_rows)
+try:
+    from core.evidence_contract import compute_code_fingerprint
+    fp, n = compute_code_fingerprint(Path(ROOT))
+    print("  code fingerprint recomputed from the files on disk: %s (%s files)" % (fp, n))
+    print("  the rows' code_fingerprint values: %s -> every row matches the disk: %s" % (
+        dict(fps), (set(fps) == {str(fp)}) if main_rows else "n/a (no rows yet)"))
+except Exception as e:  # noqa: BLE001
+    print("  fingerprint recompute FAILED: %s: %s" % (type(e).__name__, e))
+if not os.path.isdir(d):
+    print("  (directory absent: core/evidence_contract.py creates it LAZILY with the first row -- expected while "
+          "no signal has reached P1/P2/P3, a DEFECT once signals exist)")
+
+print("\n== the observer's failure path (must be SILENT) ==")
+fails = sorted(glob.glob("data_store/evidence/evidence_failures_*_%s.jsonl" % TODAY))
+print("  failure ledger today: %s" % (", ".join("%s (%d lines)" % (f, sum(1 for _ in open(f, "rb"))) for f in fails)
+                                      or "NONE"))
+print("  log lines since start reporting a capture failure or an unbuilt recorder: %d" % sum(
+    1 for l in ev if "capture fail" in l.lower() or "not built" in l.lower()))
+sent = sorted(glob.glob("data_store/critical_alert_%s_*" % TODAY.replace("-", "")))
+print("  critical_alert sentinels dated today: %d (each by title and source; the observer's would be "
+      "'[EVIDENCE] ...' from evidence_contract)" % len(sent))
+for f in sent:
+    try:
+        j = json.load(open(f, encoding="utf-8"))
+        title, src = j.get("title"), j.get("source_module")
+    except Exception as e:  # noqa: BLE001
+        title, src = "unreadable (%s)" % type(e).__name__, "?"
+    mark = "   <-- THE OBSERVER" if src == "evidence_contract" or "[EVIDENCE]" in str(title) else ""
+    print("    %s | %s | source=%s%s" % (os.path.basename(f), title, src, mark))
+print("\nDONE")
+
+================================================================================
+END
+================================================================================

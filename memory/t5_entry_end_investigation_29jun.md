@@ -1,0 +1,36 @@
+---
+name: t5-entry-end-investigation-29jun
+description: "T5 entry_end alignment BUILT+DEPLOYED 29-Jun (main 7d70fab): trading_hours.entry_end 15:15->15:00 (config-only) to match the per-strategy reality (all 15 strategies already entry_end_time=15:00; latest entry EVER 14:57 -> ZERO behaviour change). Kills the Config Auditor G1 finding at source (verified PASS/0-WARN) + hardens the global backstop. eod_entry_cutoff stays 15:15. Restart exit0. Tower finding auto-resolves tomorrow."
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: ce5f39df-1b39-4e66-a909-988eb932224d
+---
+
+**T5 Phase-0 INVESTIGATION ONLY (29-Jun) — data-driven; NO config change/design/deploy.** Question: is entry_end=15:15 sitting 2 min before eod_squareoff=15:17 a real P&L drag, or acceptable?
+
+**1. CURRENT BEHAVIOUR (config/system_config.yaml trading_hours):** entry_start=10:00, **entry_end=15:15** (global strategy-entry window end; widened from P1 13:30), **eod_entry_cutoff=15:15** (FIX-073 absolute order-placement deadline, different path — both 15:15 by intent), **eod_squareoff_time=15:17**, market 09:15–15:30. **BUT the EFFECTIVE binding cutoff is the per-strategy `entry_end_time=15:00`** — every strategy YAML sets 15:00 ("FIX-133 default production window"); `MarketWindows.is_entry_allowed_for_strategy` enforces BOTH the global AND the (tighter) per-strategy window, so 15:00 binds, 15 min before the global 15:15. STRICTLY enforced (not porous).
+
+**2. SAMPLE:** 50 closed trades (CLOSED 34 + CLOSED_MANUAL 17, minus 1 NULL entry_time) over **2026-06-15→29 (~10 trading days)**. SMALL. MFE/MAE coverage = **5/50 (10%)** in `trade_excursions` (reconstruction only backfilled the 25-Jun validation set) → **per-bucket MFE/MAE NOT analysable** (flagged honestly); SL/TGT/P&L have full coverage.
+
+**3-4. PER-BUCKET (by entry time-of-day):**
+| bucket | N | wins | tot P&L | avg | profit | loss | SL | TGT | MAN |
+|--|--|--|--|--|--|--|--|--|--|
+| <14:30 | **47** | 18 | +75.56 | +1.68 | 203.57 | −128.01 | 19 | 14 | 14 |
+| 14:30–15:00 | **3** | 1 | −12.13 | −4.04 | 0.38 | −12.51 | 1 | 0 | 2 |
+| 15:00–15:05 | **0** | — | | | | | | | |
+| 15:05–15:10 | **0** | — | | | | | | | |
+| 15:10–15:15 | **0** | — | | | | | | | |
+| ≥15:15 | **0** | — | | | | | | | |
+
+**The four late buckets near the 15:15/15:17 boundary are EMPTY.** Latest entry across ALL trades (any status, incl. FAILED) = **14:57**; 0 entry attempts ≥15:00, 0 ≥15:15. 94% of trades enter before 14:30.
+
+**5. COUNTERFACTUAL (static replay):** keep-15:15 / 15:10 / 15:05 / 15:00 each remove **0 trades, 0 profit, 0 loss, NET 0** (nothing enters after 14:57). Only tightening below ~14:57 removes anything — and 14:30–15:00 is the 3-trade bucket (net −12.13: profit 0.38 / loss −12.51, i.e. 2 small MANUAL-close losses + 1 SL), which is **N=3 = noise, not signal**.
+
+**6. RISK READ:** cannot say late entries degrade/improve — **there are none to analyse**. The only non-trivial bucket (<14:30, N=47) is net-positive (+75.56). The 14:30–15:00 N=3 is too thin for any inference (per the brief's own caveat).
+
+**7. FINDING VALIDATION:** the Config Auditor / Control Tower "entry_end 15:15 within 15 min of squareoff 15:17" is **technically true (a config smell) but OPERATIONALLY INERT** — the per-strategy 15:00 cutoff means trades get a ~17-min runway (15:00→15:17), never the 2-min runway the finding implied. NOT a real drag; ACCEPTABLE behaviour.
+
+**BUILD — DEPLOYED 29-Jun (main `7d70fab`; CONFIG-ONLY; parity automatic; NO schema; restart-to-reload; branch deleted → main single source).** Chosen the optional alignment (not "keep 15:15"): `config/system_config.yaml` `trading_hours.entry_end` **15:15→15:00**. **Pre-check:** all 15 strategies have `entry_end_time=15:00`, NONE >15:00 → zero current strategy newly clamped. **`eod_entry_cutoff` stays 15:15** (FIX-073 order-deadline, separate mechanism, explicitly OUT of scope — they no longer coincide). Zero trading-behaviour change (latest entry EVER 14:57). Tests: value-lock `test_config_loader` pinned 15:15→15:00; `test_entry_end_near_squareoff_warns` asserts G1 LOGIC via explicit 15:15 + live-15:00-does-NOT-warn; `test_rows_render_on_real_config` now expects G clean; +4 `test_market_windows` T5 tests (global 15:00 cap, default-15:15 strategy capped by global, missing-entry_end fallback to 15:00, existing-15:00 unchanged). 115 + 171 preflight green / 0 regressions. **VM VERIFIED:** deployed `7d70fab`, entry_end=15:00 (eod_entry_cutoff=15:15 intact); restart **exit 0** (market-window guard); **Config Auditor PASS / 0 BLOCK / 0 WARN — the entry_end finding is GONE at source** (eod_entry_cutoff NOT separately flagged); sr_detector.enabled=true; zero cron drift. Control Tower finding **id=3 (HIGH/ACKNOWLEDGED)** auto-resolves on tomorrow's 17:05 run (1c lifecycle — detector no longer reports; did NOT --force now to avoid late Telegram). New cap (15:00) activates next boot Tue 08:15. **FOLLOWUP DONE (main `931110c`, 29-Jun, source-consistency, NO restart):** `strategies/schema.py:114` `entry_end_time` default **15:15→15:00** + comment fixed to "Matches trading_hours.entry_end = 15:00". INERT (all 15 strategies override + global 15:00 clamps; verified default=15:00, 15/15 validate, distinct=['15:00'], missing-override resolves to 15:00; 148 tests green) → committed for source correctness, rides next natural boot (Tue 08:15), no standalone restart; VM confirmed deployed + service untouched (ExecMainStatus=0/inactive). **Followup-2 SWEEP DONE (main `7103d74`, 29-Jun, NO restart):** `entry_start_time` default **09:20→10:00** + comment fixed. A full schema.py sweep found NO other "must match system_config.yaml" stale defaults (`min_score=0` "use global from scoring_weights" + `sl_gap_buffer_pct=0.0` "disabled" are intentional sentinels, NOT drift; no non-inert/applied drift to flag). Both entry-time defaults INERT (all 15 strategies set 09:25/15:00 + globals 10:00/15:00 bind; verified defaults=10:00/15:00, 15/15 validate, no value-lock test pinned them; 148 tests green). VM-confirmed deployed + service untouched (ExecMainStatus=0/inactive). **schema.py config-drift class FULLY RECONCILED.** (Push hit one transient connection-reset → succeeded on retry; local main was ahead, re-push landed it.)
+
+**8. RECOMMENDATION + CONFIDENCE (Phase-0): KEEP current — but Rama+ChatGPT chose the optional cosmetic alignment (BUILT above).** Original Phase-0 read: CONFIDENCE **HIGH** that the proximity causes no drag (definitive: zero entries after 14:57; empty late buckets are conclusive on "does it bite in practice" = no). Caveat: overall sample is small (50/10d) so no broader late-trade claim is possible — but the specific question is answered. OPTIONAL cosmetic tidy for the design (ZERO trading impact): align the GLOBAL entry_end 15:15→15:00 to match the per-strategy reality (silences the auditor finding + hardens the latent backstop for any future strategy that omits its own entry_end_time and would otherwise fall back to 15:15). Pure config; parity (shared paper+live); affects only the unused global backstop. Blast radius of any change = config-only, entry-timing. Related: [[control_tower_phase1a_29jun]] · [[mfe_mae_excursions_empty_28jun]] · [[feedback_paper_live_parity]].

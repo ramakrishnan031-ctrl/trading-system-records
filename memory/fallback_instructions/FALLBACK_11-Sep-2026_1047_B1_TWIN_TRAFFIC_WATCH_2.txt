@@ -1,0 +1,488 @@
+================================================================================
+INSTRUCTION FILE (FALLBACK) - FOR VS CODE CLAUDE
+BATCH 1 ON THE TWIN - TRAFFIC WATCH #2 (10:47)
+================================================================================
+DATE OF WORK   : 11-Sep-2026 (Friday) IST
+WRITTEN        : 11-Sep-2026 10:01 IST (PC clock), per the 09:35 instruction file (delivered 09:33:04)
+                 §3-§4: "the session jobs are convenience; the files are the mechanism".
+                 ⚠ Header times are author-typed labels, not evidence (standing rule).
+RUN WHEN       : at or after 10:47 IST on 11-Sep IF the session-local job did not fire.
+                 Section 2 FIRST.
+MODEL          : Opus 4.6 or higher (Opus 5 preferred). NEVER Sonnet.
+REASONING      : HIGH
+AUTHORITY      : the 08:55 file §4 (Rama's ruling: deploy Batch 1 to the twin and review it) and the
+                 09:35 file §3/§5. READ-ONLY.
+TARGET         : the TESTING VM ONLY - hostname trading-system-sandbox (ssh alias
+                 trading-sbx), account VBB097. ⛔ PRODUCTION (trading-system,
+                 trading-vm, LFL836) is NOT touched by this file in any way.
+
+--------------------------------------------------------------------------------
+1. THE QUESTION
+--------------------------------------------------------------------------------
+Batch 1 (the forward evidence contract, branch feat/evidence-contract-10sep, commit
+970aabf) was copied to the twin at 09:07:41 on 11-Sep and the service restarted at 09:16:44
+(PID 212449); its load was proven by experiment (core/__pycache__/evidence_contract.cpython-
+312.pyc absent before, written 09:16:53 by the new boot). ⛔ Batch 1 was NEVER PUSHED
+anywhere; production does not have it. RUNTIME-PROVEN is not TRAFFIC-TESTED: this watch is
+the first look at real rows. Rows land in data_store/evidence/signal_evidence_VBB097_<date>
+.jsonl; the capture points are P1_ACCEPT, P2_REJECT, P3_SCREEN (P3 is ~69% of signals).
+
+--------------------------------------------------------------------------------
+2. PRECHECK - MECHANICAL, RUN FIRST
+--------------------------------------------------------------------------------
+Run this FIRST, from Git Bash:
+
+  grep -c "RESULT-1047-B1TWIN-11SEP2026" \
+    "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/MEMORY_BOARD.md"
+
+  0   -> no 10:47 watch result is recorded: continue.
+  1+  -> ALREADY RECORDED (the session job fired and wrote it): do NOT run again;
+         report the BOARD line that carries the marker instead.
+The marker is written ONLY by the RECORD step of this file (or by the session job
+doing the same work), exactly once, on the BOARD line holding the result.
+
+--------------------------------------------------------------------------------
+3. RULES
+--------------------------------------------------------------------------------
+  ⛔ No restart · no stop/start · no config edit · no copy · no push · no order ·
+     no cancel · no kill-switch change · no token work · nothing on production.
+  ⭐ Every script below refuses to run on any host but trading-system-sandbox.
+  ⭐ Every figure you report must come from a command you ran.
+
+--------------------------------------------------------------------------------
+4. RUN - three read-only scripts (sections 7, 8, 9), each saved verbatim, from Git Bash
+--------------------------------------------------------------------------------
+Save sections 7, 8 and 9 VERBATIM -- each is the text between its heading's closing rule line and
+the next rule line -- under the file name in its heading, in one scratch directory;
+cd there; then run, from Git Bash:
+
+  B64=$(base64 -w0 twin_b1_verify.py) && MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx \
+    "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u - /home/ubuntu/preserved/batch1_stage_20260911_090737"
+  B64=$(base64 -w0 twin_outcomes.py) && MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx \
+    "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u - 09:16:44"
+  B64=$(base64 -w0 twin_fsync_bench.py) && MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx \
+    "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u - 600 2500 20"
+
+--------------------------------------------------------------------------------
+5. WHAT TO REPORT
+--------------------------------------------------------------------------------
+  - evidence rows per capture point P1 / P2 / P3, and P3's share of all rows
+  - ⭐ rows AGAINST traffic (section 8 prints the signals the pipeline recorded in the same
+    window): signals > 0 with ZERO evidence rows is a DEFECT - zero where zero is
+    impossible - never a quiet period. No signals at all = NOT EXERCISED: traffic-tested
+    stays ⛔, never PASS. The webhook entry window opens at 10:00 (10-Sep: every webhook
+    before 10:00:07 was a 403; the first signal 10:00:07), and data_store/evidence/ is
+    created LAZILY by the first row (core/evidence_contract.py _append: mkdir) - so no
+    directory before 10:00 is expected; no directory AFTER signals is the defect.
+  - record_status per capture point (COMPLETE / PARTIAL / FAILED) and the missing fields
+  - whether EVERY row's code_fingerprint equals the fingerprint recomputed from the disk
+  - row-vs-DB agreement (P2 vs signals.status, P3 vs screener_results.status) and the
+    decision mix against the previous trading day's same window (a comparison, not a
+    counterfactual proof)
+  - the observer's failure path must be SILENT: no failure ledger
+    (data_store/evidence/evidence_failures_VBB097_<date>.jsonl), no evidence_contract line
+    in the log, and no sentinel from evidence_contract. Section 7 prints each of today's
+    sentinels by title and source; the daily 'Pre-flight Phase C' (~09:19) and 'Cron
+    Briefing' (~09:20) sentinels are routine, not the observer.
+  - ⭐ the fsync cost under REAL load with its OUTLIER profile (p99, max, the five worst,
+    counts over 5 / 10 / 20 ms). It is a disk-level proxy: it informs S11-R19 and does
+    ⛔ NOT close it. If the tail looks material for the decision path, report it at once.
+
+--------------------------------------------------------------------------------
+6. RECORD, THEN REPORT
+--------------------------------------------------------------------------------
+Record in the three memory targets (D:/Projects/trading-system/docs/SYSTEM_MAP.md,
+D:/Projects/trading-system/PATHS.md, memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md) plus the
+MEMORY_BOARD.md resume point, VM-WISE (Batch 1: copied/running on the TESTING VM only;
+NOT deployed on the trading VM), with the marker RESULT-1047-B1TWIN-11SEP2026 exactly
+ONCE on the BOARD line holding the result. Compare with watch #1 if it was recorded. Re-run section 2: it
+must now print 1. Keep MEMORY.md under 24,000 bytes and the MEMORY*.md line guard clean.
+
+--------------------------------------------------------------------------------
+7. twin_b1_verify.py - VERBATIM, READ-ONLY
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY verification of Batch 1 on the TESTING VM (trading-system-sandbox).
+Re-runnable. Prints: the process; every deployed file's md5 (vs the staging manifest) and
+its mtime vs the process start; THE EXPERIMENT -- core/__pycache__/evidence_contract.cpython
+-312.pyc was ABSENT before the restart (measured 09:02) and can only appear if the running
+main.py imported the new module at boot; the startup log since the process start; the
+STARTUP rows; the kill switch; the evidence directory and a summary of its rows; and the
+code fingerprint recomputed from the files on disk, to compare with the rows' own
+code_fingerprint. Writes NOTHING -- not even bytecode.   usage: python -u - <staging dir>"""
+import collections
+import glob
+import hashlib
+import json
+import os
+import socket
+import sqlite3
+import struct
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+sys.dont_write_bytecode = True
+print_ = print
+
+
+def print(*a):  # noqa: A001
+    print_(*a, flush=True)
+
+
+ROOT = "/home/ubuntu/systems/trading-system"
+STG = sys.argv[1] if len(sys.argv) > 1 else ""
+TODAY = time.strftime("%Y-%m-%d")
+
+
+def sh(c):
+    return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+host = socket.gethostname()
+print("host: %s | time: %s" % (host, time.strftime("%F %T %Z")))
+if host != "trading-system-sandbox":
+    print("ABORT: not the Testing VM")
+    sys.exit(9)
+os.chdir(ROOT)
+sys.path.insert(0, ROOT)
+
+print("\n== the process ==")
+show = sh("systemctl show trading-system -p ActiveState -p SubState -p MainPID -p ExecMainStartTimestamp "
+          "-p NRestarts -p Result")
+print(show)
+kv = dict(l.split("=", 1) for l in show.splitlines() if "=" in l)
+pid = kv.get("MainPID", "0")
+lstart = sh("ps -o lstart= -p %s" % pid) if pid not in ("", "0") else ""
+start_epoch = int(sh("date -d '%s' +%%s" % lstart)) if lstart else 0
+start_iso = sh("date -d @%d +%%Y-%%m-%%dT%%H:%%M:%%S" % start_epoch) if start_epoch else ""
+print("ps lstart: %s  (epoch %s, iso %s)" % (lstart or "-", start_epoch or "-", start_iso or "-"))
+
+print("\n== the deployed files: md5 vs the manifest; mtime vs the process start ==")
+newer_all = True
+if STG and os.path.exists(STG + "/x/manifest.txt"):
+    for line in open(STG + "/x/manifest.txt"):
+        p, before, new, action = line.split()
+        b = open(p, "rb").read()
+        mt = os.stat(p).st_mtime
+        newer = bool(start_epoch) and start_epoch > mt
+        newer_all = newer_all and newer
+        print("  %-38s %-5s md5-ok=%s mtime=%s process-newer-than-file=%s" % (
+            p, action, hashlib.md5(b).hexdigest() == new, time.strftime("%F %T", time.localtime(mt)), newer))
+print("  process newer than EVERY deployed file: %s" % newer_all)
+
+print("\n== THE EXPERIMENT: only the new main.py imports core/evidence_contract.py at boot ==")
+pyc = "core/__pycache__/evidence_contract.cpython-312.pyc"
+if os.path.exists(pyc):
+    with open(pyc, "rb") as fh:
+        hdr = fh.read(16)
+    _, src_mt, src_sz = struct.unpack("<III", hdr[4:16])
+    st = os.stat("core/evidence_contract.py")
+    pmt = os.stat(pyc).st_mtime
+    print("  %s EXISTS (it was ABSENT at 09:02): written %s; written-after-process-start=%s; header "
+          "matches the deployed source (mtime/size)=%s" % (
+              pyc, time.strftime("%F %T", time.localtime(pmt)), bool(start_epoch) and pmt >= start_epoch - 1,
+              (src_mt, src_sz) == (int(st.st_mtime) & 0xFFFFFFFF, st.st_size & 0xFFFFFFFF)))
+else:
+    print("  %s ABSENT -- the running process has NOT imported the new module (or cannot write bytecode)" % pyc)
+for f in ("signals/signal_processor.py", "screening/secondary_screener.py"):
+    d, base = os.path.split(f)
+    for c in sorted(glob.glob(os.path.join(d, "__pycache__", base[:-3] + ".cpython-*.pyc"))):
+        with open(c, "rb") as fh:
+            hdr = fh.read(16)
+        _, mt, sz = struct.unpack("<III", hdr[4:16])
+        st = os.stat(f)
+        print("  corroboration: %-52s header matches the deployed source=%s" % (
+            c, (mt, sz) == (int(st.st_mtime) & 0xFFFFFFFF, st.st_size & 0xFFFFFFFF)))
+
+print("\n== the log since the process start ==")
+log = "logs/system_%s.log" % TODAY
+crit, err, tb, ev, loaded = [], [], 0, [], []
+if os.path.exists(log) and start_iso:
+    for line in open(log, encoding="utf-8", errors="replace"):
+        ts = line[7:26] if line.startswith('{"ts":"') else ""   # '{"ts":"' is 7 chars (09:17 fix: was 8)
+        if not ts or ts < start_iso:
+            continue
+        if '"level":"CRITICAL"' in line:
+            crit.append(line.strip())
+        elif '"level":"ERROR"' in line:
+            err.append(line.strip())
+        if "Traceback" in line:
+            tb += 1
+        if "evidence" in line.lower():
+            ev.append(line.strip())
+        if "Config loaded" in line:
+            loaded.append(line.strip())
+print("  Config loaded since start: %d | CRITICAL: %d | ERROR: %d | lines with Traceback: %d | lines mentioning "
+      "evidence: %d" % (len(loaded), len(crit), len(err), tb, len(ev)))
+for l in loaded[:2]:
+    print("   loaded: " + l[:200])
+for l in crit[:10]:
+    print("   CRITICAL: " + l[:300])
+for l in err[:10]:
+    print("   ERROR: " + l[:300])
+for l in ev[:10]:
+    print("   evidence: " + l[:300])
+print("  journal since start (last 12):")
+print("\n".join("    " + l[:260] for l in sh("journalctl -u trading-system --since '%s' --no-pager -o short-iso "
+                                                "2>&1 | tail -n 12" % start_iso.replace("T", " ")).splitlines()))
+
+db = "data_store/trading_system.db"
+con = sqlite3.connect("file:%s?mode=ro%s" % (db, "" if os.path.exists(db + "-wal") else "&immutable=1"), uri=True)
+print("\n== STARTUP rows today, and the kill switch ==")
+for r in con.execute("SELECT event_id, timestamp, scenario FROM system_events WHERE event_type='STARTUP' "
+                     "AND timestamp LIKE ? ORDER BY event_id", (TODAY + "%",)):
+    print("  STARTUP ev %s %s %s" % r)
+for r in con.execute("SELECT state, triggered_at, triggered_by FROM kill_switch_state"):
+    print("  kill switch: state=%s at=%s by=%s" % r)
+
+print("\n== the evidence directory ==")
+files = sorted(glob.glob("data_store/evidence/*"))
+d = "data_store/evidence"
+print("  %s: %s" % (d, sh("ls -ld --time-style=+%%F_%%T %s 2>&1" % d)))
+for f in files:
+    print("  %-62s %8d bytes %6d lines" % (f, os.path.getsize(f), sum(1 for _ in open(f, "rb"))))
+main_rows = []
+for f in files:
+    if os.path.basename(f).startswith("signal_evidence_") and "failure" not in os.path.basename(f):
+        for line in open(f, encoding="utf-8", errors="replace"):
+            try:
+                main_rows.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                pass
+by_cp = collections.Counter(r.get("capture_point") for r in main_rows)
+by_st = collections.Counter((r.get("capture_point"), r.get("record_status")) for r in main_rows)
+print("  rows: %d | by capture point: %s" % (len(main_rows), dict(by_cp)))
+print("  by (capture point, record_status): %s" % dict(sorted(by_st.items(), key=str)))
+print("  arms: %s | contract versions: %s" % (sorted(set(str(r.get("arm")) for r in main_rows)),
+                                             sorted(set(str(r.get("contract_version")) for r in main_rows))))
+mo = collections.Counter((r.get("capture_point"), f) for r in main_rows for f in (r.get("missing_optional") or []))
+mr = collections.Counter((r.get("capture_point"), f) for r in main_rows for f in (r.get("missing_required") or []))
+print("  missing_optional (cp, field) top 12: %s" % mo.most_common(12))
+print("  missing_required (cp, field): %s" % mr.most_common(12))
+if main_rows:
+    ts = sorted(str(r.get("captured_at")) for r in main_rows)
+    print("  first row %s | last row %s" % (ts[0], ts[-1]))
+fps = collections.Counter(str(r.get("code_fingerprint")) for r in main_rows)
+try:
+    from core.evidence_contract import compute_code_fingerprint
+    fp, n = compute_code_fingerprint(Path(ROOT))
+    print("  code fingerprint recomputed from the files on disk: %s (%s files)" % (fp, n))
+    print("  the rows' code_fingerprint values: %s -> every row matches the disk: %s" % (
+        dict(fps), (set(fps) == {str(fp)}) if main_rows else "n/a (no rows yet)"))
+except Exception as e:  # noqa: BLE001
+    print("  fingerprint recompute FAILED: %s: %s" % (type(e).__name__, e))
+if not os.path.isdir(d):
+    print("  (directory absent: core/evidence_contract.py creates it LAZILY with the first row -- expected while "
+          "no signal has reached P1/P2/P3, a DEFECT once signals exist)")
+
+print("\n== the observer's failure path (must be SILENT) ==")
+fails = sorted(glob.glob("data_store/evidence/evidence_failures_*_%s.jsonl" % TODAY))
+print("  failure ledger today: %s" % (", ".join("%s (%d lines)" % (f, sum(1 for _ in open(f, "rb"))) for f in fails)
+                                      or "NONE"))
+print("  log lines since start reporting a capture failure or an unbuilt recorder: %d" % sum(
+    1 for l in ev if "capture fail" in l.lower() or "not built" in l.lower()))
+sent = sorted(glob.glob("data_store/critical_alert_%s_*" % TODAY.replace("-", "")))
+print("  critical_alert sentinels dated today: %d (each by title and source; the observer's would be "
+      "'[EVIDENCE] ...' from evidence_contract)" % len(sent))
+for f in sent:
+    try:
+        j = json.load(open(f, encoding="utf-8"))
+        title, src = j.get("title"), j.get("source_module")
+    except Exception as e:  # noqa: BLE001
+        title, src = "unreadable (%s)" % type(e).__name__, "?"
+    mark = "   <-- THE OBSERVER" if src == "evidence_contract" or "[EVIDENCE]" in str(title) else ""
+    print("    %s | %s | source=%s%s" % (os.path.basename(f), title, src, mark))
+print("\nDONE")
+
+--------------------------------------------------------------------------------
+8. twin_outcomes.py - VERBATIM, READ-ONLY
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY: did any DECISION outcome change on the twin with Batch 1 running?
+(1) THE DECISION MIX since the restart against the same clock window on the previous
+    trading day: signals by status, screener verdicts by status, trades and orders
+    created. Live traffic differs day to day, so this shows the same decision vocabulary
+    in comparable proportions -- it is NOT a counterfactual proof.
+(2) AGREEMENT: every evidence row against the decision the pipeline itself recorded for
+    that signal_id -- P2 vs signals.status, P3 vs screener_results.status, P1 vs the
+    signal's status. The observer must RECORD the decision, never alter it.
+Writes nothing (DB read-only, no bytecode).   usage: python -u - [since HH:MM:SS]"""
+import collections
+import glob
+import json
+import os
+import socket
+import sqlite3
+import sys
+import time
+
+sys.dont_write_bytecode = True
+ROOT = "/home/ubuntu/systems/trading-system"
+SINCE = sys.argv[1] if len(sys.argv) > 1 else "09:16:44"
+host = socket.gethostname()
+print("host: %s | time: %s | window: %s -> now" % (host, time.strftime("%F %T %Z"), SINCE))
+if host != "trading-system-sandbox":
+    print("ABORT: not the Testing VM")
+    sys.exit(9)
+os.chdir(ROOT)
+db = "data_store/trading_system.db"
+con = sqlite3.connect("file:%s?mode=ro%s" % (db, "" if os.path.exists(db + "-wal") else "&immutable=1"), uri=True)
+today, now = time.strftime("%Y-%m-%d"), time.strftime("%H:%M:%S")
+prev = con.execute("SELECT MAX(substr(received_at,1,10)) FROM signals WHERE substr(received_at,1,10) < ?",
+                   (today,)).fetchone()[0]
+
+
+def pct(n, t):
+    return "%5.1f%%" % (100.0 * n / t) if t else "   - "
+
+
+print("\n== (1) THE DECISION MIX, same clock window: %s vs %s ==" % (prev, today))
+for day in (prev, today):
+    a, b = "%sT%s" % (day, SINCE), "%sT%s" % (day, now)
+    tot = con.execute("SELECT COUNT(*) FROM signals WHERE received_at >= ? AND received_at < ?", (a, b)).fetchone()[0]
+    print("\n  %s  %s -> %s   signals received: %d" % (day, SINCE, now, tot))
+    for st, n in con.execute("SELECT status, COUNT(*) FROM signals WHERE received_at >= ? AND received_at < ? "
+                             "GROUP BY 1 ORDER BY 2 DESC LIMIT 14", (a, b)):
+        print("    signals     %-34s %6d %s" % (st, n, pct(n, tot)))
+    stot = con.execute("SELECT COUNT(*) FROM screener_results WHERE ts >= ? AND ts < ?", (a, b)).fetchone()[0]
+    for st, n in con.execute("SELECT status, COUNT(*) FROM screener_results WHERE ts >= ? AND ts < ? GROUP BY 1 "
+                             "ORDER BY 2 DESC LIMIT 8", (a, b)):
+        print("    screener    %-34s %6d %s" % (st, n, pct(n, stot)))
+    for st, n in con.execute("SELECT status, COUNT(*) FROM trades WHERE created_at >= ? AND created_at < ? GROUP BY 1",
+                             (a, b)):
+        print("    trades      %-34s %6d" % (st, n))
+    for leg, st, n in con.execute("SELECT leg, status, COUNT(*) FROM orders WHERE placed_at >= ? AND placed_at < ? "
+                                  "GROUP BY 1, 2", (a, b)):
+        print("    orders      %-34s %6d" % (leg + "/" + st, n))
+
+print("\n== (2) AGREEMENT: each evidence row vs the decision the pipeline recorded ==")
+rows = []
+for f in sorted(glob.glob("data_store/evidence/signal_evidence_*_%s.jsonl" % today)):
+    if "failure" in os.path.basename(f):
+        continue
+    for line in open(f, encoding="utf-8", errors="replace"):
+        try:
+            rows.append(json.loads(line))
+        except Exception:  # noqa: BLE001
+            pass
+print("  evidence rows today: %d" % len(rows))
+res = collections.Counter()
+examples = []
+p1_db = collections.Counter()
+for r in rows:
+    cp, sid, st = r.get("capture_point"), r.get("signal_id"), r.get("status")
+    if not sid:
+        res[(cp, "no signal_id")] += 1
+        continue
+    s = con.execute("SELECT status FROM signals WHERE signal_id = ?", (sid,)).fetchone()
+    if cp == "P2_REJECT":
+        if s is None:
+            res[(cp, "no signals row")] += 1
+        elif st == s[0]:
+            res[(cp, "AGREE")] += 1
+        else:
+            res[(cp, "DIFFER")] += 1
+            examples.append((cp, sid, st, s[0]))
+    elif cp == "P3_SCREEN":
+        sr = set(x[0] for x in con.execute("SELECT status FROM screener_results WHERE signal_id = ?", (sid,)))
+        if not sr:
+            res[(cp, "no screener_results row")] += 1
+        elif st in sr:
+            res[(cp, "AGREE")] += 1
+        else:
+            res[(cp, "DIFFER")] += 1
+            examples.append((cp, sid, st, sorted(sr)))
+    elif cp == "P1_ACCEPT":
+        p1_db[s[0] if s else "no signals row"] += 1
+        res[(cp, "checked")] += 1
+for k in sorted(res, key=str):
+    print("  %-40s %6d" % ("%s %s" % k, res[k]))
+if p1_db:
+    print("  P1 rows -> the signal's status in the DB: %s" % dict(p1_db))
+for e in examples[:10]:
+    print("  DIFFER: %s signal %s row status=%r db=%r" % e)
+print("\nDONE")
+
+--------------------------------------------------------------------------------
+9. twin_fsync_bench.py - VERBATIM (writes and removes only its own temp file)
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""The per-record cost of the evidence recorder's write on THIS machine's volume (v2 --
+the OUTLIER profile, 09:35 file sec 5.2): the same open(append) + write + flush + fsync
+the recorder performs per record, with a realistic JSON line, measured while the trading
+service runs (its load is the background). Also the same without fsync, to isolate it.
+Reports the mean AND the tail -- p99, max, the five worst, and how many exceeded 5 ms /
+10 ms / 20 ms -- because one 16 ms stall on the decision path matters more than a good
+average. NOTE: a disk-level PROXY: it measures this volume under the service's concurrent
+load, NOT the in-process cost on the trading thread (lock contention included) -- so it
+informs S11-R19 and does not close it. Writes ONLY its own temp file, in a directory it
+creates under /home/ubuntu/preserved (the same filesystem as data_store), and removes
+both at the end.   usage: python -u - [records] [line_bytes] [spacing_ms]"""
+import json
+import os
+import socket
+import statistics
+import subprocess
+import sys
+import time
+
+N = int(sys.argv[1]) if len(sys.argv) > 1 else 600
+SIZE = int(sys.argv[2]) if len(sys.argv) > 2 else 2500
+GAP = (float(sys.argv[3]) if len(sys.argv) > 3 else 20.0) / 1000.0
+host = socket.gethostname()
+print("host: %s | time: %s | records %d x %d bytes, spacing %.0f ms" % (host, time.strftime("%F %T %Z"), N, SIZE, GAP * 1000))
+if host != "trading-system-sandbox":
+    print("ABORT: not the Testing VM")
+    sys.exit(9)
+d = "/home/ubuntu/preserved/fsync_bench_%s" % time.strftime("%Y%m%d_%H%M%S")
+os.mkdir(d)
+path = os.path.join(d, "bench.jsonl")
+print("same device as data_store: %s" % (os.stat(d).st_dev == os.stat("/home/ubuntu/systems/trading-system/data_store").st_dev))
+line = json.dumps({"pad": "x" * max(0, SIZE - 12)}) + "\n"
+
+
+def sh(c):
+    return subprocess.run(c, shell=True, capture_output=True, text=True).stdout.strip()
+
+
+def run(do_fsync):
+    out = []
+    for _ in range(N):
+        t0 = time.perf_counter()
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(line)
+            fh.flush()
+            if do_fsync:
+                os.fsync(fh.fileno())
+        out.append((time.perf_counter() - t0) * 1000.0)
+        time.sleep(GAP)
+    return out
+
+
+def summ(label, ts):
+    s = sorted(ts)
+    q = lambda p: s[min(len(s) - 1, int(round(p * (len(s) - 1))))]  # noqa: E731
+    print("  %-28s mean %7.3f ms | p50 %7.3f | p95 %7.3f | p99 %7.3f | max %7.3f  (n=%d)" % (
+        label, statistics.mean(s), q(0.50), q(0.95), q(0.99), s[-1], len(s)))
+    print("  %-28s >5 ms: %d | >10 ms: %d | >20 ms: %d | five worst: %s" % (
+        "", sum(1 for x in s if x > 5), sum(1 for x in s if x > 10), sum(1 for x in s if x > 20),
+        ", ".join("%.1f" % x for x in s[-5:][::-1])))
+
+
+print("  loadavg before: %s | service: %s" % (sh("cat /proc/loadavg"), sh("systemctl is-active trading-system")))
+t_start = time.strftime("%H:%M:%S")
+with_f = run(True)
+without_f = run(False)
+print("  window %s -> %s" % (t_start, time.strftime("%H:%M:%S")))
+summ("open+write+flush+fsync", with_f)
+summ("open+write+flush (no fsync)", without_f)
+print("  loadavg after: %s" % sh("cat /proc/loadavg"))
+os.remove(path)
+os.rmdir(d)
+print("  temp dir removed: %s" % (not os.path.exists(d)))
+
+================================================================================
+END
+================================================================================

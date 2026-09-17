@@ -1,0 +1,148 @@
+================================================================================
+INSTRUCTION FILE (FALLBACK) - FOR VS CODE CLAUDE
+PRE-15:03 BROKER READ OF THE MIS BOOK - BOTH VMs
+================================================================================
+DATE OF WORK   : 11-Sep-2026 (Friday) IST
+WRITTEN        : 11-Sep-2026 11:01 IST (PC clock), per the 10:45 instruction file (delivered 10:44:45) §1.1:
+                 "Re-read the MIS positions FROM THE BROKER ... again shortly before 15:00."
+                 ⚠ Header times are author-typed labels, not evidence (standing rule).
+RUN WHEN       : at or after 14:50 IST on 11-Sep and BEFORE 15:03, IF the session job did not
+                 fire. After 15:03 this file is moot - use the 15:13 / 15:16 capture files.
+MODEL          : Opus 4.6 or higher (Opus 5 preferred). NEVER Sonnet.
+REASONING      : HIGH
+AUTHORITY      : the 10:45 file §1. READ-ONLY.
+TARGET         : BOTH VMs, read-only - the TESTING VM (trading-system-sandbox, ssh trading-sbx,
+                 VBB097) and PRODUCTION (trading-system, ssh trading-vm, LFL836). Name the
+                 machine on every finding; one machine's result is never the other's.
+
+--------------------------------------------------------------------------------
+1. THE QUESTION
+--------------------------------------------------------------------------------
+Which MIS positions are OPEN AT THE BROKER on each machine shortly before 15:03? Both machines
+run Block A: at 15:03 (PASS_1) and 15:06 (PASS_2) it cancels the resting SL/TGT, confirms the
+cancel, then submits a protected MARKET exit. An MIS position open at 15:03 means that
+machine's Block A runs FOR REAL - the first time anywhere.
+Measured 10:55:43-45 (broker): the TWIN had 0 open MIS (MOBIKWIK closed by its own SL at
+10:25:43, SUNTV by its own TGT at 10:32:15); PRODUCTION had 1 - BSOFT, SHORT 1 @ 275.8, its SL
+(BUY, trigger 278.55) and TGT (BUY LIMIT 271.7) resting.
+⚠ An SL or TGT may fill before 15:03 - that is NOT EXERCISED, never PASS.
+⚠ The broker is the authority; the local DB can lag it by minutes.
+
+--------------------------------------------------------------------------------
+2. PRECHECK - MECHANICAL, RUN FIRST
+--------------------------------------------------------------------------------
+  grep -c "RESULT-1450-MIS-BROKER-11SEP2026" \
+    "C:/Users/rama/.claude/projects/D--Projects-trading-system/memory/MEMORY_BOARD.md"
+
+  0   -> not yet recorded: continue.
+  1+  -> ALREADY RECORDED: do NOT run again; report the BOARD line that carries the marker.
+
+--------------------------------------------------------------------------------
+3. RULES
+--------------------------------------------------------------------------------
+  ⛔ READ-ONLY on both machines: no order, no cancel, no modify, no restart, no config edit.
+  ⛔ NEVER close, hedge or protect a position for Rama - not even a naked one. Report; he rules.
+  ⛔ Never manufacture a trade. Flat at 15:03 = NOT EXERCISED, and that is a complete result.
+  ⭐ Every figure you report must come from a command you ran.
+
+--------------------------------------------------------------------------------
+4. RUN - broker_mis_read.py (section 7) on BOTH machines, from Git Bash
+--------------------------------------------------------------------------------
+Save section 7 VERBATIM (the text between its heading's closing rule line and the next rule
+line) as broker_mis_read.py in a scratch directory; cd there; then:
+
+  B64=$(base64 -w0 broker_mis_read.py)
+  MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-sbx "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u -"
+  MSYS_NO_PATHCONV=1 ssh -o ConnectTimeout=15 trading-vm "echo $B64 | base64 -d | /home/ubuntu/systems/venv/bin/python -u -"
+
+--------------------------------------------------------------------------------
+5. WHAT TO DO WITH IT
+--------------------------------------------------------------------------------
+  - Per machine, the 'BROKER MIS OPEN' line is the fact. Name the machine.
+  - ANY MIS position open on EITHER machine: tell Rama AT ONCE - a push notification if the
+    tool exists, and the FIRST line of your reply: machine, symbol, side, qty, the resting SL
+    and TGT with their broker order ids. That machine's Block A runs at 15:03; if it fails, the
+    position is left NAKED (the IDEA / ORCHPHARMA shape). Rama decides whether to be at the
+    screen 15:03-15:10. ⛔ You do not act on the position.
+  - None open on either machine: say so - both 15:03 passes will scan and find nothing, unless
+    a new MIS entry fills between your read and 15:03.
+  - Afterwards the 15:13 production capture and the 15:16 twin capture reconstruct the EVENT by
+    broker order id and order_timestamp - capture time is not event time.
+
+--------------------------------------------------------------------------------
+6. RECORD
+--------------------------------------------------------------------------------
+Record in memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md and the MEMORY_BOARD.md resume point, per
+machine, with the marker RESULT-1450-MIS-BROKER-11SEP2026 exactly ONCE on the BOARD line holding the
+result. Re-run section 2: it must now print 1. Keep MEMORY.md under 24,000 bytes and the
+MEMORY*.md line guard clean.
+
+--------------------------------------------------------------------------------
+7. broker_mis_read.py - VERBATIM, READ-ONLY (writes nothing; prints no account id)
+--------------------------------------------------------------------------------
+#!/usr/bin/env python3
+"""READ-ONLY: the MIS book FROM THE BROKER (10:45 file sec 1.1) -- "local state is not the fact that
+decides whether an exercise happens". Prints the broker's net MIS positions (quantity, average,
+last price, P&L), EVERY order today on each MIS symbol in order_timestamp order (so a natural SL/TGT
+fill or a manual close is visible as what it is), every non-zero net position of any product, and
+the local DB's live trades BESIDE it so the lag shows. Runs on either VM and NAMES the machine; a
+result from one machine is never the other's. Writes nothing (no bytecode, DB mode=ro, no files);
+prints no account id.   usage: python -u -"""
+import json
+import os
+import socket
+import sqlite3
+import sys
+import time
+
+sys.dont_write_bytecode = True
+HOSTS = {"trading-system": "PRODUCTION (trading VM, LFL836)", "trading-system-sandbox": "TESTING VM (twin, VBB097)"}
+host = socket.gethostname()
+print("host: %s = %s | time: %s" % (host, HOSTS.get(host, "UNKNOWN"), time.strftime("%F %T %Z")))
+if host not in HOSTS:
+    print("ABORT: not one of the two known VMs")
+    sys.exit(9)
+ROOT = "/home/ubuntu/systems/trading-system"
+os.chdir(ROOT)
+sys.path.insert(0, ROOT)
+from kiteconnect import KiteConnect  # noqa: E402
+
+tok = json.load(open("data_store/session/zerodha_token.json"))
+kc = KiteConnect(api_key=tok["api_key"])
+kc.set_access_token(tok["access_token"])
+pos = kc.positions() or {}
+net = pos.get("net") or []
+mis = [p for p in net if p.get("product") == "MIS"]
+open_mis = [p for p in mis if p.get("quantity")]
+print("\n== MIS positions, broker net book: %d row(s), %d OPEN (quantity != 0) ==" % (len(mis), len(open_mis)))
+for p in mis:
+    print("  %-12s qty=%-5s avg=%-10s ltp=%-10s pnl=%-9s buy_qty=%s sell_qty=%s" % (
+        p.get("tradingsymbol"), p.get("quantity"), p.get("average_price"), p.get("last_price"),
+        round(p.get("pnl") or 0, 2), p.get("buy_quantity"), p.get("sell_quantity")))
+orders = kc.orders() or []
+syms = sorted(set(p.get("tradingsymbol") for p in mis))
+print("\n== every order today on those symbols (broker), by order_timestamp: ==")
+for o in sorted((o for o in orders if o.get("tradingsymbol") in syms), key=lambda o: str(o.get("order_timestamp"))):
+    print("  %s %-12s %-4s %-3s %-6s %-16s qty=%s filled=%s trig=%s px=%s avg=%s id=%s tag=%s" % (
+        o.get("order_timestamp"), o.get("tradingsymbol"), o.get("transaction_type"), o.get("product"),
+        o.get("order_type"), o.get("status"), o.get("quantity"), o.get("filled_quantity"), o.get("trigger_price"),
+        o.get("price"), o.get("average_price"), o.get("order_id"), o.get("tag")))
+nz = [p for p in net if p.get("quantity")]
+print("\n== every non-zero net position, any product: %d ==" % len(nz))
+for p in nz:
+    print("  %-12s %-4s qty=%s" % (p.get("tradingsymbol"), p.get("product"), p.get("quantity")))
+db = "data_store/trading_system.db"
+con = sqlite3.connect("file:%s?mode=ro%s" % (db, "" if os.path.exists(db + "-wal") else "&immutable=1"), uri=True)
+live = con.execute("SELECT t.symbol, t.status, o.product, t.created_at FROM trades t LEFT JOIN orders o "
+                   "ON o.trade_id = t.trade_id AND o.leg = 'ENTRY' WHERE t.status IN "
+                   "('PENDING_FILL','OPEN','PARTIAL','EXITING') ORDER BY t.created_at").fetchall()
+print("\n== the local DB's live trades (the lag, NOT the fact): %d ==" % len(live))
+for r in live:
+    print("  %-12s %-8s %-4s created %s" % (r[0], r[1], r[2], str(r[3])[11:19]))
+bro = sorted(p.get("tradingsymbol") for p in open_mis)
+loc = sorted(r[0] for r in live if r[2] == "MIS")
+print("\nBROKER MIS OPEN: %s | local MIS live: %s | agree: %s" % (bro, loc, bro == loc))
+
+================================================================================
+END
+================================================================================

@@ -1,0 +1,37 @@
+---
+name: t2-backup-retention-investigation-29jun
+description: "T2 backup retention BUILT+DEPLOYED 29-Jun (main 7844bf8): NEW scripts/backup_retention.py category-aware keep-N reaper (pre_*=20/trading_system-*=14/analytics-*=14) replaces the old daily-only `find -mtime +7` (pre_* were unbounded). Dry-run default, never-delete-newest, scoped globs, >10 sanity-cap abort. Cron 02:00 monitored+heartbeat. No schema/restart. VM-verified 0 deletions at current counts."
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: ce5f39df-1b39-4e66-a909-988eb932224d
+---
+
+**T2 Phase-0 INVESTIGATION ONLY (29-Jun) — landscape + growth + recovery mapped; NO fix/design/deploy.** Scope = backup retention.
+
+**1. LANDSCAPE (`data_store/backups/`, 1.94 GB, 23 files), 3 categories:**
+- **Daily DB** `trading_system-YYYY-MM-DD.db` — 8 files (22–29 Jun), **~1.17 GB (59%)**, each 65→244 MB (grows with the DB; 28-Jun=244 MB is an outlier, likely WAL-included). **BOUNDED.**
+- **Daily analytics** `analytics-YYYY-MM-DD.db` — 8 files (22–29 Jun), **~17 MB (1%)**. **BOUNDED.**
+- **Deploy / ad-hoc** `pre_*_deploy_*.db` + `pre_fix190_resume_*` + `pre_pending_cleanup_*` + a one-off `pre_snr_v2_*_analytics.db` — **7 files, ~794 MB (40%)**, each ~50–182 MB. **UNBOUNDED.** (control_tower / telegram / mfe_mae / snr_v2 deploy backups + the 19-Jun resume/cleanup ad-hocs.)
+- Other tiny locations (NOT in scope/size): `data_store/crontab_backups` (52 KB), `~/tools/claude/crontab.backup.*` (KB), `config/system_config.yaml.bak*` (2 ad-hoc config backups, KB).
+
+**2. PRODUCERS:** cron `db_backup` 01:00 → `trading_system-DATE.db`; cron `analytics_backup` 01:05 → `analytics-DATE.db`. The `pre_*` deploy backups are **operator/agent-created** during a deploy (`sqlite3 .backup` before push) — **no automated producer, no cron**. **NO weekly/monthly backup cron exists** (the "weekly backup" the standards mention is not implemented).
+
+**3. CURRENT RETENTION (the growth root cause):** cron `backup_retention` 02:00 daily = `find data_store/backups \( -name "trading_system-*.db" -o -name "analytics-*.db" \) -mtime +7 -delete`. It is **pattern-scoped to the two DAILY categories only** → those are bounded (~8-day window). The `pre_*` deploy/ad-hoc backups **match neither pattern → are NEVER deleted → unbounded accumulation** (+~150–182 MB per deploy; ~6 deploys in the last ~10 days). No other logic anywhere deletes `pre_*` backups (grep-confirmed empty). (`db_retention.py` @02:30 deletes DB ROWS, not files; `sentinel_retention` @02:05 = alert flags — both unrelated.)
+
+**4. GROWTH + DISK:** 1.94 GB total = **~2% of a 96 GB disk (13 GB used, 84 G free, 13%)** — NOT a crisis. control_tower_trends has only ONE row (29-Jun, backup_size_mb=1717.54; size-logger started 29-Jun) so growth is inferred from FILE DATES: daily portion count-bounded (grows only as the DB grows); deploy portion is the genuine unbounded driver (~150–182 MB/deploy, never reaped). At ~150 MB/deploy with 84 G free it would take ~hundreds of deploys to matter — hygiene issue, not imminent.
+
+**5. CONSUMERS / BLAST RADIUS (minimal):** the ONLY reader is `scripts/backup_restore_drill.py` (monthly 03:00 1st) → `find_latest_backup()` = `sorted(glob("trading_system-*.db"))[0]` = the **LATEST daily DB backup only**. It never touches old daily files or any `pre_*` backup. So a retention job is SAFE for every consumer as long as it **keeps the newest**. Nothing else depends on old/`pre_*` backups (no rollback script hardcodes one; no test/hook).
+
+**6. RECOVERY + KEEP-POLICY FIT (proposed 20 deploy / 14 daily / 12 monthly):**
+- **Deploy: keep last 20** — currently 7; count-based is RIGHT for rollback (keep last N regardless of age; the 19-Jun ad-hocs stay until 20 accrue). Good fit.
+- **Daily: keep 14** — current is 7-day time-based (~8 files); 14 (count or days) extends to 2 weeks. Mild change.
+- **Monthly: keep 12** — ⚠️ **NO monthly backup category/producer exists** → this clause is N/A as-is. Either add a monthly-snapshot producer first OR drop the clause. Flag for design.
+
+**7. FAILURE MODES:** (a) backups fill disk — far off (hundreds of deploys at 84 G free); (b) a needed backup already gone — daily window is ~8 days (data >8 days old not recoverable from daily backups; 14 gives margin); deploy backups never gone today (unbounded). (c) **THE design danger = a retention job that OVER-deletes** — the existing `find` is safe because it is pattern-scoped + mtime-based; the NEW deploy-backup reaper must be equally careful: category/pattern-scoped (`pre_*` only), count-based keep-N, **never delete the newest**, dry-run first.
+
+**8. LEGAL/AUDIT:** personal system — **no regulatory/audit retention requirement** (confirmed; none found). Retention is purely operational hygiene.
+
+**LEAN FIX — BUILT + DEPLOYED 29-Jun (main `7844bf8`; cron-job ONLY; NO trading-code/parity change, NO schema, NO restart; branch deleted → main single source).** NEW `scripts/backup_retention.py` — category-aware keep-N reaper, newest-first by mtime: **pre_*=20 / trading_system-*.db=14 / analytics-*.db=14**. **SAFETY (deletion job):** DRY-RUN by default (`--apply` required; cron uses `--apply`); NEVER-DELETE-NEWEST; SCOPED globs only (each match realpath-asserted inside data_store/backups; symlinks refused; a file matching NO category refused+logged → never wildcard/recursive); SANITY CAP (>`--max-delete`=10 ⇒ ABORT + Telegram, no deletion; override `--max-delete N`); idempotent (stateless keep-N); locked→skip, missing→skip(race), empty→no-op. **Monthly DROPPED** (no producer). **Audit LOG-ONLY** (one structured `backup_retention_run` line, no table) + `record_heartbeat("backup_retention")` (→ `cron_heartbeat` table, Control Tower visibility). **Telegram only when deleted>0 / abort / skips** (a clean 0-delete nightly run is silent — no noise; heartbeat still records it). Pure `build_plan()`/`execute()` (testable). Cron registry `backup_retention` repointed (shell `find`→`python scripts/backup_retention.py --apply`, `monitored:true`, log `cron-backup-retention.log`); canonical regenerated (still 43 lines, deterministic; 24 cron-registry tests green; post-receive auto-installed). 10 tests `tests/unit/test_backup_retention.py` (keep-N+newest-preserved, dry-run vs apply, sanity-cap abort+override, unmatched/symlink refusal, locked/missing-file). **VM LIVE-VERIFIED:** deployed `7844bf8`; dry-run on REAL backups = **0 deletions** (pre_*=7/daily=8/analytics=8 all under keep-N, 0 unmatched); live crontab == canonical (zero drift); a safe `--apply` run = 0 deletions, **SUCCESS heartbeat written** (`deleted=0 freed_mb=0.0`), backups dir unchanged (23 files). **No retention gap** (keep-14 daily MORE generous than old 7-day find). First real cron `--apply` @02:00 (a no-op at current counts).
+
+**ROOT CAUSE (growth):** the `pre_*` deploy/ad-hoc backups have NO retention rule (the daily-only `find -mtime +7` doesn't match them). **RETENTION CANDIDATES (safe to age out):** older `pre_*` deploy backups beyond a keep-last-N (count-based), and daily backups beyond the keep window — both safe since the restore drill only uses the latest daily and nothing references old/`pre_*` files. Design owns: a keep-not-delete, dry-run, never-delete-newest reaper scoped to the `pre_*` category (+ optional daily 7→14 bump), and a decision on the absent monthly category. Related: [[control_tower_phase1a_29jun]] · [[telegram_alert_enhancements_29jun]] · [[feedback_system_map_first]].

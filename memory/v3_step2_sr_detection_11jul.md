@@ -1,0 +1,22 @@
+---
+name: v3_step2_sr_detection_11jul
+description: "V3 Step 2 — 03.01 S&R Detection ADAPT of sr_detector (VWAP/ORB anchors, TF-role swings, confidence_class, level export); SHADOW, default-OFF, no capital gating; BUILT-but-UNPUSHED"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 3c01370e-a523-42ed-bcb4-b17cc03d4987
+---
+
+**V3 Shared-Engine — Step 2: 03.01 S&R Detection (11-Jul-2026). ADAPT of the live `sr_detector/` shadow observer. BUILT + TESTED, gates NO capital, default-OFF, BUILT-but-UNPUSHED.** Follows [[v3_step1_common_utils_11jul]] / [[v3_phase0_investigation_11jul]]. No parallel S&R module (R2) — modified sr_detector in place; reused the Candle model + Step-1 candle_math.
+
+**What changed (all additive, ONE default-OFF gate `sr_detector.intraday_anchors_enabled`):**
+- **Task 1 VWAP+ORB anchors** — `sr_detector/zone_builder.py`: `intraday_anchors(fine, on_date, session_open, session_close, orb_window_minutes)` = VWAP (new pure `core.candle_math.session_vwap`) + ORB high/low (max/min over `[open, open+window)`); `build_anchor_payload` merges with EXISTING PDH/PDL/PDC (`prior_day_levels`) + new `round_number_levels`. Today-only fine fetch via new `OhlcFetcher.fetch_interval` (`fetch_timeframes` untouched). Session bounds INJECTED from `MarketWindows` (main.py `market_windows.market_open/close`) — never hardcoded (avoids trading_hours duplication).
+- **Task 2 structural TF policy** — `sr_detector/models.py::TF_ROLE` (30minute→PRIMARY, 60minute→MAJOR, day→DAILY, 15/5→MINOR/MICRO); `build_swings_payload(scored_zones)` labels the existing confluence swings by role. Swings already computed on the fetched 30m/60m (confirmed) — this labels them.
+- **Task 3 confidence_class** — additive `SRAnalysis.confidence_class` = `CONF_ANCHOR_ONLY` (default) | `CONF_ANCHOR_PLUS_VALIDATED_SWINGS`. **NEVER flips to VALIDATED this step** (later human-gated after manual-marking validation). 03.03 R:R gate will use ANCHOR-only levels for live capital until then.
+- **Task 4 level export** — `scripts/sr_level_export.py` READ-ONLY: dumps anchors+swings (TF/role+confidence) per symbol×date → flat CSV for Rama vs his manual chart marks (the #1 03.01 safeguard). Pure core (`flatten_analysis`/`rows_to_csv`/`export_levels`, injected analyze fn) unit-tested; `main()` wires read-only kite + detector (anchors on) per as-of date. `python scripts/sr_level_export.py --symbols X,Y --dates 2026-07-10`.
+
+**Safety/design:** persistence folds anchors/swings/confidence_class into the EXISTING `confluence_evidence` JSON (insert reads only `_SR_INSERT_COLS`, ignores extras) → **NO schema change**. Default-OFF gate → live shadow row + the 64 existing sr_detector tests **byte-identical** (proven: `test_detector_default_off_is_byte_identical_evidence` asserts evidence keys == {resistance_zones, support_zones}). Config: `intraday_anchors_enabled: false`, `anchor_intraday_interval: 5minute` (validated intraday-only), `anchor_lookback_days: 1`, `orb_window_minutes: 15` (in model + system_config.yaml). `enabled` stays true. **Detector still SHADOW/observer-only — gates NO order/score/size.**
+
+**R4 regression (ADAPT — done fully):** callers mapped — `build_sr_detector` (main.py:2547, 1 site, optional params backward-compat), SRDetector ctor (only build_sr_detector), OhlcFetcher (fetch_timeframes byte-identical), SRAnalysis (detector._write, additive), zone_builder (added fns, existing untouched); confluence/zones/pivots/flags UNCHANGED. **The 64 sr_detector tests PASS UNCHANGED.** Full suite: 4413 passed / 41 failed / 15 skip — **the 41 are the PRE-EXISTING PC-env baseline** ([[pc_test_env_hygiene]]; test_main/fix061/phase17, green on VM): PROVEN by stash-diff — clean-tree vs dirty-tree suspect-file failures IDENTICAL (31==31, same names) → my change added ZERO. Changed-area 148 pass (sr_detector 64 + sr_v2 37 + candle_math 31 + sr_anchors 12 + sr_level_export 4). Paper==live (pure, no mode branch). Tests: `tests/unit/test_sr_anchors.py` (12), `test_sr_level_export.py` (4), `test_candle_math.py` (+5 session_vwap).
+
+**Files:** M `core/config_loader.py`, `main.py`, `sr_detector/{__init__,detector,fetch,models,zone_builder}.py`, `config/system_config.yaml`, `core/candle_math.py` (+session_vwap); ?? `scripts/sr_level_export.py`, 2 new test files. **BUILT-but-UNPUSHED** (with Step-1). Docs: SYSTEM_MAP.md V3 03.01 section, PATHS.md, ledger. **NEXT = Step 3 (03.02 Market Regime — NEW) after Web Claude + ChatGPT review.**

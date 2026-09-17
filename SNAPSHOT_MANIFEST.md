@@ -9,8 +9,9 @@
   - **~20:10-20:25 IST (commit 1):** `trading-system/docs/SYSTEM_MAP.md` <- `D:/Projects/trading-system/docs/SYSTEM_MAP.md` · `trading-system/PATHS.md` <- `D:/Projects/trading-system/PATHS.md` · `trading-system/docs/audit/` <- `D:/Projects/trading-system/docs/audit/` · `memory/MEMORY_RULES.md`, `memory/UNPUSHED_PENDING_DEPLOY_LEDGER.md` <- the Claude Code project memory directory · `_preservation/` <- `D:/Projects/_preservation/` (every preserved manifest).
   - **~20:45-20:50 IST (commit 2):** the rest of the project memory directory (`MEMORY.md`, `MEMORY_HAZARDS.md`, `MEMORY_BOARD.md`, `MEMORY_REFERENCE.md`, the notes, `fallback_instructions/`, `memory_snapshots/`) · raw query/analysis DATA and the transcript excerpts removed · `README.md`.
   - **~21:45-22:00 IST (commit 3):** the structure-versus-rows test applied to the seven contract-like outputs (4 IN, 3 OUT) · 6 memory files and 2 audit documents IN as PC-side-redacted copies (section 2b).
+  - **18-Sep-2026 ~00:30-02:30 IST (commit 4):** `trading-system/docs/legacy_system_manual/` <- `D:/Projects/trading-system/docs/legacy_system_manual/` -- the first three chapters of the LEGACY SYSTEM MANUAL (the system is retired; this is a current-state record, not a repair plan), their two appendices, the status index, and the `_working/` evidence datasets those chapters were generated and verified from (section 7).
   - ⚠️ Files taken in an earlier pass were NOT refreshed in a later one (e.g. the ledger and `SYSTEM_MAP.md` have moved on since ~20:20 on the PC).
-- **Contents:** 1353 files including this manifest (incl. `README.md`); 29,483,271 bytes before this manifest.
+- **Contents:** 1364 files including this manifest (incl. `README.md`); 33,605,402 bytes before this manifest.
 
 ## 2. REDACTIONS -- the only bytes that differ from the PC originals
 > ⚠️ **THE REDACTION IS COSMETIC.** It keeps a value out of THIS repository only. **The value still exists on the machines** (in the PC originals, the machines' configuration and elsewhere) -- dealing with that exposure is a separate task for the owner, ⛔ not something this snapshot does.
@@ -40,7 +41,7 @@
 | `trading-system/docs/audit/backup_retention_and_telegram_delivery_22jul2026.md` | 3 | `d66854f9a9e27cca5d3604de595cb6be` | `1e7379ffcdf1ea047bbe227ef47a0512` |
 
 ## 3. Deliberately NOT included
-- `docs/` outside `docs/audit/` and `SYSTEM_MAP.md` (e.g. `docs/decisions/`, the live `MASTER_PENDING` register -- preserved copies of the register ARE in `_preservation/`).
+- `docs/` outside `docs/audit/`, `docs/legacy_system_manual/` and `SYSTEM_MAP.md` (e.g. `docs/decisions/`, the live `MASTER_PENDING` register -- preserved copies of the register ARE in `_preservation/`). **AMENDED 18-Sep-2026:** `docs/legacy_system_manual/` is now INCLUDED -- it is the manual itself, written as records.
 
 ## 4. Credential scan -- values never printed
 - **PC-side:** 12 distinct secret values from the PC's `.env`; shape rules G1-G5; `.docx`/zip members decompressed; set equality and sha256 of every staged file against its source.
@@ -226,3 +227,26 @@
 |---|---:|
 | `trading-system/docs/audit/gemini_watchman_alerts_21jul2026.md` | 7,857 |
 
+
+## 7. The legacy system manual (added 18-Sep-2026)
+
+`trading-system/docs/legacy_system_manual/` holds the manual for the retired trading system. Written from the PC worktree
+`D:/Projects/wt-sr-shadow-15sep` (commit `e7bf477` plus the uncommitted `force_qty` change set, which is byte-equivalent to the
+TESTING VM as delivered 17-Sep-2026 19:31 IST) and from the machine captures in the sbx snapshot. **Production was never read**;
+every production statement in the manual is RECORD-DERIVED or NOT ESTABLISHED.
+
+| File | Bytes | What it is |
+|---|---:|---|
+| `LEGACY_SYSTEM_MANUAL_INDEX.md` | 11,907 | status index for all 25 chapters, the measured scope, the evidence format, the verification accounting and the unresolved list |
+| `01_SYSTEM_OVERVIEW.md` | 20,534 | the map: environments, modes, components, external systems, storage, the trading day, the trade path, the control planes, plus **Appendix 01-A** (the measured testing-VM divergences and the file-count reconciliation) |
+| `02_REPOSITORY_AND_FILE_MAP.md` | 782,947 | an entry for each of the **200** runtime modules -- purpose, role, importers, imports, key symbols with definition lines, inputs, outputs, side effects, config keys, tables, log counts, unknowns -- plus every other module listed and marked NOT MAPPED |
+| `03_STARTUP_RUNTIME_AND_SCHEDULER.md` | 35,778 | the boot sequence, config loading and validation, startup checks, exit codes and the restart policy, the token chain, the scheduler and its standing drift, the deploy hook, EOD square-off and process shutdown |
+| `03A_CRON_REGISTRY_TABLE.md` | 12,377 | the 47 declared jobs, the registry -> canonical -> live reconciliation, the unit comparison and the hook, as generated tables |
+| `_working/` (6 files) | 3,258,588 | the evidence the chapters were built from: the deterministic module dataset, the 200 verified research entries, the 480 verified sequence steps, the anchoring accounting, and **743 observations parked for chapter 22** |
+
+**Credential scan for these files.** Every one was scanned against the 20 secret values in the PC's `.env` before the commit:
+**0 value hits.** Shape rules (PEM blocks, bot-token and channel-id shapes, long opaque tokens, AWS and GitHub token shapes)
+flagged 62 distinct tokens, every one adjudicated as a CamelCase Python class name from the class inventory -- code identifiers,
+not credentials. Positive controls all fired (a real `.env` value embedded in text, a synthetic PEM, a synthetic bot token, a
+synthetic channel id) and the clean control returned 0. The manual quotes environment-variable **names** only; no secret value
+appears in it, by construction and by measurement.

@@ -1,0 +1,236 @@
+[
+[
+"core.config_loader",
+"config_keys",
+"capital.leverage_map.",
+"unusable key token"
+],
+[
+"core.config_loader",
+"config_keys",
+"broker_costs.zerodha.",
+"unusable key token"
+],
+[
+"reports.daily_trade_review",
+"config_keys",
+"slippage.tiers.",
+"unusable key token"
+],
+[
+"alerts.cron_alerts",
+"config_keys",
+"<job>.critical (registry entry field)",
+"no usable token"
+],
+[
+"capital.risk_engine",
+"db_tables",
+"accessed only through StateStore methods - count_active_positions/count_open_positions/count_in_flight_orders/count_trades_today/count_settled_trades_today (303-310), count_open_delivery_positions/count_daily_delivery_trades (318-320), recent_trade_pnls (349), sector_exposure (354, 460), has_active_position (361), get_active_position_direction (364); no SQL and no table name appears in this file",
+"not one of the 53 known tables"
+],
+[
+"broker.slippage_engine",
+"config_keys",
+"tiers.",
+"unusable key token"
+],
+[
+"ops.control_tower.aggregator",
+"db_tables",
+"control_tower_freshness",
+"not found"
+],
+[
+"ops.control_tower.runner",
+"config_keys",
+"--config-dir (the config directory handed to the trading-day check)",
+"no usable token"
+],
+[
+"ops.control_tower.runner",
+"config_keys",
+"--config-dir (the config directory handed to the aggregator, which resolves cron_registry.yaml and the app config)",
+"no usable token"
+],
+[
+"ops.control_tower.runner",
+"db_tables",
+"control_tower_trends",
+"not found"
+],
+[
+"ops.control_tower.runner",
+"db_tables",
+"control_tower_findings",
+"not found"
+],
+[
+"core.migrations",
+"db_tables",
+"sqlite_master (read)",
+"not one of the 53 known tables"
+],
+[
+"core.migrations",
+"db_tables",
+"sqlite_master (read, relocation check)",
+"not one of the 53 known tables"
+],
+[
+"core.migrations",
+"db_tables",
+"analytics.<table> (DELETE + INSERT)",
+"not one of the 53 known tables"
+],
+[
+"core.migrations",
+"db_tables",
+"main.<table> (SELECT then DROP)",
+"not one of the 53 known tables"
+],
+[
+"scripts.backup_restore_drill",
+"db_tables",
+"sqlite_master",
+"not one of the 53 known tables"
+],
+[
+"scripts.backup_restore_drill",
+"db_tables",
+"the 26 names in EXPECTED_TABLES (existence + row count only)",
+"not one of the 53 known tables"
+],
+[
+"scripts.db_retention",
+"db_tables",
+"the policy table, counted (dry-run)",
+"not one of the 53 known tables"
+],
+[
+"scripts.db_retention",
+"db_tables",
+"the policy table, deleted",
+"not one of the 53 known tables"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.cadence",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.weekday",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.day_of_month",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.monitored",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.personal_tooling",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.schedule (leading HH:MM)",
+"no usable token"
+],
+[
+"core.cron_registry",
+"config_keys",
+"<job>.critical",
+"no usable token"
+],
+[
+"core.db_connect",
+"db_tables",
+"analytics (ATTACHed schema alias)",
+"not one of the 53 known tables"
+],
+[
+"scripts.reconcile_positions",
+"config_keys",
+"<account>.api_key_env (from accounts.csv, e.g. ZERODHA_API_KEY_LFL836)",
+"no usable token"
+],
+[
+"scripts.reconcile_positions",
+"config_keys",
+"whole",
+"not found"
+],
+[
+"scripts.reconstruct_excursions",
+"config_keys",
+".env loaded from the repo root",
+"no usable token"
+],
+[
+"scripts.refresh_instruments",
+"config_keys",
+"<account>.api_key_env from accounts.csv",
+"no usable token"
+],
+[
+"scripts.sr_detector_backfill",
+"config_keys",
+"--db path, default data_store/trading_system.db",
+"no usable token"
+],
+[
+"scripts.trade_journal",
+"config_keys",
+"--db path, default data_store/trading_system.db",
+"no usable token"
+],
+[
+"scripts.zerodha_login",
+"config_keys",
+"<account>.api_key_env from accounts.csv",
+"no usable token"
+],
+[
+"scripts.zerodha_login",
+"config_keys",
+"<account>.api_secret_env from accounts.csv",
+"no usable token"
+],
+[
+"scripts.zerodha_login",
+"config_keys",
+".env loaded from the process cwd",
+"no usable token"
+],
+[
+"strategies.loader",
+"config_keys",
+"scanners.",
+"unusable key token"
+],
+[
+"utils",
+"key_symbols",
+"(module comment)",
+"no usable token"
+],
+[
+"scripts",
+"key_symbols",
+"# scripts package",
+"no usable token"
+]
+]
